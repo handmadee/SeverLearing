@@ -69,3 +69,116 @@ Services là thành phần chứa logic kinh doanh cốt lõi của ứng dụng
 // create token public key <Bất đối xứng >
 // byte password (bcrypt)
 // crypto
+
+# các stastus http
+
+200 ok : y/c thành công
+201 created: y/c tạo thành cônmg
+204 no content: y/c thành công nhưng ko có tt
+400 bad request: máy chủ o hiểu y/c
+401: Unauthrized L y/c bắt xác thực
+403 forbidden: hiểu y/c nhưng từ chối thực hiện
+404 not found: máy chủ o thể tìm thấy tài nguyên
+409 config: được sử dụng khi một yêu cầu không thể được hoàn thành do xung đột với trạng thái hiện tại của tài nguyên mà yêu cầu đó đang cố gắng thay đổi. ("Đã tồn tại")
+
+500 internal sever error: lỗi ko xác định
+
+# 1xx thông tin
+
+# 2xx thànnh công
+
+# 3xx điều hướng lại
+
+# 4xx lỗi ở phía client
+
+# 5xx lỗi ở phía sever
+
+# token là 1 chuỗi kí tự được tạo ra và đại diện cho quyền truy cập của 1 ứng dụng trong quá trình xác thực và uỷ quyền người dùng 241
+
+<!--
+Ưu điểm và Nhược điểm cảu JWWT
+
+Đơn giản và dễ sử dụng
+Độ tin cận cao
+Dữ liệu được lưu trũ trong token để giảm thiểu số lần truy vấn dữ liệu
+
+nhược điểm : Không thể huỷ bỏ token
+1 khi token được tạo ra và gửi tới máy khách không thể huỷ bỏ nó trước khi hết thời gian sống hoặc thay đổi
+
+không thể chủ động force logout nhưng sử sụng mã hoá bất đối xứng có thể khắc phục điều dó
+
+
+ force logout là quá trình mà hệ thống tự dộng đăng xuất người dùng khỏi phiên làm việc hiện tại
+
+ rủi to về bảo mật khi JWT bị lộ
+ không hỗ trợ quản lý phiên "Quản lý phiên trong JWT (JSON Web Tokens) liên quan đến việc sử dụng JWT để theo dõi trạng thái phiên làm việc của người dùng. Trong một ứng dụng web hoặc di động, mỗi "phiên" thường bắt đầu khi người dùng đăng nhập và kết thúc khi người dùng đăng xuất."
+
+
+ -->
+
+# Cơ chế hoạt động của jwt là gì
+
+<!--
+Client gửi username và password tới sever để vẻify
+login success thì sever sẽ genarate ra (jwt) và gửi về client
+Client nhận token đó, rồi lưu trữ trên tình duyệt cookie , localStorage
+Khi client gửi 1 resquest tiếp theo tới sever và resquest đó sẽ được đính kèm token nhằm mục đích xác thực
+Sever nhận được request và tiến hành xác minh => hợp lệ thì res về cho client != (403) forbiden
+ -->
+
+# Xác thực JWT cùng Mã hoá đối xứng
+
+<!--
+việc sử dụng mã hoá bất đối xứng để bảo mặt hơn thay vì sử dụng chỉ 1 key duy nhất để vừa giải mã vừa mã hoá
+
+
+Mã hoá bất đối cứng sử dụng 2 key khác nhau (public key và private key)
+public key được chia sẽ với mọi người , vànó được sử dụng đẻ verify không có chiều ngược lại
+
+private key sẽ được giữ bí mật và được sử dụng để mã hoá thông tin tạo ra JWWT (sau khi tạo xong nó sẽ biến mất khỏi hệ thống )
+
+"Nhược điểm phải lưu thêm public key vào DB và truy xuất DB khi cần xác thực " dẫn tới hiệu năng có thể bị ảnh hương : notes => có thể cải thiệt hiệu năng bằng Caches như MemorryCaches hoặc RedisCache
+
+ -->
+
+# resfesh token được sinh ra
+
+<!--
+rút ngắn thời gian tồn tại của AT
+và khi AT token hết hạn thì thay bằng AT mới
+
+Vô hiệu hoá 1 token ở 1 User nào đó ở ngay phía máy chủ
+Cụ thể là khi userLogout hoặc tồi hơn nữa là token bị đánh cắp
+ -->
+
+# tại sao timeline của access token lại có thời gian ngắn hơn refesh token
+
+<!--
+  Bảo mật : access token khi bị đánh cắp thì giảm thời gian truy cập ứng dụng hơn
+  Giảm thiểu rủi ro : refesh token thường được sử dụng để đổi lấy access token mới mà không cần phải đăng nhập lại, giảim thiểu truyền tải khi đăng nhập quá nhiều lần
+
+  -->
+
+# api keys sinh ra để là 1 dạng mã xác thực được sử dụng trong giao tiếp giữa các ứng dụng thông qua API Nó thường dùng để Xác Thực,Quản lý quyền truy cập,Theo dõi và giới hạn sử dụng
+
+# xác thực API - Header API
+
+// lưu trữ token => quản lý về ngày tháng
+// permissions
+//
+
+# close sure(Trình bao đóng của javascripts) trả về 1 hảm mà hàm đó có thể sử dụng biến của thằng cha
+
+# dinied từ chối =>
+
+# Khi get
+
+# History Courser
+
+<!--
+Course :
+User :
+ -->
+
+ <!-- Tracking User and Course   -->
+# SeverLearing
