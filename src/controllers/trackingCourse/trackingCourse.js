@@ -54,6 +54,14 @@ class TrackingCourseController {
             data: trackingCourse
         }).send(res);
     }
+
+    static async getFullTrackingCourse(req, res) {
+        const trackingCourse = await TrackingCourseService.getTrackingCourseFull();
+        return new OK({
+            message: "Lịch sử khoá học",
+            data: trackingCourse
+        }).send(res);
+    }
 }
 
 
