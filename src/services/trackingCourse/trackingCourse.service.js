@@ -100,10 +100,10 @@ class TrackingCourseService {
         return historyCourse;
     }
 
-
-
-
-
-
+    // TrakingFull 
+    static async getTrackingCourseFull(idAccount) {
+        const historyCourse = await historyCourseModel.find().populate('userID courseID learnLesson');
+        return historyCourse;
+    }
 }
 module.exports = TrackingCourseService;

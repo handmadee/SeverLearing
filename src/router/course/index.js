@@ -74,6 +74,7 @@ router.get('/tracking', asnycHandler(TrackingCourseController.getTrackingCourse)
 router.get('/trackingFinish/:id', asnycHandler(TrackingCourseController.findTrackingAccountFinish));
 router.get('/trackingLearn/:id', asnycHandler(TrackingCourseController.findTrackingAccountLearn));
 router.put('/tracking', asnycHandler(TrackingCourseController.updateTrackingCourse));
+router.get('/trackingFull', asnycHandler(TrackingCourseController.getFullTrackingCourse));
 
 
 
