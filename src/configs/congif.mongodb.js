@@ -7,7 +7,7 @@ const dev = {
     db: {
         host: process.env.DEV_DB_HOST || 'localhost',
         port: process.env.DEV_DB_PORT || 27017,
-        name: process.env.DEV_DB_NAME || 'LearningApp'
+        name: process.env.DEV_DB_NAME || 'Tsmart'
     }
 }
 
@@ -22,7 +22,7 @@ const test = {
     }
 }
 
-const prod = {
+const product = {
     app: {
         port: process.env.PROD_APP_PORT || 3080
     },
@@ -33,6 +33,6 @@ const prod = {
     }
 }
 
-const config = { dev, test, prod };
+const config = { dev, test, product };
 const env = process.env.NODE_ENV || 'dev';
 module.exports = config[env];
