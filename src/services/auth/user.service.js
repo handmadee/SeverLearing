@@ -27,7 +27,7 @@ exports.login = async (loginData) => {
     const { username, password } = loginData;
     const user = await User.findOne({ username }).select('password');
     if (!user || !await bcrypt.compare(password, user.password)) {
-        throw new Error('Invalid username or password');
+        throw new Error('Invalid usernamemobmo or password');
     }
     const { accessToken, refreshToken } = generateTokens(user);
     const token = new Token({ user_id: user._id, access_token: accessToken, refresh_token: refreshToken });
