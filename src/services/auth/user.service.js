@@ -1,7 +1,9 @@
+const { BadRequestError } = require('../../core/error.response');
 const User = require('./../../models/account.model');
 const Token = require('./../../models/token.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 
 const generateTokens = (user) => {
     const accessToken = jwt.sign({ userId: user._id, role: user.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
@@ -13,7 +15,7 @@ exports.register = async (userData) => {
     console.log(userData)
     const accout = await User.findOne({ username: userData.username });
     console.log(accout)
-    if (accout) throw new Error('Username already exists');
+    if (accout) throw new BadRequestError('Username already exists');
     userData.password = await bcrypt.hash(userData.password, 10);
     const user = new User(userData);
     await user.save();
@@ -27,7 +29,7 @@ exports.login = async (loginData) => {
     const { username, password } = loginData;
     const user = await User.findOne({ username }).select('password');
     if (!user || !await bcrypt.compare(password, user.password)) {
-        throw new Error('Invalid usernamemobmo or password');
+        throw new BadRequestError('Invalid usernamemobmo or password');
     }
     const { accessToken, refreshToken } = generateTokens(user);
     const token = new Token({ user_id: user._id, access_token: accessToken, refresh_token: refreshToken });
@@ -40,7 +42,7 @@ exports.verifyToken = async (token) => {
         const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         const user = await User.findById(payload.userId);
         if (!user) {
-            throw new Error('User not found');
+            throw new BadRequestError('User not found');
         }
         return { isValid: true, userId: payload.userId, role: payload.role };
     } catch (error) {
@@ -52,12 +54,12 @@ exports.refreshToken = async (refreshToken) => {
     const token = await Token.findOne({ refresh_token: refreshToken });
 
     if (!token) {
-        throw new Error('Invalid refresh token');
+        throw new BadRequestError('Invalid refresh token');
     }
     const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(payload.userId);
     if (!user) {
-        throw new Error('User not found');
+        throw new BadRequestError('User not found');
     }
 
     const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
@@ -71,14 +73,26 @@ exports.refreshToken = async (refreshToken) => {
 exports.logout = async (refreshToken) => {
     const token = await Token.findOneAndDelete({ refresh_token: refreshToken });
     if (!token) {
-        throw new Error('Invalid refresh token');
+        throw new BadRequestError('Invalid refresh token');
     }
 };
 
 exports.getUser = async (userId) => {
     const user = await User.findById(userId).populate('info').select('info  ');
     if (!user) {
-        throw new Error('User not found');
+        throw new BadRequestError('User not found');
     }
     return user;
+}
+
+// Change Password
+exports.changePassword = async (data) => {
+    const { userId, oldPassword, newPassword } = data;
+    const user = await User.findById(userId).select('password');
+    if (!user || !await bcrypt.compare(oldPassword, user.password)) {
+        throw new BadRequestError('Invalid password');
+    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    return true;
 }

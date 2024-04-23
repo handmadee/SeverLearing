@@ -5,13 +5,10 @@ const examModel = require('../../models/exam.model');
 const BaseService = require('../base.service');
 const Question = require('./../../models/question');
 
-
 class QuestionService extends BaseService {
     constructor() {
         super(Question);
     }
-
-
     async createQuestion(data) {
         const { exam_id } = data;
         const exam = await examModel.findById(exam_id);

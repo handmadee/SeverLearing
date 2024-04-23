@@ -13,6 +13,7 @@ router.post('/auth/verify-token', asnycHandler(userController.verifyToken));
 router.post('/auth/refresh-token', asnycHandler(userController.refreshToken));
 router.post('/auth/logout', asnycHandler(userController.logout));
 router.get('/auth/user/:id', asnycHandler(userController.getUser));
+router.put('/auth/change-password', asnycHandler(userController.changePassword));
 // router.get('/admin', authorization(['admin']), asnycHandler(userController.admin));
 
 module.exports = router;
