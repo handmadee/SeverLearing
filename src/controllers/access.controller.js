@@ -51,3 +51,10 @@ exports.getUser = async (req, res) => {
         data: await userService.getUser(id)
     }).send(res);
 }
+
+exports.changePassword = async (req, res) => {
+    return new OK({
+        message: 'Change password successfully',
+        data: await userService.changePassword(req.body)
+    }).send(res);
+}
