@@ -1,40 +1,83 @@
+// 'use strict';
+
+// const mongoose = require('mongoose');
+
+// const config = require('../configs/config.mongodb');
+// const BASE_URL = config.db.host;
+// class Database {
+//     constructor() {
+//         this.client = {
+//             serverApi: {
+//                 version: ServerApiVersion.v1,
+//                 strict: true,
+//                 deprecationErrors: true,
+//             }
+//         }
+//         this._connect();
+//     }
+
+//     async _connect() {
+//         // try {
+//         //     await this.client.connect();
+//         //     await this.client.db("Tsmart").command({ ping: 1 });
+//         //     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+//         // } catch (error) {
+//         //     console.error("Error connecting to MongoDB:", error);
+//         // }
+//         try {
+//             await mongoose.connect(BASE_URL, this.client);
+//             await mongoose.connection.db.admin().command({ ping: 1 });
+//             console.log("Pinged your deployment. You successfully connected to MongoDB!");
+//         } finally {
+//             await mongoose.disconnect();
+//         }
+//     }
+
+//     async close() {
+//         try {
+//             await this.client.close();
+//             console.log("MongoDB connection closed.");
+//         } catch (error) {
+//             console.error("Error closing MongoDB connection:", error);
+//         }
+//     }
+// }
+
+// const instanceMongodb = new Database();
+// module.exports = instanceMongodb;
+
+
 'use strict';
 
-
 const mongoose = require('mongoose');
-const config = require('../configs/congif.mongodb');
-const { checkConnect } = require('../helpers/check.connect');
-const BASE_URL = `mongodb://localhost:${config.db.port}/${config.db.name}`;
+const config = require('../configs/config.mongodb');
+
 class Database {
     constructor() {
         this._connect();
     }
-    // để kết nối dữ liệu với mongodb
-    _connect() {
-        if (1 === 1) {
-            mongoose.set('debug', true);
-            mongoose.set('debug', { color: true })
-        }
-        mongoose.connect(BASE_URL, { maxPoolSize: 50 })
-            .then(() => {
-                console.log('Database connection successful');
-                checkConnect();
-            })
-            .catch(err => {
-                console.log(err)
+
+    async _connect() {
+        try {
+            await mongoose.connect(config.db.host, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
             });
-    }
-    // nó kiểm tra xem đã có một thể hiện của lớp Database chưa, nếu chưa thì nó sẽ tạo một thể hiện mới và trả về thể hiện đó.
-    //Với cách triển khai này, mỗi lần bạn gọi Database.getInstance(), bạn sẽ nhận được cùng một thể hiện của lớp Database duy nhất, giúp đảm bảo rằng kết nối đến cơ sở dữ liệu chỉ được thiết lập một lần trong suốt vòng đời của ứng dụng.
-    static getInstance() {
-        if (!this.instance) {
-            this.instance = new Database();
+            console.log("Connected to MongoDB successfully!");
+        } catch (error) {
+            console.error("Error connecting to MongoDB:", error);
+            process.exit(1);
         }
-        return this.instance;
+    }
+
+    async disconnect() {
+        try {
+            await mongoose.disconnect();
+            console.log("Disconnected from MongoDB.");
+        } catch (error) {
+            console.error("Error disconnecting from MongoDB:", error);
+        }
     }
 }
 
-const instanceMongodb = Database.getInstance();
-module.exports = instanceMongodb;
-
-
+module.exports = new Database();

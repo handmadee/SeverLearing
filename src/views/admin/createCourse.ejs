@@ -1,0 +1,134 @@
+<%- include('comon/header') %>
+<style>
+  .container {
+    padding: 30px;
+  }
+  h5 {
+    background-color: rgba(26, 25, 25, 0.687);
+    color: rgb(237, 241, 18);
+    border-radius: 10px;
+    padding: 10px 0;
+    text-align: center;
+  }
+  h5:hover {
+    cursor: pointer;
+    background-color: #4a95e0;
+    color: white;
+  }
+</style>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+
+  <!--Main-->
+  <div class="row container mx-auto">
+    <div class="formCategory col-3">
+      <h5>Danh mục</h5>
+      <form
+        id="formCourse"
+        class="row col-12 mx-auto g-3 needs-validation123"
+        novalidate
+      >
+        <div class="col-12">
+          <label for="nameCategory" class="form-label">
+            Tên Danh mục khoá học
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="nameCategory"
+            name="nameCategory"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập tên danh mục</div>
+        </div>
+
+        <!-- Submit form -->
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Create Category</button>
+        </div>
+        <!--  -->
+      </form>
+    </div>
+    <div class="formCoursecreate col-9">
+      <h5>Khoá học</h5>
+      <form
+        id="formCourse"
+        class="row col-12 mx-auto g-3 needs-validation"
+        novalidate
+      >
+        <div class="col-9">
+          <label for="validationCustom01" class="form-label">
+            Tên khoá học
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="validationCustom01"
+            name="title"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập tên bài học</div>
+        </div>
+        <div class="col-md-3">
+          <label for="validationCustom04" class="form-label">Danh mục</label>
+          <select
+            class="form-select"
+            id="validationCustom04"
+            name="category_id"
+            required
+          >
+            <option selected disabled value="">Danh mục khoá học</option>
+            <% category.forEach(function(item, index) { %>
+            <option value="<%= item._id %>"><%= item.nameCategory %></option>
+            <% }); %>
+          </select>
+          <div class="invalid-feedback">Vui lòng chọn đúng tên khoá học</div>
+        </div>
+
+        <!-- Image Course -->
+        <div class="col-12">
+          <label for="imageCourse" class="form-label">Image Course</label>
+          <input
+            type="file"
+            class="form-control"
+            id="imageCourse"
+            name="imageCourse"
+            required
+          />
+          <div class="invalid-feedback">
+            Vui lòng chọn đúng đường dẫn với đuổi png hoặc jepg
+          </div>
+        </div>
+
+        <!-- Detail Course -->
+        <div class="col-12">
+          <label for="detailCourse" class="form-label">Detail Course</label>
+          <textarea
+            class="form-control"
+            id="detailCourse"
+            rows="3"
+            name="detailCourse"
+            required
+          ></textarea>
+          <div class="invalid-feedback">
+            Vui lòng nhập giới thiệu về khoá học
+          </div>
+        </div>
+        <!-- Submit form -->
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Submit form</button>
+        </div>
+        <!--  -->
+      </form>
+    </div>
+  </div>
+
+  <!-- Body main -->
+
+  <!-- The end body main -->
+  <script type="module" src="/JS/createCourse.js"></script>
+  <%- include('comon/footer') %>
+</div>

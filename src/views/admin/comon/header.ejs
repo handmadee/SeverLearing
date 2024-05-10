@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    <%= title %>
+  </title>
+  <link rel="icon" type="image/png" href="/image/T-smart.png" />
+  <!-- Bosstraps -->
+  <link type="text/css" href="/styles/bootstrap.min.css" rel="stylesheet" />
+  <!-- ICON -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- ======= Styles ====== -->
+    <link rel="stylesheet" type="text/css" href="/styles/aleart.css" />
+  <link rel="stylesheet" type="text/css" href="/styles/LearnBoard.css" />
+  
+</head>
+
+<body>
+  <!-- =============== Navigation ================ -->
+  <div class="container12">
+    <div class="sidebar">
+      <div class="menu-btn">
+        <i class="fa-solid fa-angle-left"></i>
+      </div>
+      <div class="head">
+        <div class="user-img">
+          <img class="icon" src="/image/T-smart.png" alt="" />
+        </div>
+        <div class="user-details">
+          <p class="title">TSMART_LEARING</p>
+          <p class="name">Administrators</p>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="menu">
+          <p class="title">Main</p>
+          <ul>
+            <li>
+              <a href="/admin/dashboard">
+                <i class="fa-solid fa-table-cells-large icon"></i>
+                <span class="text">Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <i class="fa-solid fa-user icon"></i>
+
+                <span class="text">Students</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </a>
+              <ul class="sub-menu">
+                <li>
+                    <li>
+              <a href="/admin/students">
+                    <span class="text">View Students</span>
+                  </a>
+                </li>
+              <a href="/admin/students/create">
+                    <span class="text">Create Students</span>
+                  </a>
+                </li>
+              
+              </ul>
+            </li>
+            <li class="active">
+              <a href="#">
+                <i class="fa-solid fa-graduation-cap icon"></i>
+                <span class="text">Course</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </a>
+              <ul class="sub-menu">
+                <li>
+              <a href="/admin/course">
+                    <span class="text">View Course</span>
+                </a>
+                </li>
+                 <li>
+              <a href="/admin/course/category">
+                    <span class="text">View category</span>
+                </a>
+                </li>
+
+                <li>
+        <a href="/admin/course/create">
+                    <span class="text">Create Category & Course</span>
+                  </a>
+                </li>
+                <li>
+        <a href="/admin/course/lesson/create">
+                    <span class="text">Create Lesson</span>
+                  </a>
+                </li>
+                <li>
+        <a href="/admin/course/exam/create">
+                    <span class="text">Create Exam</span>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+            <li>
+              <a href="#">
+                <i class="fa-solid fa-biohazard icon"></i>
+                <span class="text">Game</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </a>
+              <ul class="sub-menu">
+                    <li>
+                    <a href="/admin/exam">
+                    <span class="text">View Game</span>
+                  </a>
+                </li>
+                      <li>
+                    <a href="/admin/exam/category">
+                    <span class="text">Category Game</span>
+                  </a>
+                </li>
+                <li>
+                   <a href="/admin/exam/category/create">
+                    <span class="text">Create Category Game</span>
+                  </a>
+                </li>
+                <li>
+                   <a href="/admin/exam/quiz/create">
+                    <span class="text">Create Game Quiz</span>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+            <li>
+              <a href="#">
+                <i class="fa-solid fa-newspaper icon"></i>
+                <span class="text">News</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </a>
+              <ul class="sub-menu">
+                <li>
+                  <a href="/admin/news">
+                    <span class="text">View News</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/admin/news/create">
+                    <span class="text">Create News</span>
+                  </a>
+              </ul>
+            </li>
+            <li>
+              <a href="#">
+<i class="fa-solid fa-hand-point-up"></i>
+                <span class="text">Slider</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </a>
+              <ul class="sub-menu">
+                <li>
+                  <a href="/admin/slider">
+                    <span class="text">View Slider</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/admin/slider/create">
+                    <span class="text">Create Slider</span>
+                  </a>
+              </ul>
+            </li>
+                <li>
+              <a href="/admin/rank">
+<i class="fa-brands fa-hackerrank icon"></i>
+                <span class="text">Rank</span>
+              </a>
+            </li>
+            <!-- Popup -->
+             <li>
+              <a href="#">
+<i class="fa-solid fa-igloo"></i>        
+     <span class="text">Popup</span>
+         <i class="fa-solid fa-angle-down"></i>
+              </a>
+                  <ul class="sub-menu">
+                <li>
+                  <a href="/admin/popup">
+                    <span class="text">View Popup</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/admin/popup/create">
+                    <span class="text">Create Popup</span>
+                  </a>
+              </ul>
+             
+            </li>
+            <!-- evaluation -->
+ <li style=""> 
+  <!-- /admin/evaluation -->
+              <a href="#">
+                
+<i class="fa-regular fa-face-smile"></i>
+                <span class="text">Evaluation</span>
+                <i class="fa-solid fa-angle-down"></i>
+              </a>
+             
+            </li>
+            
+            <!-- Chart -->
+                 <!-- <a href="/admin/chartLearn"></a> -->
+                <li>
+              <a href="#">
+<i class="icon fa-solid fa-chart-pie"></i>                <span class="text">Chart Learning</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="menu">
+        <p class="title">Account</p>
+        <ul>
+          <li>
+            <a href="#">
+              <i class="fa-solid fa-circle-info icon "></i>
+              <span class="text">Help</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="logoutAdmin">
+              <i class="fa-solid fa-right-from-bracket icon"></i>
+              <span class="text">Logout</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</html>

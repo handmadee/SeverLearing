@@ -1,4 +1,4 @@
-const { BadRequestError } = require('../../core/error.response');
+const { BadRequestError, UnauthorizedError } = require('../../core/error.response');
 const User = require('./../../models/account.model');
 const Token = require('./../../models/token.model');
 const bcrypt = require('bcrypt');
@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken');
 
 
 const generateTokens = (user) => {
-    const accessToken = jwt.sign({ userId: user._id, role: user.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-    const refreshToken = jwt.sign({ userId: user._id, role: user.role }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    const accessToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+    const refreshToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
     return { accessToken, refreshToken };
 };
 
@@ -27,14 +27,14 @@ exports.register = async (userData) => {
 
 exports.login = async (loginData) => {
     const { username, password } = loginData;
-    const user = await User.findOne({ username }).select('password');
+    const user = await User.findOne({ username }).select('password pemission');
     if (!user || !await bcrypt.compare(password, user.password)) {
         throw new BadRequestError('Invalid usernamemobmo or password');
     }
     const { accessToken, refreshToken } = generateTokens(user);
-    const token = new Token({ user_id: user._id, access_token: accessToken, refresh_token: refreshToken });
+    const token = new Token({ user_id: user._id, role: user?.pemission, access_token: accessToken, refresh_token: refreshToken });
     await token.save();
-    return { user_id: user._id, accessToken, refreshToken };
+    return { user_id: user._id, role: user?.pemission, accessToken, refreshToken };
 };
 
 exports.verifyToken = async (token) => {
@@ -44,15 +44,14 @@ exports.verifyToken = async (token) => {
         if (!user) {
             throw new BadRequestError('User not found');
         }
-        return { isValid: true, userId: payload.userId, role: payload.role };
+        return { isValid: true, userId: payload.userId, role: payload?.role };
     } catch (error) {
-        return { isValid: false };
+        throw new UnauthorizedError('Invalid token');
     }
 };
 
 exports.refreshToken = async (refreshToken) => {
     const token = await Token.findOne({ refresh_token: refreshToken });
-
     if (!token) {
         throw new BadRequestError('Invalid refresh token');
     }
@@ -61,14 +60,13 @@ exports.refreshToken = async (refreshToken) => {
     if (!user) {
         throw new BadRequestError('User not found');
     }
-
     const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
     token.access_token = accessToken;
     token.refresh_token = newRefreshToken;
     await token.save();
-
     return { accessToken, refreshToken: newRefreshToken };
 };
+
 
 exports.logout = async (refreshToken) => {
     const token = await Token.findOneAndDelete({ refresh_token: refreshToken });
@@ -87,6 +85,7 @@ exports.getUser = async (userId) => {
 
 // Change Password
 exports.changePassword = async (data) => {
+    console.log(data)
     const { userId, oldPassword, newPassword } = data;
     const user = await User.findById(userId).select('password');
     if (!user || !await bcrypt.compare(oldPassword, user.password)) {
@@ -96,3 +95,34 @@ exports.changePassword = async (data) => {
     await user.save();
     return true;
 }
+
+// find user by username
+exports.findUserByUsername = async (username) => {
+    const user = await User.findOne({ username }).select('username');
+    if (!user) {
+        throw new BadRequestError('User not found');
+    }
+    return user;
+}
+
+// change password by username
+exports.changePasswordByUsername = async (data) => {
+    const { username, newPassword } = data;
+    const user = await User.findOne({ username }).select('password');
+    if (!user) {
+        throw new BadRequestError('User not found');
+    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    return user;
+}
+
+// Delete Account
+exports.deleteAccount = async (_id) => {
+    const user = await User.findByIdAndDelete(_id);
+    if (!user) {
+        throw new BadRequestError('User not found');
+    }
+}
+
+

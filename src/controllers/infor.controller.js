@@ -46,6 +46,27 @@ class InfoController {
             next(error);
         }
     }
+
+    // Get full pagr 
+    static async getFullInfoUser(req, res, next) {
+        return new OK({
+            message: "Get full info success",
+            data: await InfoService.getInfoFullPage()
+        }).send(res);
+    }
+
+    static async deleteInfoUser(req, res, next) {
+        try {
+            const deletedInfo = await InfoService.deleteUserById(req.params.id);
+            return new OK({
+                message: 'Delete info success',
+                data: deletedInfo
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
+
 
 module.exports = InfoController;

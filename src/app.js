@@ -4,37 +4,49 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
 const { checkOverloadConnect } = require('./helpers/check.connect');
+const path = require('path');
+const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const router = require('./router');
+const adminRouter = require('./router/layouts/admin');
+const configViewEngine = require('./configs/config.viewEngine');
 const app = express();
-app.use(cors());
-// init middeleware 
-app.use(morgan('dev')); // log request
-app.use(helmet()); // bảo mật ứng dụng web
-app.use(compression()); // giam dung luong trang web và tăng tốc độ tải trang web
-app.use(express.json()); // vì dữ liệu thường được post lên  dưới dạng json
-app.use(express.urlencoded({ extended: true })); // là phương thức sử dụng để mã hoá dữ liệu được gửi trên url nó chuyển đổi các kú tự không an toàn thành 1 định dạng có thể truyền qua url 
+app.set("view engine", "ejs");
 
+// Middleware
+app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(morgan('dev')); // Log HTTP requests
+app.use(helmet()); // Set various HTTP headers for security
+app.use(compression()); // Compress response bodies for faster transmission
+app.use(express.json()); // Parse incoming request bodies with JSON payloads
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data with querystring library
+app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
 
-// init db 
+// Initialize database connection
 require('./dbs/init.mongodb');
 checkOverloadConnect();
-///
+// Set up static files directory
+configViewEngine(app)
+// Initialize router
 app.use('/', router);
-// handler errors
+app.use('/admin', adminRouter);
+
+// Handle 404 errors
 app.use((req, res, next) => {
     const error = new Error('Not found');
     error.status = 404;
     next(error);
-})
+});
+
+// Handle other errors
 app.use((error, req, res, next) => {
     res.status(error.statusCode || 500);
     res.json({
         error: {
-            message: error.message || 'Sever error',
+            message: error.message || 'Server error',
             statusCode: error.statusCode || 500
         }
-    })
-})
+    });
+});
 
-module.exports = app; 
+module.exports = app;

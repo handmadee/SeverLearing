@@ -14,6 +14,9 @@ const courseRoutes = require('./course/index');
 const notificationRoutes = require('./listNotification');
 const trakingQuizRouters = require('./trakingQuiz/trakingQuiz.router');
 const newsRoutes = require('./news/index');
+const popupRouter = require('./popup/popup');
+
+
 
 // Initialize router
 const router = express.Router();
@@ -26,5 +29,8 @@ router.use(API_V1_PATH, courseRoutes);
 router.use(API_V1_PATH, notificationRoutes);
 router.use(API_V1_PATH, trakingQuizRouters);
 router.use(API_V1_PATH, newsRoutes);
+router.use(API_V1_PATH, popupRouter);
+
+
 
 module.exports = router;

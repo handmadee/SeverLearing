@@ -1,0 +1,141 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <style>
+    .content {
+      padding: 30px;
+    }
+    .imagePost {
+      width: 100%;
+      height: 80%;
+      border-radius: 15px;
+    }
+    .table tbody tr td:nth-child(3) {
+          width: 65%;
+    text-align: left;
+    }
+       .table tbody tr td:nth-child(4) {
+          width: 15%;
+    text-align: left;
+    }
+    
+
+
+    
+  </style>
+  <!--Main-->
+  <div class="container content">
+    <h3>Quản lý bài viết</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Image</th>
+          <th scope="col">Contents</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <% if(data && data.length > 0) {%> <% data.forEach((news, index) => { %>
+             <tr>
+                <th scope="row"><%= index + 1 %></th>
+                <td>
+                    <img
+                    class="imagePost"
+                    src="<%= news?.imagePost %>"
+                    alt="imagePost"
+                    />
+                </td>
+                <td><%= news?.contentNews %></td>
+                <td>
+                    <button
+                    type="button"
+                    class="btn btn-primary btn-edit success"
+                                        data-newid = "<%= news?._id %>"
+                    data-image = "<%= news?.imagePost %>"
+                    data-content = "<%= news?.contentNews %>"
+                    >
+                    Edit
+                    </button>
+                    <button
+                    class="btn btn-danger btn-delete delete"
+                    value="<%= news?._id %>"
+                    >
+                    Delete
+                    </button>
+                </td>
+            </tr>
+            <% }) %> <% } else { %>
+            <tr>
+                <td colspan="4" class="text-center">No data</td>
+            </tr>
+            <% } %>
+
+      </tbody>
+    </table>
+    <!-- <div class="controlTable">
+
+    </div> -->
+  </div>
+  <!-- Popup -->
+  <div
+    class="modal fade "
+    id="editModal"
+    tabindex="-1"
+    aria-labelledby="editModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Chỉnh sửa bài viết</h5>
+          <button
+            type="button"
+            class="btn-close"
+            id="cancelPopup"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation" novalidate>
+            <div class="mb-3">
+              <label for="imagePost" class="form-label">Image</label>
+              <input type="file" class="form-control " id="imagePost" required />
+              <div class="invalid-feedback">Vui lòng chọn ảnh</div>
+            <div class="mb-3">
+              <label for="contentNews" class="form-label">Nội dung</label>
+              <textarea
+                class="form-control h-100"
+                id="contentNews"
+                rows="14"
+                required
+              ></textarea>
+              <div class="invalid-feedback">Vui lòng nhập nội dung</div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            id="cancelPopup2"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Đóng
+          </button>
+          <button type="button" id="savePopup" class="btn btn-primary">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toasts"></div>
+  <!-- Main -->
+</div>
+
+<script type="module" src="/JS/manageNews.js"></script>
+<%- include('comon/footer') %>

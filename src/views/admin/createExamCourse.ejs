@@ -1,0 +1,234 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<style>
+  .container {
+    padding: 30px;
+  }
+  h5 {
+    background-color: rgba(26, 25, 25, 0.687);
+    color: rgb(237, 241, 18);
+    border-radius: 10px;
+    padding: 10px 0;
+    text-align: center;
+  }
+  h5:hover {
+    cursor: pointer;
+    background-color: #4a95e0;
+    color: white;
+  }
+</style>
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+
+  <!--Main-->
+  <div class="container row gap-10">
+    <div class="createExam col-6">
+      <h5>Tạo bài kiểm tra</h5>
+      <form
+        id="formChapter"
+        class="row col-12 mx-auto g-3 needs-validation"
+        novalidate
+      >
+        <div class="col-12">
+          <label for="validationCustom01" class="form-label">
+            Tên bài kiểm tra
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="validationCustom01"
+            name="title"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập tên bài kiểm tra</div>
+        </div>
+        <div class="col-12">
+          <label for="time" class="form-label"> Thời gian </label>
+          <input
+            type="text"
+            class="form-control"
+            id="time"
+            name="time"
+            placeholder="time mặc định là 15 miutes"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập tên bài kiểm tra</div>
+        </div>
+        <div class="col-12">
+          <label for="selectCourse" class="form-label">Chọn khoá học</label>
+          <select
+            class="form-select"
+            id="selectCourse"
+            name="courseID"
+            required
+          >
+            <option selected disabled value="">Danh mục khoá học</option>
+            <% course.forEach(function(item, index) { %>
+            <option value="<%= item._id %>"><%= item.title %></option>
+            <% }); %>
+          </select>
+          <div class="invalid-feedback">Vui lòng chọn đúng tên khoá học</div>
+        </div>
+        <!-- Chapter -->
+        <div class="col-12">
+          <label for="selectChapter" class="form-label">Chọn Chapter</label>
+          <select
+            class="form-select"
+            id="selectChapter"
+            name="selectChapter"
+            required
+          >
+            <option selected disabled value="">Danh mục chọn chapter</option>
+          </select>
+
+          <div class="invalid-feedback">Vui lòng chọn đúng Chapter</div>
+        </div>
+        <!-- Submit form -->
+        <div class="col-12">
+          <button class="btn btn-primary" type="submit">Create Exam</button>
+        </div>
+        <!--  -->
+      </form>
+    </div>
+
+    <!-- Create Question -->
+    <div class="createQuestion col-6">
+      <h5>Tạo câu hỏi</h5>
+      <form
+        id="formQuestion"
+        class="row col-12 mx-auto g-3 needs-validation12"
+        novalidate
+      >
+        <div class="col-12">
+          <label for="questionTitle" class="form-label"> Câu hỏi </label>
+          <input
+            type="text"
+            class="form-control"
+            id="questionTitle"
+            name="title"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập nội dung câu hỏi</div>
+        </div>
+        <!-- Câu hỏi  -->
+        <div class="col-12">
+          <label for="answer1" class="form-label"> Đáp án 1 </label>
+          <input
+            type="text"
+            class="form-control answer"
+            id="answer1"
+            name="answer1"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập nội dung câu trả lời</div>
+        </div>
+
+        <div class="col-12">
+          <label for="answer2" class="form-label"> Đáp án 2 </label>
+          <input
+            type="text"
+            class="form-control answer"
+            id="answer2"
+            name="answer2"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập nội dung câu trả lời</div>
+        </div>
+
+        <div class="col-12">
+          <label for="answer3" class="form-label"> Đáp án 3 </label>
+          <input
+            type="text"
+            class="form-control answer"
+            id="answer3"
+            name="answer3"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập nội dung câu trả lời</div>
+        </div>
+
+        <div class="col-12">
+          <label for="answer4" class="form-label"> Đáp án 4 </label>
+          <input
+            type="text"
+            class="form-control answer"
+            id="answer4"
+            name="answer4"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập nội dung câu trả lời</div>
+        </div>
+        <!-- THE END QUESTION -->
+        <div class="col-12">
+          <label for="isCorrectAnswer" class="form-label"
+            >Chọn đáp án đúng
+          </label>
+          <select
+            class="form-select"
+            id="isCorrectAnswer"
+            name="category_id"
+            required
+          >
+            <option selected disabled value="">Đáp án đúng</option>
+            <option value="0">Đáp án 1</option>
+            <option value="1">Đáp án 2</option>
+            <option value="2">Đáp án 3</option>
+            <option value="3">Đáp án 4</option>
+          </select>
+          <div class="invalid-feedback">Vui 1 đáp án làm câu hỏi chính xác</div>
+        </div>
+
+        <!-- Select Chapter  -->
+        <div class="col-12">
+          <label for="selectCourseQuestion" class="form-label"
+            >Chọn khoá học</label
+          >
+          <select
+            class="form-select"
+            id="selectCourseQuestion"
+            name="selectCourseQuestion"
+            required
+          >
+            <option selected disabled value="">Danh mục khoá học</option>
+            <% course.forEach(function(item, index) { %>
+            <option value="<%= item._id %>"><%= item.title %></option>
+            <% }); %>
+          </select>
+          <div class="invalid-feedback">Vui lòng chọn đúng tên khoá học</div>
+        </div>
+
+        <!-- Select Chapter  -->
+        <div class="col-12">
+          <label for="selectChapterQuestion" class="form-label"
+            >Chọn chapter</label
+          >
+          <select
+            class="form-select"
+            id="selectChapterQuestion"
+            name="selectChapterQuestion"
+            required
+          >
+            <option selected disabled value="">Danh mục exam</option>
+          </select>
+          <div class="invalid-feedback">Vui lòng chọn đúng tên exam</div>
+        </div>
+        <div class="col-12 mx-auto">
+          <button class="btn btn-primary" type="submit">Create Question</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- The end  -->
+  </div>
+
+  <!--  -->
+  <script type="module" src="/JS/createExam.js"></script>
+  <%- include('comon/footer') %>
+</div>

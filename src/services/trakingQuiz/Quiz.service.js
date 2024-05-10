@@ -5,12 +5,19 @@ const { populate } = require('../../models/chapter.model');
 const { CategoryQuiz } = require('../../models/trakingQuiz/categoryQuiz');
 const QuizModel = require('../../models/trakingQuiz/Quiz');
 const BaseService = require('../base.service');
-const { BadRequestError } = require('./../../core/error.response')
+const { BadRequestError } = require('./../../core/error.response');
+const TrakingQuizServices = require('./TrakingQuiz.services');
+const trakingQuiz = new TrakingQuizServices();
 
 class QuizService extends BaseService {
     constructor() {
         super(QuizModel);
     }
+    // get Quiz 
+    async getQuiz() {
+        return await this.model.find().select('title level');
+    };
+
     async createQuiz(data) {
         const { categoryQuiz_id } = data;
         const category = await CategoryQuiz.findById(categoryQuiz_id);
@@ -42,7 +49,6 @@ class QuizService extends BaseService {
             }
         });
     }
-
     // get Quiz page limit 
     async getQuizPage(page, limit) {
         // return await this.model.find().populate({
@@ -74,6 +80,55 @@ class QuizService extends BaseService {
 
         }
     }
+    //
+    async selectQuizByCategoryAndLevel(categoryQuiz_id, level) {
+        const category = await CategoryQuiz.findById(categoryQuiz_id);
+        if (!category) {
+            throw new BadRequestError('Category not found');
+        }
+        return await this.model.find({ categoryQuiz_id, level });
+    }
+    // get Quiz by Category
+    async getQuizByCategory(categoryQuiz_id) {
+        const quizExam = await this.model.find({ categoryQuiz_id: categoryQuiz_id });
+        if (quizExam) {
+            return quizExam;
+        }
+        throw new BadRequestError('Quiz not found');
+    }
+    // Số lượng quiz
+    async countQuiz() {
+        return await this.model.countDocuments();
+    }
+
+    // Get exam by name category points user 
+    async getExamAdmin(page, limit) {
+        try {
+            page = parseInt(page) || 1;
+            limit = parseInt(limit) || 10;
+            const skip = (page - 1) * limit;
+            const totalQuizs = await QuizModel.countDocuments();
+            const quizs = await QuizModel.find().populate(
+                {
+                    path: "categoryQuiz_id",
+                    select: 'nameCategory'
+                }
+            ).select('title level categoryQuiz_id points')
+                .skip(skip)
+                .limit(limit);
+            const totalPage = Math.ceil(totalQuizs / limit);
+            // Check count quiz
+            const quizsWithCount = await Promise.all(quizs.map(async (quiz) => {
+                const countUser = await trakingQuiz.checkQuizbyQuiz(quiz._id);
+                return { ...quiz._doc, countUser, totalPage, currentPage: page, totalQuizs };
+            }));
+
+            return quizsWithCount;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
 
 }

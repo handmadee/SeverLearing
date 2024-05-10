@@ -1,8 +1,9 @@
 'use strict';
 
 const express = require('express');
+const permission = require('./../../auth/permission');
 
-
+// chec=
 
 const categoryController = require('../../controllers/course/category.controller');
 const courseController = require('../../controllers/course/course.controler');
@@ -23,14 +24,25 @@ router.get('/category/:id', asnycHandler(categoryController.getCategoryById));
 router.put('/category/:id', asnycHandler(categoryController.updateCategory));
 router.delete('/category/:id', asnycHandler(categoryController.removeCategory));
 
-// Course
+
+// Get Chapter
+router.get('/categoryFull', asnycHandler(categoryController.getFullCategory));
+
+
+// Admin page
 router.post('/course', upload.single('imageCourse'), asnycHandler(courseController.createCourse));
 router.get('/course', asnycHandler(courseController.getCourses));
 router.get('/course/:id', asnycHandler(courseController.getCourseById));
-router.put('/course/:id', asnycHandler(courseController.updateCourse));
+router.put('/course/:id', upload.single('imageCourse'), asnycHandler(courseController.updateCourse));
 router.delete('/course/:id', asnycHandler(courseController.removeCourse));
 router.get('/search', asnycHandler(courseController.searchCourse));
 router.get('/courselesson/:id', asnycHandler(courseController.getCountLesson));
+router.get('/courseFull', asnycHandler(courseController.getCourseAll));
+
+
+
+// Get Page Course 
+router.get('/course/page/:page', asnycHandler(courseController.getCoursePage));
 
 
 // Chapter
@@ -39,6 +51,10 @@ router.get('/chapter', asnycHandler(chapterController.getChapters));
 router.get('/chapter/:id', asnycHandler(chapterController.getChapterById));
 router.put('/chapter/:id', asnycHandler(chapterController.updateChapter));
 router.delete('/chapter/:id', asnycHandler(chapterController.removeChapter));
+router.get('/chapterCourse/:id', asnycHandler(chapterController.getChapterByCourseId));
+
+// Get Chapter
+router.get('/chapterFull', asnycHandler(chapterController.getFullChapter));
 
 // Lesson
 router.post('/lesson', asnycHandler(lessonController.createLesson));
@@ -75,6 +91,17 @@ router.get('/trackingFinish/:id', asnycHandler(TrackingCourseController.findTrac
 router.get('/trackingLearn/:id', asnycHandler(TrackingCourseController.findTrackingAccountLearn));
 router.put('/tracking', asnycHandler(TrackingCourseController.updateTrackingCourse));
 router.get('/trackingFull', asnycHandler(TrackingCourseController.getFullTrackingCourse));
+
+// Tracking course by id
+router.get('/tracking/:id', asnycHandler(TrackingCourseController.getTrackingCourseById));
+
+// Tracking user by id 
+router.get('/trackingUser/:id', asnycHandler(TrackingCourseController.getTrackingCourseByIdUser));
+
+// get topCourse 
+router.get('/topCourse', asnycHandler(TrackingCourseController.getTopCourse));
+// get lowCourse
+router.get('/lowCourse', asnycHandler(TrackingCourseController.getLowCourse));
 
 
 
