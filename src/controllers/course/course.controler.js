@@ -27,6 +27,17 @@ class CourseController {
         }).send(res);
     }
 
+    // get full course 
+    static async getCourseAll(req, res) {
+        const courses = await courseService.getCourseAll();
+        return new OK({
+            message: "Courses retrieved successfully",
+            data: courses
+        }).send(res);
+
+    };
+
+
     static async getCourseById(req, res) {
         const course = await courseService.findCourseByCategory(req.params.id);
         return new OK({
@@ -36,11 +47,23 @@ class CourseController {
     }
 
     static async updateCourse(req, res) {
-        const updatedCourse = await courseService.update(req.params.id, req.body);
-        return new OK({
-            message: "Course updated successfully",
-            data: updatedCourse
-        }).send(res);
+        try {
+            let updateData = { ...req.body };
+            console.log(req.file.filename)
+            if (req.file) {
+                const file = req.file.filename;
+                const avatar = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+                updateData.imageCourse = avatar;
+            }
+            const updatedInfo = await courseService.updateCourse(req.params.id, updateData);
+            return new OK({
+                message: "Courses found successfully",
+                data: updatedInfo
+            }).send(res);
+        } catch (error) {
+            console.log(error)
+            res.send(error);
+        }
     }
 
     static async removeCourse(req, res) {
@@ -64,9 +87,26 @@ class CourseController {
             message: "Course retrieved successfully",
             data: Course
         }).send(res);
-
     }
 
+    static async getCoursePage(req, res) {
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 10;
+        const courses = await courseService.getPageCourse(page, limit);
+        return new OK({
+            message: "Courses retrieved successfully",
+            data: courses
+        }).send(res);
+    }
+
+
+    getCourseByAccount(req, res) {
+        const idAccount = req.params.id;
+        return new OK({
+            message: "Courses retrieved successfully",
+            data: courseService.getById(idAccount)
+        }).send(res);
+    }
 
 }
 

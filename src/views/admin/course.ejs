@@ -1,0 +1,148 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+ 
+  <!--Main-->
+  <div class="container p-5">
+         <h1 class="text-center">Quản lý khoá học</h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Title</th>
+            <th scope="col">Category</th>
+            <th scope="col">Lesson</th>
+            <th scope="col">Students</th>
+            <th scope="col">CourseLearn</th>
+            <th scope="col">CourseFinish</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if(data && data.length > 0) {%> <% data.forEach((user, index) => {
+          %>
+          <tr>
+            <th scope="row"><%= index + 1 %></th>
+            <td><%= user?.title %></td>
+            <td><%= user?.category_id?.nameCategory %></td>
+            <td><%= user?.totalLesson %></td>
+            <td><%= user?.registrations?.students %></td>
+            <td><%= user?.registrations?.courseLearn %></td>
+            <td><%= user?.registrations?.courseFinish %></td>
+            <td>
+              <button 
+              data-courseid="<%= user._id %>"
+              class="btn btn-edit btn-primary accordion
+              ">Edit</button>
+              <button 
+               data-courseid="<%= user._id %>"
+              class="btn btn-delete btn-danger">Delete</button>
+               <button 
+               class="btn btn-info btn-info">
+               <a href="/admin/course/lesson/find/<%=user?._id %>">
+                More
+                </a>
+               </button>
+            </td>
+          </tr>
+          <% }) %> <% } else { %>
+          <tr>
+            <td colspan="5" class="text-center">No data</td>
+          </tr>
+          <% } %>
+          <!-- The end data -->
+        </tbody>
+      </table>
+      <div class="card-footer">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-end">
+            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+              <a
+                class="page-link"
+                href="/admin/course?page=<%= currentPage - 1 %>"
+                tabindex="-1"
+                aria-disabled="true"
+                >Previous</a
+              >
+            </li>
+            <% for(let i = 1; i <= totalPages; i++) { %>
+            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+              <a class="page-link" href="/admin/course?page=<%= i %>"
+                ><%= i %></a
+              >
+            </li>
+            <% } %>
+            <li
+              class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>"
+            >
+              <a
+                class="page-link"
+                href="/admin/course?page=<%= currentPage + 1 %>"
+                >Next</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <!-- Popup -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Chỉnh sửa khóa học</h5>
+        <button type="button" class="btn-close" id="cancelPopup" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="needs-validation" novalidate>
+          <div class="mb-3">
+  <label for="imageCourse" class="form-label">Hình ảnh khoá học</label>
+  <input type="file" class="form-control" id="imageCourse" name="imageCourse" required>
+  <img id="preview" src="" alt="Image Preview" style="max-width: 200px; margin-top: 10px; display: none;">
+  <div class="invalid-feedback">
+    Vui lòng chọn hình ảnh.
+  </div>
+</div>
+          <div class="mb-3">
+            <label for="title" class="form-label">Tiêu đề khoá học</label>
+            <input type="text" class="form-control" id="title" required>
+            <div class="invalid-feedback">
+              Vui lòng nhập tiêu đề.
+            </div>
+          </div>
+          <div class="mb-3">
+  <label for="detailCourse" class="form-label">Mô tả khóa học</label>
+  <textarea class="form-control" id="detailCourse" rows="3" required></textarea>
+  <div class="invalid-feedback">
+    Vui lòng nhập mô tả.
+  </div>
+</div>
+
+          <div class="mb-3">
+            <label for="chaptter_id" class="form-label">ID Chương</label>
+            <select class="form-select" id="chaptter_id" required>
+              <option selected disabled value="">Chọn danh mục khoá học</option>
+            </select>
+            <div class="invalid-feedback">
+              Vui lòng chọn một chương.
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancelPopup2" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button"  id="savePopup"  class="btn btn-primary">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+  <div id="toasts"></div>
+      <!-- Main -->
+
+    </div>
+    <script type="module" src="/JS/manageCourse.js"></script>
+    <%- include('comon/footer') %>
+  </div>
+</div>

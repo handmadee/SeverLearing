@@ -10,7 +10,7 @@ const router = express.Router();
 // Create User 
 router.get('/notificationList', asnycHandler(NotificationController.listNotification));
 router.post('/notificationList', upload.single('listNotificaiton'), asnycHandler(NotificationController.createNotification));
-router.put('/notificationList/:id', asnycHandler(NotificationController.updateNotification));
+router.put('/notificationList/:id', upload.single('listNotificaiton'), asnycHandler(NotificationController.updateNotification));
 router.delete('/notificationList/:id', asnycHandler(NotificationController.deleteNotification));
 
 module.exports = router;

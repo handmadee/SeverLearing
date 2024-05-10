@@ -17,6 +17,7 @@ class QuestionService extends BaseService {
         }
         const question = await this.create(data);
         await examModel.findByIdAndUpdate(exam_id, { $push: { question: question._id } });
+        return question;
     }
 }
 

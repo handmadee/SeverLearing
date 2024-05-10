@@ -78,6 +78,32 @@ class TrakingQuizController {
             data: await TrakingQuiz.getUserRank(id)
         }).send(res);
     }
+    // Kiem tra xem ban da bao nhieu bai quiz trong 1 thang
+    static async checkQuizInMonth(req, res) {
+        const { userID } = req.params;
+        return new OK({
+            message: "TrakingQuiz check quiz in month.",
+            data: await TrakingQuiz.checkQuizInMonth(userID)
+        }).send(res);
+    }
+
+    // Traking quiz 
+    static async checkQuizbyUser(req, res) {
+        const { userID } = req.params;
+        return new OK({
+            message: "TrakingQuiz check quiz by user.",
+            data: await TrakingQuiz.checkQuizbyUser(userID)
+        }).send(res);
+    }
+
+    // Slect tracking quiz by user id
+    static async selectTrackingQuizByUserId(req, res) {
+        const { userID } = req.params;
+        return new OK({
+            message: "TrakingQuiz select tracking quiz by user id.",
+            data: await TrakingQuiz.getExamByUser(userID)
+        }).send(res);
+    }
 
 }
 

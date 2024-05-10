@@ -1,0 +1,158 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <!--Main-->
+  <div class="cardBox">
+    <a class="card" href="students">
+      <div>
+        <div class="numbers"><%= totalItems %></div>
+        <div class="cardName">Students</div>
+      </div>
+
+      <img src="/image/students.png" alt="" class="iconImage" loading="lazy" />
+    </a>
+
+    <a class="card" href="course">
+      <div>
+        <div class="numbers"><%= course %></div>
+        <div class="cardName">Course</div>
+      </div>
+
+      <img src="/image/course.png" alt="" class="iconImage" loading="lazy" />
+    </a>
+
+    <a class="card" href="exam">
+      <div>
+        <div class="numbers"><%= quiz %></div>
+        <div class="cardName">Exam</div>
+      </div>
+
+      <img src="/image/exam.png" alt="" class="iconImage" loading="lazy" />
+    </a>
+
+    <a class="card" href="news">
+      <div>
+        <div class="numbers"><%= news %></div>
+        <div class="cardName">News</div>
+      </div>
+
+      <img
+        src="/image/notification.png"
+        alt=""
+        class="iconImage"
+        loading="lazy"
+      />
+    </a>
+  </div>
+  <div class="details">
+    <div class="recentOrders">
+      <div class="card">
+        <h2 class="card-title">Top Course</h2>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Image Course</th>
+                  <th>Total Lesson</th>
+                  <th>Students Studying</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Add data -->
+                <% if(data && data.length> 0) { %> <%
+                data.forEach(function(user) { %>
+                <tr>
+                  <td>
+                    <img
+                      src="<%= user?.imageCourse %>"
+                      alt="Avatar"
+                      width="50"
+                    />
+                  </td>
+                  <td style="color: #000000"><%=user?.title %></td>
+                  <td><%= user?.count %></td>
+                </tr>
+                <% }); %> <% } else { %>
+                <tr>
+                  <td colspan="4">No data</td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+              <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                <a
+                  class="page-link"
+                  href="/admin/dashboard?page=<%= currentPage - 1 %>"
+                  tabindex="-1"
+                  aria-disabled="true"
+                  >Previous</a
+                >
+              </li>
+              <% for(let i=1; i <=totalPages; i++) { %>
+              <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                <a class="page-link" href="/admin/dashboard?page=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } %>
+              <li
+                class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>"
+              >
+                <a
+                  class="page-link"
+                  href="/admin/dashboard?page=<%= currentPage + 1 %>"
+                  >Next</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="recentCustomers">
+      <div class="card">
+        <div class="cardHeader">
+          <h2>Leaderboard</h2>
+        </div>
+        <div class="learnBoard">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Avatar</th>
+                <th>Name</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if(rank && rank.length> 0 ) { %> <% rank.forEach(function(user)
+              { %>
+              <tr>
+                <td>
+                  <img src="<%= user?.avatar %>" alt="Avatar" width="60" />
+                </td>
+                <td><%= user?.name %></td>
+                <td><%= user?.Score %></td>
+              </tr>
+              <% }); %> <% } else { %>
+              <tr>
+                <td colspan="3">No data</td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MAIN -->
+</div>
+<%- include('comon/footer') %>

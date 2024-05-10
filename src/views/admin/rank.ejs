@@ -1,0 +1,182 @@
+<%- include('comon/header') %>
+<!-- Customs -->
+<style>
+    /* Thiết kế lại nút */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+/* Thiết kế lại phân trang */
+.pagination {
+    margin-top: 20px;
+}
+
+.page-link {
+    color: #007bff;
+    background-color: transparent;
+    border: none;
+}
+
+.page-link:hover {
+    color: #0056b3;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+/* Thiết kế lại các thẻ */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #343638;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+.table .table {
+    background-color: #fff;
+}
+.main {
+    padding: 30px;
+
+}
+.main .nav-tabs   {
+background-color: #212020d6;
+    display: inline-flex;
+    border-radius: 15px;
+}
+.nav-tabs .nav-link  {
+text-decoration: none;
+color: gold;
+font-weight: bold;
+}
+.nav-tabs .nav-link:hover {
+    background-color: #4a95e0;
+    color: white;
+}
+
+
+</style>
+    <!-- Main -->
+    <div class="main">
+        <!-- Custom -->
+
+            <!--Main-->
+            <h1><%= title %></h1>
+
+            <!-- Tab navigation -->
+            <ul class="nav nav-tabs">
+                <li class="nav-item ">
+                    <a class="nav-link " data-toggle="tab" href="/admin/rank">All Time</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " data-toggle="tab" href="/admin/rank/inMonth">In Month</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="/admin/rank/inWeek">In Week</a>
+                </li>
+            </ul>
+
+            <!-- Tab content -->
+            <div class="tab-content">
+                <div id="allTime" class="tab-pane fade show active">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Avatar</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(data && data.length> 0) {%> <% data.forEach((user, index)=> { %>
+                                    <tr>
+                                        <th scope="row">
+                                            <%= index + 1 %>
+                                        </th>
+                                        <td>
+                                            <img src="<%= user?.avatar %>" alt="Avatar" width="60" />
+                                        </td>
+                                        <td>
+                                            <%= user?.name %>
+                                        </td>
+                                        <td>
+                                            <%= user?.Score %>
+                                        </td>
+                                       
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="4" class="text-center">No data</td>
+                                            </tr>
+                                            <% } %>
+                                                <!-- The end data -->
+                        </tbody>
+                    </table>
+                    <div class="card-footer">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-end">
+                                <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                                    <a class="page-link" href="/admin/rank?page=<%= currentPage - 1 %>"
+                                        tabindex="-1" aria-disabled="true">Previous</a>
+                                </li>
+                                <% for(let i=1; i <=totalPages; i++) { %>
+                                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                        <a class="page-link" href="/admin/rank?page=<%= i %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                    <% } %>
+                                        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                                            <a class="page-link"
+                                                href="/admin/rank?page=<%= currentPage + 1 %>">Next</a>
+                                        </li>
+                    </div>
+                   
+                </div>
+
+                <!-- MAIN -->
+            </div>
+<script type="module" src="/JS/manageRank.js"></script>
+            <%- include('comon/footer') %>

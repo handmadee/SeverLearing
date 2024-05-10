@@ -1,0 +1,125 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <style>
+    .content {
+      padding: 30px;
+    }
+    .imagePost {
+      width: 60%;
+      height: 100px;
+      border-radius: 15px;
+    }
+    .table tbody tr td:nth-child(2) {
+      width: 75%;
+    }
+  </style>
+  <!--Main-->
+  <div class="container content">
+    <h3>Quản lý slider</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Image</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(data && data.length > 0) { %> <% data.forEach((notification,
+        index) => { %>
+        <tr>
+          <th scope="row"><%= index + 1 %></th>
+          <td>
+            <img
+              class="imagePost"
+              src="<%= notification?.urlImage %>"
+              alt="imagePost"
+            />
+          </td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-primary btn-edit success"
+              value="<%= notification?._id %>"
+            >
+              Edit
+            </button>
+            <button
+              class="btn btn-danger btn-delete delete"
+              value="<%= notification?._id %>"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        <% }); %> <% } else { %>
+        <tr>
+          <td colspan="4" class="text-center">No data</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <!-- <div class="controlTable">
+
+    </div> -->
+  </div>
+  <!-- Popup -->
+  <div
+    class="modal fade"
+    id="editModal"
+    tabindex="-1"
+    aria-labelledby="editModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Chỉnh sửa slider</h5>
+          <button
+            type="button"
+            class="btn-close"
+            id="cancelPopup"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation" novalidate>
+            <div class="mb-3">
+              <label for="urlImage" class="form-label">Image</label>
+              <input
+                type="file"
+                class="form-control"
+                id="urlImage"
+                name="urlImage"
+                required
+              />
+              <div class="valid-feedback">Looks good!</div>
+              <div class="invalid-feedback">Vui lòng chọn ảnh</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            id="cancelPopup2"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Đóng
+          </button>
+          <button type="button" id="savePopup" class="btn btn-primary">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toasts"></div>
+  <!-- Main -->
+</div>
+
+<script type="module" src="/JS/manageSlider.js"></script>
+<%- include('comon/footer') %>

@@ -2,11 +2,17 @@
 
 const mongoose = require('mongoose');
 const accountModel = require('../../models/account.model');
+const BaseService = require('../base.service');
 
-class AccountService {
+class AccountService extends BaseService {
+    constructor() {
+        super(accountModel);
+    }
     static SelectAll() {
         return accountModel.find().lean();
     }
+
+
 
 
 

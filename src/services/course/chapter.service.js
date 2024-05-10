@@ -10,6 +10,10 @@ class ChapterService extends BaseService {
         super(ChapterModel);
     }
 
+    async getChapterFull() {
+        return this.model.find().populate('courseId').select('titleChapter  courseId');
+    }
+
     async createChapter(data) {
         const { courseId } = data;
         const course = await CourseModel.findById(courseId);
@@ -20,6 +24,29 @@ class ChapterService extends BaseService {
         await CourseModel.findByIdAndUpdate(courseId, { $push: { chapters: chapter._id } });
         return chapter;
     }
+
+    // get chapter by CourseID
+    async getChapterByCourseId(courseId) {
+        return this.model.find({ courseId: courseId })
+            .populate({
+                path: 'exams',
+                select: 'title'
+            })
+            .select('titleChapter')
+            .lean();
+
+    }
+
+    //update chapter
+    async updateChapter(id, data) {
+        const chapter = await this.model.findById(id);
+        if (!chapter) {
+            throw new BadRequestError('Chapter not found');
+        }
+        return this.model.findByIdAndUpdate(id, { ...chapter.toObject(), ...data }, { new: true });
+    }
+
 }
+
 
 module.exports = ChapterService;

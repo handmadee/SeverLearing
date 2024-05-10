@@ -14,7 +14,7 @@ class BaseService {
     }
 
     update(id, item) {
-        return this.model.findByIdAndUpdate(id, item).lean();
+        return this.model.findByIdAndUpdate(id, item, { new: true }).lean();
     }
 
     getById(id) {

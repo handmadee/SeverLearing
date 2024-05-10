@@ -23,6 +23,10 @@ const quizSchema = new Schema({
         enum: [111, 112, 113],
         default: 111
     },
+    points: {
+        type: Number,
+        default: 10
+    },
     categoryQuiz_id: { type: Types.ObjectId, ref: 'CategoryQuiz' },
     questionQuiz: [{ type: Schema.Types.ObjectId, ref: 'QuestionQuiz' }],
 
