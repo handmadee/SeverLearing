@@ -6,10 +6,16 @@ const categoryQuizService = require("../../services/trakingQuiz/categoryQuiz.ser
 const category = new categoryQuizService();
 
 class CategoryQuizControler {
+    // Create Category
     static async createCategory(req, res) {
+        const file = req.file ? req.file.filename : null;
+        const imageCategory = file ? `${process.env.LOCAL_HOST2}/uploads/${file}` : null;
         return new OK({
             message: "Category created successfully",
-            data: await category.create(req.body)
+            data: await category.create({
+                ...req.body,
+                imageCategory
+            })
         }).send(res);
     }
     static async getCategory(req, res) {

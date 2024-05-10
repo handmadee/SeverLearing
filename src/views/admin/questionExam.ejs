@@ -1,0 +1,211 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <style>
+    .content {
+      padding: 30px;
+    }
+   .table {
+    border: 1px dotted #ccc;
+   }
+     h5 {
+    background-color: #010101;
+    color: rgb(230, 194, 17);
+    padding: 10px 0;
+   }
+   .lessonFull {
+    margin-top: 20px;
+   }
+   .answerItem {
+    font-weight: bold;
+    letter-spacing: .5px;
+   }
+  </style>
+  <!--Main-->
+  <div class="container p-5">
+     <h3 class="text-center"><%= examTitle %></h3>
+     <!-- Render -->
+      <div class="lessonFull">
+         <div class="Question">
+            <h5 class="text-center">Danh sách các câu hỏi</h5>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Hình ảnh</th>
+                                <th scope="col">Câu hỏi</th>
+                                <th scope="col">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(data && data.length > 0) {%>
+                                <% data.forEach((question, index) => { %>
+                                    <tr>
+                                        <th scope="row"><%= index + 1 %></th>
+                                         <td>
+                                            <img
+                                            src="<%= question?.imageQuestion %>"
+                                            alt="imageQuestion"
+                                            class="imageQuestion"
+                                            />
+                                         </td>
+                                        <td><%= question?.title %></td>
+                                        <td>
+                                            <button 
+                                            value="<%= question._id %>"
+                                            data-title = "<%=question?.title %>"
+                                            class="btn btn-edit-question btn-primary">Chỉnh sửa</button>
+                                            <button value="<%= question._id %>"
+                                               class="btn btn-delete-question btn-danger">Xóa</button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="3" class="text-center">Không có dữ liệu</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="Answer">
+            <% if(data && data.length > 0) { %>
+                <% data.forEach((question, index) => { %>
+                    <h5 class="px-5">
+                      <%= index + 1 %>  - 
+                      <%= question?.title %></h5>
+                    <table class="table tableLesson">
+                        <thead>
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Câu trả lời</th>
+                                <th scope="col">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(question?.answer && question?.answer.length > 0) { %>
+                                <% question?.answer.forEach((item, index) => { %>
+                                    <tr>
+                                        <th scope="row"><%= index + 1 %></th>
+                                        <td
+                                        class="answerItem"
+                                        style="color: <%= item?.isCorrect ? 'green' : 'red'%> "
+                                        ><%= item?.titleAnswer %></td>
+                                        <td>
+                                            <button 
+                                            value="<%= item._id %>"
+                                            data-title = "<%=item?.titleAnswer %>"
+                                            data-isCorrect = "<%=item?.isCorrect %>"
+                                            class="btn btn-edit-answer btn-primary">Chỉnh sửa</button>
+                                            <button value="<%= item._id %>"
+                                               class="btn btn-delete-answer btn-danger">Xóa</button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="3" class="text-center">Không có dữ liệu</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                <% }) %>
+            <% } else { %>
+                <p class="text-center">Không có dữ liệu</p>
+            <% } %>
+        </div>
+     </div>
+
+
+
+     <!-- Popup Edit Answer -->
+ <div class="modal fade" id="editLesson" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="editModalLabel">Chỉnh sửa câu trả lời</h6>
+        <button type="button" class="btn-close" id="cancelLesson" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="needs-validation" novalidate>
+          <div class="mb-3">
+            <label for="titleAnswer" class="form-label">Nội dung</label>
+            <input type="text" class="form-control" id="titleAnswer" required>
+            <div class="invalid-feedback">
+              Vui lòng nhập nội dung
+            </div>
+          </div>
+    
+            <div class="mb-3">
+            <label for="isCorrect" class="form-label">Trạng thái</label>
+            <select  type="text" class="form-control" id="isCorrect" required>
+                <option value="true">Đúng</option>
+                <option value="false">Sai</option>
+            </select>
+            <div class="invalid-feedback">
+              Vui lòng nhập đúng đường dẫn
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancelLesson2" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button"  id="saveLesson"  class="btn btn-primary">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Question -->
+<div class="modal fade  " id="editModalChapter" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="editModalLabel">Chỉnh sửa câu hỏi</h6>
+        <button type="button" class="btn-close" id="cancelChapter" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="needs-validation" novalidate>
+        <!-- Image -->
+            <div class="mb-3">
+                <label for="imageQuestion12" class="form-label">Hình ảnh</label>
+                <input type="file" class="form-control" id="imageQuestion12" required>
+                <div class="invalid-feedback">
+                Vui lòng nhập đường dẫn hình ảnh
+                </div>
+
+          <div class="mb-3 mt-2">
+            <label for="txtChapter" class="form-label">Câu hỏi</label>
+            <input type="text" class="form-control" id="txtChapter" required>
+            <div class="invalid-feedback">
+              Vui lòng nhập tên câu hỏi
+            </div>
+          </div>
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancelChapter2" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button"  id="saveChapter"  class="btn btn-primary">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Answer -->
+
+
+<div id="toasts"></div>
+
+    </div>
+    <script type="module" src="/JS/manageQuestionExam.js"></script>
+    <%- include('comon/footer') %>
+  </div>
+</div>

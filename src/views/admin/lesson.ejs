@@ -1,0 +1,191 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <style>
+    .content {
+      padding: 30px;
+    }
+   .table {
+    border: 1px dotted #ccc;
+   }
+     h5 {
+    background-color: #010101;
+    color: rgb(230, 194, 17);
+    padding: 10px 0;
+   }
+   .lessonFull {
+    margin-top: 20px;
+   }
+  </style>
+  <!--Main-->
+  <div class="container p-5">
+     <h3 class="text-center"><%= courseName %></h3>
+     <div class="lessonFull">
+         <div class="Chapter">
+            <h5 class="text-center">Danh sách chương</h5>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Tiêu đề</th>
+                                <th scope="col">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(data && data.length > 0) {%>
+                                <% data.forEach((chapter, index) => { %>
+                                    <tr>
+                                        <th scope="row"><%= index + 1 %></th>
+                                        <td><%= chapter?.titleChapter %></td>
+                                        <td>
+                                            <button 
+                                            value="<%= chapter._id %>"
+                                            data-idcourse = "<%= courseid %>"
+                                            data-titlechapter = "<%= chapter?.titleChapter %>"
+                                            class="btn btn-edit-chapter btn-primary">Chỉnh sửa</button>
+                                            <button value="<%= chapter._id %>" class="btn btn-delete-chapter btn-danger">Xóa</button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="3" class="text-center">Không có dữ liệu</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="Lesson">
+            <% if(data && data.length > 0) { %>
+                <% data.forEach((chapter, index) => { %>
+                    <h5 class="px-4"> Chapter: <%= index %> <%= chapter.titleChapter %></h5>
+                    <table class="table tableLesson">
+                        <thead>
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Tiêu đề</th>
+                                <th scope="col">Thời lượng</th>
+                                <th scope="col">URL Video</th>
+                                <th scope="col">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% chapter.lessons.forEach((lesson, index) => { %>
+                                <tr>
+                                    <th scope="row"><%= index + 1 %></th>
+                                    <td><%= lesson.titleLesson %></td>
+                                    <td><%= lesson.timeLesson %></td>
+                                    <td><%= lesson.urlVideo %></td>
+                                    <td>
+                                        <button
+                                        value="<%= lesson._id %>"
+                                        data-titlelesson="<%=lesson.titleLesson  %>"
+                                        data-urlvideo="<%=lesson.urlVideo  %>"
+                                        data-time="<%=lesson.timeLesson  %>"
+                                         class="btn btn-edit-lesson btn-primary">Chỉnh sửa</button>
+                                        <button
+                                        value="<%= lesson._id %>"
+                                        class="btn btn-delete-lesson btn-danger">Xóa</button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% }) %>
+            <% } else { %>
+                <p class="text-center">Không có dữ liệu</p>
+            <% } %>
+        </div>
+     </div>
+
+
+<div class="modal fade " id="editModalChapter" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="editModalLabel">Chỉnh sửa Chương</h6>
+        <button type="button" class="btn-close" id="cancelChapter" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="needs-validation" novalidate>
+          <div class="mb-3">
+            <label for="txtChapter" class="form-label">Tên chương học</label>
+            <input type="text" class="form-control" id="txtChapter" required>
+            <div class="invalid-feedback">
+              Vui lòng nhập tên của chương
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="chaptter_id" class="form-label">Khoá học</label>
+            <select class="form-select" id="chaptter_id" required>
+              <option selected disabled value="">Chọn danh mục khoá học</option>
+            </select>
+            <div class="invalid-feedback">
+              Vui lòng chọn một chương.
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancelChapter2" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button"  id="saveChapter"  class="btn btn-primary">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="modal fade " id="editLesson" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="editModalLabel">Chỉnh sửa bài học</h6>
+        <button type="button" class="btn-close" id="cancelLesson" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="needs-validation" novalidate>
+          <div class="mb-3">
+            <label for="titleLesson" class="form-label">Tên bài học</label>
+            <input type="text" class="form-control" id="titleLesson" required>
+            <div class="invalid-feedback">
+              Vui lòng nhập tên của bài học
+            </div>
+          </div>
+            <div class="mb-3">
+            <label for="timeLesson" class="form-label">Thời lượng bài học</label>
+            <input type="number" class="form-control" id="timeLesson" required>
+            <div class="invalid-feedback">
+              Vui lòng nhập thời gian bài học
+            </div>
+          </div>
+
+            <div class="mb-3">
+            <label for="urlVideo" class="form-label">Đường dẫn video</label>
+            <input type="text" class="form-control" id="urlVideo" required>
+            <div class="invalid-feedback">
+              Vui lòng nhập đúng đường dẫn
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancelLesson2" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="button"  id="saveLesson"  class="btn btn-primary">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div id="toasts"></div>
+
+    </div>
+    <script type="module" src="/JS/manageLesson.js"></script>
+    <%- include('comon/footer') %>
+  </div>
+</div>

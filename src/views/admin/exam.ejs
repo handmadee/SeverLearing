@@ -1,0 +1,198 @@
+<%- include('comon/header') %>
+<!-- Main --> 
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <style>
+    .content {
+      padding: 30px;
+    }
+    .modal {
+      background-color: #2e2d2d5f;
+    }
+  </style>
+  <!--Main-->
+  <div class="container content">
+    <h3>Quản lý bài kiểm tra</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Name</th>
+          <th scope="col">Category</th>
+          <th scope="col">Level</th>
+          <th scope="col">Points</th>
+          <th scope="col">Users</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% quizsWithCount.forEach((quiz, index) => { %>
+        <tr>
+          <th scope="row"><%= index + 1 %></th>
+          <td><%= quiz.title %></td>
+          <td><%= quiz?.categoryQuiz_id?.nameCategory %></td>
+          <td 
+          style="color: <%= quiz?.level === "111" ? 'green' : quiz?.level === "112" ? 'blue' : 'red' %>"
+          >
+            <%= quiz?.level === "111" ? 'Dễ' : quiz?.level === "112" ? 'Vừa' :
+            'Khó' %>
+          </td>
+          <td><%= quiz?.points %></td>
+          <td><%= quiz?.countUser %></td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-primary btn-edit success"
+              value="<%= quiz?._id %>"
+            >
+              Edit
+            </button>
+            <button
+              class="btn btn-danger btn-delete delete"
+              value="<%= quiz?._id %>"
+            >
+              Delete
+            </button>
+            <button
+              value="<%= quiz?._id %>
+              "
+              class="btn btn-light btn-infor"
+            >
+              <a href="/admin/exam/question/view/<%= quiz?._id %>">
+              More
+              </a>
+            </button>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <!-- <div class="controlTable">
+
+    </div> -->
+    <div class="card-footer">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/exam?page=<%= currentPage - 1 %>"
+              tabindex="-1"
+              aria-disabled="true"
+              >Previous</a
+            >
+          </li>
+          <% for(let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+            <a class="page-link" href="/admin/exam?page=<%= i %>"><%= i %></a>
+          </li>
+          <% } %>
+          <li
+            class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>"
+          >
+            <a class="page-link" href="/admin/exam?page=<%= currentPage + 1 %>"
+              >Next</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <!-- Popup -->
+  <div
+    class="modal fade"
+    id="editModal"
+    tabindex="-1"
+    aria-labelledby="editModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">
+            Chỉnh sửa bài kiểm tra
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            id="cancelPopup"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation" novalidate>
+            <div class="mb-3">
+              <label for="title" class="form-label">Tên bài kiểm tra</label>
+              <input type="text" class="form-control" id="title" required />
+              <div class="invalid-feedback">Vui lòng nhập tiêu đề.</div>
+            </div>
+            <div class="mb-3">
+              <label for="time" class="form-label">Thời gian làm bài</label>
+              <input
+                type="number"
+                min="0"
+                max="120"
+                class="form-control"
+                id="time"
+                required
+              />
+              <div class="invalid-feedback">Vui lòng nhập thời gian.</div>
+            </div>
+            <div class="mb-3">
+              <label for="points" class="form-label">Số điểm</label>
+              <input
+                type="number"
+                min="0"
+                class="form-control"
+                id="points"
+                required
+              />
+              <div class="invalid-feedback">Vui lòng nhập số điểm.</div>
+            </div>
+            <div class="mb-3">
+              <label for="level" class="form-label">Độ khó</label>
+              <select class="form-select" id="level" required>
+                <option selected disabled value="">Chọn độ khó</option>
+                <option value="111">Dễ</option>
+                <option value="112">Trung bình</option>
+                <option value="113">Khó</option>
+              </select>
+              <div class="invalid-feedback">Vui lòng chọn 1 level</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="categoryQuiz_id" class="form-label"
+                >Thể loại bài kiểm tra</label
+              >
+              <select class="form-select" id="categoryQuiz_id" required>
+                <option selected disabled value="">
+                  Chọn danh mục bài kiểm tra
+                </option>
+              </select>
+              <div class="invalid-feedback">Vui lòng chọn một danh mục</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            id="cancelPopup2"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Đóng
+          </button>
+          <button type="button" id="savePopup" class="btn btn-primary">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toasts"></div>
+  <!-- Main -->
+</div>
+
+<script type="module" src="/JS/manageExam.js"></script>
+<%- include('comon/footer') %>

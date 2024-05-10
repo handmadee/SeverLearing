@@ -22,6 +22,9 @@ class QuestionQuizService extends BaseService {
         await QuizModel.findByIdAndUpdate(quiz, { $push: { questionQuiz: Question._id } });
         return Question;
     }
+
+    // Select Quiz By Category and level
+
 }
 
 

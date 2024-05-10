@@ -58,3 +58,24 @@ exports.changePassword = async (req, res) => {
         data: await userService.changePassword(req.body)
     }).send(res);
 }
+
+exports.findUserByUsername = async (req, res) => {
+    return new OK({
+        message: 'User found successfully',
+        data: await userService.findUserByUsername(req.params.username)
+    }).send(res);
+}
+
+exports.changePasswordByUsername = async (req, res) => {
+    return new OK({
+        message: 'Change password successfully',
+        data: await userService.changePasswordByUsername(req.body)
+    }).send(res);
+}
+// Delete Account
+exports.deleteAccount = async (req, res) => {
+    return new OK({
+        message: 'Delete account successfully',
+        data: await userService.deleteAccount(req.params.id)
+    }).send(res);
+}

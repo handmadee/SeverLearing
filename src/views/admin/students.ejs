@@ -1,0 +1,363 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <style>
+    .content {
+      padding: 30px;
+    }
+    .contentData td:nth-child(3) {
+      color: green;
+      font-weight: 500;
+      text-align: center;
+    }
+    .contentData td:nth-child(n + 5):nth-child(-n + 9) {
+      color: green;
+      font-weight: 500;
+      text-align: center;
+      width: 9%;
+    }
+    .table th:nth-child(n + 5):nth-child(-n + 9):hover {
+      cursor: pointer;
+      background-color: bisque;
+      color: black;
+    }
+  </style>
+
+  <!--Main-->
+  <div class="container content">
+    <h3>Quản lý sinh viên</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Avatar</th>
+          <th scope="col">Name</th>
+          <th scope="col">Phone</th>
+          <th scope="col" class="sortable" data-order="asc">
+            Score
+            <i class="fa-solid fa-angle-up"></i>
+          </th>
+          <th scope="col" class="sortable" data-order="asc">
+            Exam
+            <i class="fa-solid fa-angle-up"></i>
+          </th>
+          <th scope="col" class="sortable" data-order="asc">
+            Course
+            <i class="fa-solid fa-angle-up"></i>
+          </th>
+          <th scope="col" class="sortable" data-order="asc">
+            Learn
+            <i class="fa-solid fa-angle-up"></i>
+          </th>
+          <th scope="col" class="sortable" data-order="asc">
+            Finish
+            <i class="fa-solid fa-angle-up"></i>
+          </th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="contentData">
+        <% if(data && data.length > 0) {%> <% data.forEach((user, index) => { %>
+        <tr>
+          <th scope="row"><%= index + 1 %></th>
+          <td>
+            <img src="<%= user?.avatar %>" alt="Avatar" width="60" />
+          </td>
+          <td><%= user?.fullname %></td>
+          <td><%= user?.phone %></td>
+          <td><%= user?.score %></td>
+          <td><%= user?.isQuizTaken %></td>
+          <td><%= user?.course?.course %></td>
+          <td><%= user?.course?.courseLearn %></td>
+          <td><%= user?.course?.courseFinish %></td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-primary btn-edit success"
+              value="<%= user?.accountId %>"
+            >
+              Edit
+            </button>
+            <button
+              class="btn btn-danger btn-delete delete"
+              data-value1="<%= user?.accountId %>"
+              data-value2="<%= user?._id %>"
+            >
+              Delete
+            </button>
+            <button
+              data-accountid="<%= user?.accountId %>"
+              data-avatar="<%= user?.avatar %>"
+              data-name="<%= user?.fullname %>"
+              data-scorce="<%= user?.score %>"
+              data-exam="<%= user?.isQuizTaken %>"
+              data-course="<%=  user?.course?.course %>"
+              data-courselearn="<%= user?.course?.courseLearn%>"
+              data-coursefinish="<%= user?.course?.courseFinish %>"
+              class="btn btn-light btn-infor"
+            >
+              <img style="pointer-events: none" src="/image/info.png" />
+            </button>
+          </td>
+        </tr>
+        <% }) %> <% } else { %>
+        <tr>
+          <td colspan="5" class="text-center">No data</td>
+        </tr>
+        <% } %>
+        <!-- The end data -->
+      </tbody>
+    </table>
+    <div class="card-footer">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/students?page=<%= currentPage - 1 %>"
+              tabindex="-1"
+              aria-disabled="true"
+              >Previous</a
+            >
+          </li>
+          <% for(let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+            <a class="page-link" href="/admin/students?page=<%= i %>"
+              ><%= i %></a
+            >
+          </li>
+          <% } %>
+          <li
+            class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>"
+          >
+            <a
+              class="page-link"
+              href="/admin/students?page=<%= currentPage + 1 %>"
+              >Next</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <!-- MAIN -->
+</div>
+
+<!-- Modal Edit  -->
+<div
+  class="modal fade"
+  id="studentModal"
+  tabindex="-1"
+  aria-labelledby="studentModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="studentModalLabel">Edit Student</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          id="closeModal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form
+          id="formCourse"
+          class="row col-12 mx-auto g-3 needs-validation123"
+          novalidate
+        >
+          <div class="mb-3 col-12">
+            <label for="student-avatar-view" class="form-label"
+              >View Image</label
+            >
+            <img
+              src="/image/403.png"
+              alt="Avatar"
+              width="250"
+              height="150"
+              id="student-avatar-view"
+            />
+          </div>
+          <!-- Image Course -->
+          <div class="col-12">
+            <label for="student-avatar" class="form-label">Avatar</label>
+            <input
+              type="file"
+              class="form-control"
+              id="student-avatar"
+              name="avatar"
+              required
+            />
+            <div class="invalid-feedback">
+              Vui lòng chọn đúng đường dẫn với đuổi png hoặc jepg
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="student-fullname" class="form-label"> Fullname </label>
+            <input
+              type="text"
+              class="form-control"
+              id="student-fullname"
+              name="fullname"
+              required
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Vui lòng nhập tên user</div>
+          </div>
+          <div class="col-12">
+            <label for="student-email" class="form-label"> Email </label>
+            <input
+              type="text"
+              class="form-control"
+              id="student-email"
+              name="email"
+              required
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Vui lòng nhập Email user</div>
+          </div>
+          <div class="col-12">
+            <label for="student-phone" class="form-label"> Fullname </label>
+            <input
+              type="text"
+              class="form-control"
+              id="student-phone"
+              name="phone"
+              required
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Vui lòng nhập sđt của học sinh</div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          id="cancelPopUp"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+        <button type="submit" id="saveInfor" class="btn btn-primary">
+          Save changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="studentInfoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="studentModalLabel">Thông tin học sinh</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          id="CloseInfor"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 text-center">
+            <img
+              src="/image/403.png"
+              alt="Avatar"
+              class="rounded-circle"
+              width="150"
+              height="150"
+              id="avatarMore"
+            />
+          </div>
+          <div class="col-md-8">
+            <h4 id="nameStudents">Tên Học Sinh</h4>
+            <p>Số điểm: <span id="score">0</span></p>
+            <p>Xếp hạng hiện tại: <span id="rank">N/A</span></p>
+            <p>Số bài kiểm tra đã làm: <span id="numTests">0</span></p>
+            <p>Số khóa học đã học: <span id="numCourses">0</span></p>
+            <p>
+              Số khóa học đang học: <span id="numCoursesInProgress">0</span>
+            </p>
+            <p>
+              Số khóa học đã hoàn thành: <span id="numCoursesCompleted">0</span>
+            </p>
+          </div>
+        </div>
+        <hr />
+        <h5>Các khoá học đang học</h5>
+        <div class="overflow-auto" style="max-height: 150px">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Tên khoá học</th>
+                <th scope="col">Số bài đã hoàn thành</th>
+                <th scope="col">Tổng số bài trong khoá học</th>
+              </tr>
+            </thead>
+            <tbody id="coursesInProgressTable">
+              <tr>
+                <td>Khoá học 1</td>
+                <td>5</td>
+                <td>10</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <hr />
+        <h5>Các khoá học đã hoàn thành</h5>
+        <div class="overflow-auto" style="max-height: 150px">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Tên khoá học</th>
+                <th scope="col">Số bài đã hoàn thành</th>
+                <th scope="col">Tổng số bài trong khoá học</th>
+              </tr>
+            </thead>
+            <tbody id="coursesCompletedTable">
+              <tr>
+                <td>Khoá học 1</td>
+                <td>5</td>
+                <td>10</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <h5>Các bài kiểm tra đã làm</h5>
+        <div class="overflow-auto" style="max-height: 200px">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Tên bài kiểm tra</th>
+                <th scope="col">Số điểm đạt được</th>
+              </tr>
+            </thead>
+            <tbody id="quizzesTable">
+              <tr>
+                <td>Bài kiểm tra 1</td>
+                <td>10</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Aleart -->
+<div id="toasts"></div>
+
+<script type="module" src="/JS/sortTable.js"></script>
+<script type="module" src="/JS/manageStudents.js"></script>
+<%- include('comon/footer') %>

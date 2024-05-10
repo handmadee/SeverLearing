@@ -1,13 +1,41 @@
 const jwt = require('jsonwebtoken');
-const { FORBIDDEN } = require('../core/reasonPhrases');
+const authen = require('./../services/auth/user.service');
+
 
 module.exports = (roles) => {
-    return (req, res, next) => {
-        const token = req.headers.authorization.split(' ')[1];
-        const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        if (!roles.includes(payload.role)) {
-            throw new FORBIDDEN('You do not have permission to access this resource');
+    return async (req, res, next) => {
+        try {
+            const token = req.cookies['accessToken'];
+            if (!token) {
+                return res.status(403).redirect('/admin/403');
+            }
+            const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            console.log(payload)
+            if (!roles.includes(payload.role)) {
+                return res.status(403).redirect('/admin/403');
+            }
+            next();
+        } catch (error) {
+            if (error instanceof jwt.JsonWebTokenError || error instanceof jwt.TokenExpiredError) {
+                // Refesh token
+                const oldRefreshToken = req.cookies['refreshToken'];
+                if (!oldRefreshToken) {
+                    return res.status(403).redirect('/admin/403');
+                };
+                try {
+                    const genarateToken = await authen.refreshToken(oldRefreshToken);
+                    if (!genarateToken) {
+                        return res.status(403).redirect('/admin/403');
+                    };
+                    const { accessToken, refreshToken } = genarateToken;
+                    res.cookie('accessToken', accessToken, { path: '/' });
+                    res.cookie('refreshToken', refreshToken, { path: '/' });
+                } catch (error) {
+                    return res.status(403).redirect('/admin/auth');
+                }
+            } else {
+                next(error);
+            }
         }
-        next();
     };
 };

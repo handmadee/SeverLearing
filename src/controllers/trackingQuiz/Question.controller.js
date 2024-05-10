@@ -8,7 +8,7 @@ class QuestionQuizController {
 
     static async createQuestion(req, res) {
         const file = req.file ? req.file.filename : null;
-        const imageQuestion = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+        const imageQuestion = file ? `${process.env.LOCAL_HOST2}/uploads/${file}` : null;
         const question = await QuestionQuiz.createQuestion({
             ...req.body,
             imageQuestion
@@ -32,17 +32,25 @@ class QuestionQuizController {
         }).send(res);
     }
     static async updateQuestion(req, res) {
+        const updateData = { ...req.body };
+        if (req.file) {
+            const file = req.file.filename;
+            const imageQuestion = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+            updateData.imageQuestion = imageQuestion;
+        }
         return new OK({
             message: "Quiz category has been updated successfully.",
-            data: await QuestionQuiz.update(req.params.id, req.body)
+            data: await QuestionQuiz.update(req.params.id, updateData)
         }).send(res);
     }
+
     static async removeQuestion(req, res) {
         return new OK({
             message: "Quiz category has been removed successfully.",
             data: await QuestionQuiz.remove(req.params.id)
         }).send(res);
     }
+
 }
 
 module.exports = QuestionQuizController;

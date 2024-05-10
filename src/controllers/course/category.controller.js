@@ -36,6 +36,12 @@ class categoryControler {
             data: await category.remove(req.params.id)
         }).send(res);
     }
-}
+    static async getFullCategory(req, res) {
+        return new OK({
+            message: "Category found successfully",
+            data: await category.getAll()
+        }).send(res);
 
+    }
+}
 module.exports = categoryControler;

@@ -13,6 +13,26 @@ class CourseController {
             data: await categoryService.createCourse(req.body)
         }).send(res);
     }
+    static async editCourse(req, res) {
+        try {
+            let updateData = { ...req.body };
+            if (req.file) {
+                const file = req.file.filename;
+                const avatar = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+                updateData.avatar = avatar;
+            }
+            const updatedInfo = await categoryService.update(req.params.id, updateData);
+            return new OK({
+                message: "Courses found successfully",
+                data: await updatedInfo
+            }).send(res);
+        } catch (error) {
+            next(error);
+        }
+
+    }
+
+
 }
 
 export default new CourseController();  

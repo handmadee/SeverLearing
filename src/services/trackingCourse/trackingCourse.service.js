@@ -1,11 +1,9 @@
-const CourseController = require("../../controllers/course/course.controler");
+
 const { BadRequestError } = require("../../core/error.response");
 const accountModel = require("../../models/account.model");
 const chapterModel = require("../../models/chapter.model");
 const courseModel = require("../../models/course.model");
-const lessonModel = require("../../models/lesson.model");
 const historyCourseModel = require("../../models/traking /historyCourse.model");
-const CourseService = require("../course/course.service");
 
 
 class TrackingCourseService {
@@ -56,20 +54,6 @@ class TrackingCourseService {
         if (!historyCourse) {
             throw new BadRequestError('Không tìm thấy lịch sử khóa học');
         }
-
-
-        // Đây là danh sách tổng số bài học trong khoá học 
-
-        // const chapter = await chapterModel.find(
-        //     {
-        //         courseId: idCourse
-        //     }
-        // ).select('lessons');
-        // let groupedLessons = chapter.flatMap(chapter => chapter.lessons);
-
-
-
-        // Return course details, chapters and marked lessons
         return historyCourse;
     }
     static async getLessonHistoryCourse(idAccount, idCourse) {
@@ -94,16 +78,118 @@ class TrackingCourseService {
         return historyCourse;
     }
 
-
     static async getTrackingCourseFinish(idAccount) {
         const historyCourse = await historyCourseModel.find({ userID: idAccount, statusCourse: 'finish' }).populate('courseID', 'title  imageCourse totalLesson').select('learnLesson  statusCourse completedLessonsCount lastLessonCompleted updatedAt');
+
         return historyCourse;
     }
-
     // TrakingFull 
     static async getTrackingCourseFull(idAccount) {
         const historyCourse = await historyCourseModel.find().populate('userID courseID learnLesson');
         return historyCourse;
     }
+    // Traking by ID Course
+    static async getTrackingCourseByIdCourse(idCourse) {
+        const students = await historyCourseModel.find({
+            courseID: idCourse
+        }).countDocuments();
+        const courseLearn = await historyCourseModel.find({
+            courseID: idCourse,
+            statusCourse: 'learning'
+        }).countDocuments();
+        const courseFinish = await historyCourseModel.find({
+            courseID: idCourse,
+            statusCourse: 'finish'
+        }).countDocuments();
+
+        return {
+            students,
+            courseLearn,
+            courseFinish
+        };
+    }
+    // Traking by ID User
+    static async getTrackingCourseByIdUser(idCourse) {
+        const course = await historyCourseModel.find({
+            userID: idCourse
+        }).countDocuments();
+        const courseLearn = await historyCourseModel.find({
+            userID: idCourse,
+            statusCourse: 'learning'
+        }).countDocuments();
+        const courseFinish = await historyCourseModel.find({
+            userID: idCourse,
+            statusCourse: 'finish'
+        }).countDocuments();
+        return {
+            course,
+            courseLearn,
+            courseFinish
+        };
+    }
+    // tracking course top user 
+    static async getTrackingCourseTopCourse() {
+        const topCourse = await historyCourseModel.aggregate([
+            { $group: { _id: "$courseID", count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+            { $limit: 10 },
+            {
+                $lookup: {
+                    from: "courses",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "courseInfo"
+                }
+            },
+            { $unwind: "$courseInfo" },
+            {
+                $project: {
+                    _id: 0,
+                    courseID: "$_id",
+                    count: 1,
+                    title: "$courseInfo.title",
+                    imageCourse: "$courseInfo.imageCourse",
+                    detailCourse: "$courseInfo.detailCourse"
+                }
+            }
+        ]);
+
+        return topCourse;
+    }
+    // Select to lesson course
+    // Sắp xếp theo số lượng học viên học
+    static async getTrackingCourseLowCourse() {
+        const topCourse = await historyCourseModel.aggregate([
+            { $group: { _id: "$courseID", count: { $sum: 1 } } },
+            { $sort: { count: 1 } },
+            { $limit: 15 },
+            {
+                $lookup: {
+                    from: "courses",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "courseInfo"
+                }
+            },
+            { $unwind: "$courseInfo" },
+            {
+                $project: {
+                    _id: 0,
+                    courseID: "$_id",
+                    count: 1,
+                    title: "$courseInfo.title",
+                    imageCourse: "$courseInfo.imageCourse",
+                    detailCourse: "$courseInfo.detailCourse"
+                }
+            }
+        ]);
+        return topCourse;
+    }
+
+
+
+
+
+
 }
 module.exports = TrackingCourseService;

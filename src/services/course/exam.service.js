@@ -8,6 +8,9 @@ class ExamService extends BaseService {
     constructor() {
         super(ExamModel);
     }
+    async getExamFull() {
+        return this.model.find().populate('chaptter_id').select('titleExam chaptter_id');
+    }
 
     async createExam(data) {
         const { chaptter_id } = data;

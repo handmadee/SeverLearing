@@ -7,6 +7,11 @@ class NewsService extends BaseService {
     constructor() {
         super(NewsModel);
     }
+    // get counts news 
+    async getCountNews() {
+        return await this.model.countDocuments();
+    }
+
 }
 
 module.exports = NewsService;

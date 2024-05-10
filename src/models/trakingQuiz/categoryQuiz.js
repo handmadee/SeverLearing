@@ -6,6 +6,10 @@ const DOCUMENT_NAME = 'CategoryQuiz';
 const COLLECTION_NAME = 'categoryQuizzes';
 
 const categoryQuizSchema = new Schema({
+    imageCategory: {
+        type: String,
+        trim: true,
+    },
     nameCategory: {
         type: String,
         trim: true,
