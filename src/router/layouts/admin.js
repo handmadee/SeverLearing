@@ -58,7 +58,8 @@ adminRouter.get('/exam', permission('999'), asnycHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const quizsWithCount = await QuizService12.getExamAdmin(page, limit);
-    const totalItems = quizsWithCount[0].totalQuizs;
+    const totalItems = quizsWithCount.length > 0 ?
+        quizsWithCount[0].totalQuizs : 0;
     const totalPages = Math.ceil(totalItems / limit);
     if (!quizsWithCount) throw new Error('No data found');
     res.render('admin/exam', { title: "Quản lý bài kiểm tra", quizsWithCount, totalPages, currentPage: page, totalItems });
