@@ -17,6 +17,8 @@ router.get('/findUserName/:username', asnycHandler(userController.findUserByUser
 router.put('/authChangeUser', asnycHandler(userController.changePasswordByUsername));
 // Delete user
 router.delete('/deleteAccount/:id', asnycHandler(userController.deleteAccount));
+// Select role 
+router.patch('/auth/role/:id', asnycHandler(userController.editRole));
 
 
 module.exports = router; 

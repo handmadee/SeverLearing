@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const permission = require('./../../auth/permission');
+const permission = require('./../../auth/permissionApi');
 
 // chec=
 
@@ -24,7 +24,6 @@ router.get('/category/:id', asnycHandler(categoryController.getCategoryById));
 router.put('/category/:id', asnycHandler(categoryController.updateCategory));
 router.delete('/category/:id', asnycHandler(categoryController.removeCategory));
 
-
 // Get Chapter
 router.get('/categoryFull', asnycHandler(categoryController.getFullCategory));
 
@@ -32,7 +31,8 @@ router.get('/categoryFull', asnycHandler(categoryController.getFullCategory));
 // Admin page
 router.post('/course', upload.single('imageCourse'), asnycHandler(courseController.createCourse));
 router.get('/course', asnycHandler(courseController.getCourses));
-router.get('/course/:id', asnycHandler(courseController.getCourseById));
+// Check permission course 
+router.get('/course/:id', permission('888', '999'), asnycHandler(courseController.getCourseById));
 router.put('/course/:id', upload.single('imageCourse'), asnycHandler(courseController.updateCourse));
 router.delete('/course/:id', asnycHandler(courseController.removeCourse));
 router.get('/search', asnycHandler(courseController.searchCourse));
@@ -85,7 +85,7 @@ router.put('/answer/:id', asnycHandler(AnswerController.updateAnswer));
 router.delete('/answer/:id', asnycHandler(AnswerController.removeAnswer));
 
 // Tracking course 
-router.post('/tracking', asnycHandler(TrackingCourseController.createTrackingCourse));
+router.post('/tracking', permission('888', '999'), asnycHandler(TrackingCourseController.createTrackingCourse));
 router.get('/tracking', asnycHandler(TrackingCourseController.getTrackingCourse));
 router.get('/trackingFinish/:id', asnycHandler(TrackingCourseController.findTrackingAccountFinish));
 router.get('/trackingLearn/:id', asnycHandler(TrackingCourseController.findTrackingAccountLearn));

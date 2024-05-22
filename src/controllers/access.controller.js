@@ -79,3 +79,13 @@ exports.deleteAccount = async (req, res) => {
         data: await userService.deleteAccount(req.params.id)
     }).send(res);
 }
+
+// Edit role
+exports.editRole = async (req, res) => {
+    const id = req.params.id;
+    const pemission = req.body.pemission;
+    return new OK({
+        message: 'Edit role successfully',
+        data: await userService.editRole(id, pemission)
+    }).send(res);
+}

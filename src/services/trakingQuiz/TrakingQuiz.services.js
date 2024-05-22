@@ -321,6 +321,47 @@ class TrakingQuizServices extends BaseService {
     }
 
 
+    // Select all User by exam find Id exam 
+    async getUserByExam(quizID, page = 1, limit = 10) {
+        const trakingQuiz = await TrakingQuiz.find({ quizID }).populate({
+            path: 'userID',
+            select: 'info',
+            populate: {
+                path: 'info'
+            }
+        });
+
+        if (!trakingQuiz) {
+            throw new ForbiddenError('No TrakingQuiz found');
+        }
+        // Sắp xếp theo điểm số
+        const rankingMap = new Map();
+        trakingQuiz.forEach(quiz => {
+            const { userID, Score } = quiz;
+            if (!userID || !quiz?.userID?.info) {
+                return;
+            }
+            // const { fullname, avatar } = info;
+            if (!rankingMap.has(userID)) {
+                rankingMap.set(userID, { name: quiz?.userID?.info?.fullname, avatar: quiz?.userID?.info?.avatar, email: quiz?.userID?.info?.email, Score });
+
+            } else {
+                rankingMap.get(userID).Score += Score;
+            }
+        });
+        const ranking = [...rankingMap.values()].sort((a, b) => b.Score - a.Score);
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        return {
+            rank: ranking.slice(startIndex, endIndex),
+            totalItems: ranking.length
+        };
+    }
+
+
+
+
+
 }
 
 module.exports = TrakingQuizServices;

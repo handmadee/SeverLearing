@@ -2,10 +2,8 @@
 'use strict';
 
 const { model, Schema, Types } = require('mongoose');
-
 const DOCUMENT_NAME = 'answer';
 const COLLECTION_NAME = 'answers';
-
 const answerSechema = new Schema({
     titleAnswer: {
         type: String,

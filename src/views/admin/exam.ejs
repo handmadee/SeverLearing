@@ -58,10 +58,21 @@
               "
               class="btn btn-light btn-infor"
             >
+
               <a href="/admin/exam/question/view/<%= quiz?._id %>">
+
               More
               </a>
             </button>
+            <!-- Check user -->
+            <!-- More -->
+            <a class="btn btn-info" href="/admin/exam/<%= quiz?._id %>/<%= quiz?.points %>">
+              <i 
+           style="pointer-events: none"
+           class="fa-solid fa-ellipsis-vertical"></i>
+            </a>
+            <!-- Run More -->
+
           </td>
         </tr>
         <% }); %>

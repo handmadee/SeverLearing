@@ -1,0 +1,87 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <style>
+    .content {
+      padding: 30px;
+    }
+    .modal {
+      background-color: #2e2d2d5f;
+    }
+  </style>
+  <!--Main-->
+  <div class="container content">
+    <h3>Quản lý bài kiểm tra</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Email</th>
+          <th scope="col">Name</th>
+          <th scope="col">Points</th>
+          <th scope="col">Ratio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- #region -->
+        <% if (TrackingExam.length > 0) { %> <% TrackingExam.forEach((rank,
+        index) => { %>
+        <tr>
+          <th scope="row"><%= index + 1 %></th>
+          <td><%= rank.email %></td>
+          <td><%= rank?.name %></td>
+          <td><%= rank?.Score %></td>
+          <td><%= (rank?.Score / max) * 100 %> %</td>
+        </tr>
+        <% }); %> <% } else { %>
+        <tr>
+          <td colspan="5">Không có dữ liệu</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <!-- <div class="controlTable">
+
+    </div> -->
+    <div class="card-footer">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/exam/<%= id %>/<%= max %>/?page=<%= currentPage - 1 %>"
+              tabindex="-1"
+              aria-disabled="true"
+              >Previous</a
+            >
+          </li>
+          <% for(let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/exam/<%= id %>/<%= max %>/?page=<%= i %>"
+              ><%= i %></a
+            >
+          </li>
+          <% } %>
+          <li
+            class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>"
+          >
+            <a
+              class="page-link"
+              href="/admin/exam/<%= id %>/<%= max %>/?page=<%= currentPage + 1 %>"
+              >Next</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <!-- Popup -->
+  <div id="toasts"></div>
+  <!-- Main -->
+</div>
+
+<script type="module" src="/JS/manageExam.js"></script>
+<%- include('comon/footer') %>

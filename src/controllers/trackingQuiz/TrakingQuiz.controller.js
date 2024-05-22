@@ -104,6 +104,16 @@ class TrakingQuizController {
             data: await TrakingQuiz.getExamByUser(userID)
         }).send(res);
     }
+    // get user by exam 
+    static async getUserByExam(req, res) {
+        const { id } = req.params;
+        return new OK({
+            message: "TrakingQuiz select tracking quiz by user id.",
+            data: await TrakingQuiz.getUserByExam(id)
+        }).send(res);
+    }
+
+
 
 }
 

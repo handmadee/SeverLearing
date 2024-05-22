@@ -32,5 +32,6 @@ const product = {
 }
 
 const config = { dev, test, product };
+console.log(process.env.NODE_ENV)
 const env = process.env.NODE_ENV || 'dev';
 module.exports = config[env];

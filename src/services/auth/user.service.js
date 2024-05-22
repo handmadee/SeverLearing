@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken');
 
 
 const generateTokens = (user) => {
-    const accessToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
-    const refreshToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    const accessToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '7d' });
+    const refreshToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
     return { accessToken, refreshToken };
 };
 
@@ -76,7 +76,7 @@ exports.logout = async (refreshToken) => {
 };
 
 exports.getUser = async (userId) => {
-    const user = await User.findById(userId).populate('info').select('info  ');
+    const user = await User.findById(userId).populate('info').select('info  pemission');
     if (!user) {
         throw new BadRequestError('User not found');
     }
@@ -125,4 +125,15 @@ exports.deleteAccount = async (_id) => {
     }
 }
 
-
+// edit role
+exports.editRole = async (id, pemission) => {
+    const user = await User.findOneAndUpdate(
+        { _id: id },
+        { pemission },
+        { new: true }
+    );
+    if (!user) {
+        throw new BadRequestError('User not found');
+    }
+    return user;
+}

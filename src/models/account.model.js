@@ -23,7 +23,7 @@ const userSechema = new Schema({
     },
     pemission: {
         type: [String],
-        enum: ['001', '999'],
+        enum: ['001', '888', '999'],
         default: ['001']
     },
 

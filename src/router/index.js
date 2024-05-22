@@ -15,6 +15,7 @@ const notificationRoutes = require('./listNotification');
 const trakingQuizRouters = require('./trakingQuiz/trakingQuiz.router');
 const newsRoutes = require('./news/index');
 const popupRouter = require('./popup/popup');
+const firebaseRoutes = require('./firebase/notification.firebase');
 
 
 
@@ -30,6 +31,7 @@ router.use(API_V1_PATH, notificationRoutes);
 router.use(API_V1_PATH, trakingQuizRouters);
 router.use(API_V1_PATH, newsRoutes);
 router.use(API_V1_PATH, popupRouter);
+router.use(API_V1_PATH, firebaseRoutes);
 
 
 

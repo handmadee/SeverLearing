@@ -62,6 +62,7 @@ adminRouter.get('/exam', permission('999'), asnycHandler(async (req, res) => {
         quizsWithCount[0].totalQuizs : 0;
     const totalPages = Math.ceil(totalItems / limit);
     if (!quizsWithCount) throw new Error('No data found');
+    // 
     res.render('admin/exam', { title: "Quản lý bài kiểm tra", quizsWithCount, totalPages, currentPage: page, totalItems });
 }));
 
@@ -69,6 +70,7 @@ adminRouter.get('/exam', permission('999'), asnycHandler(async (req, res) => {
 adminRouter.get('/exam/category/create', permission('999'), asnycHandler(async (req, res) => {
     res.render('admin/createCategoryQuiz', { title: "Tạo danh mục game" });
 }));
+
 
 // Create Exam Quiz
 adminRouter.get('/exam/quiz/create', permission('999'), asnycHandler(async (req, res) => {
@@ -100,6 +102,22 @@ adminRouter.get('/exam/category', permission('999'), asnycHandler(async (req, re
     if (!data) throw new Error('No data found');
     res.render('admin/categoryGame', { title: "Tạo danh mục khoá học", data });
 }));
+
+
+// 
+// Exam by id 
+adminRouter.get('/exam/:id/:max', asnycHandler(async (req, res) => {
+    const currentPage = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const id = req.params.id;
+    const max = req.params.max;
+    const data = await trakingQuizServices.getUserByExam(id, currentPage, limit);
+    const totalItem = data?.totalItems;
+    const totalPages = Math.ceil(totalItem / limit);
+    console.log(data)
+    if (!data) throw new Error('No data found');
+    res.render('admin/examById', { title: "Quản lý bài kiểm tra", TrackingExam: data?.rank, totalPages, currentPage, max, id });
+}))
 
 // Students
 adminRouter.get('/students', permission('999'), asnycHandler(async (req, res) => {
@@ -172,7 +190,6 @@ adminRouter.get('/rank', permission('999'), asnycHandler(async (req, res) => {
     if (!data) throw new Error('No data found');
     res.render('admin/rank', { title: "Xếp hạng toàn bộ thời gian", data: data?.rank, totalPages, currentPage: page, totalItems });
 }));
-// View 
 
 // Rank in month
 adminRouter.get('/rank/inMonth', permission('999'), asnycHandler(async (req, res) => {
@@ -195,6 +212,8 @@ adminRouter.get('/rank/inWeek', permission('999'), asnycHandler(async (req, res)
     if (!data) throw new Error('No data found');
     res.render('admin/rank', { title: "Xếp hạng trong tuần", data: data?.rank, totalPages, currentPage: page, totalItems });
 }));
+
+
 
 // News 
 adminRouter.get('/news', permission('999'), asnycHandler(async (req, res) => {
