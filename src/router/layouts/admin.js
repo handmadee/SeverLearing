@@ -14,6 +14,9 @@ const NewsService = require('../../services/news/news.service');
 const NotificationService = require('./../../services/notification/listNotification');
 const TrackingCourseService = require('../../services/trackingCourse/trackingCourse.service');
 const PopupService = require('../../services/popup/popup.service');
+const fireBaseNotification = require('./../../services/firebase/notification.firebase.services');
+const fcmTokenService = require('../../services/firebase/fcmToken.firebase.services');
+
 
 const CourseService12 = new CourseService();
 const QuizService12 = new QuizService();
@@ -26,6 +29,8 @@ const examQuizService = new examQuiz();
 const newsService = new NewsService();
 const adminRouter = express.Router();
 const popupService = new PopupService();
+const notificationService = new fireBaseNotification();
+const fcmDevice = new fcmTokenService();
 
 // Auth
 adminRouter.get('/auth', asnycHandler(async (req, res) => {
@@ -248,6 +253,34 @@ adminRouter.get('/slider', permission('999'), asnycHandler(async (req, res) => {
 adminRouter.get('/slider/create', permission('999'), asnycHandler(async (req, res) => {
     res.render('admin/createSlider', { title: "Tạo slider" });
 }));
+
+
+// Firebase Services
+
+//+ 1 Notification 
+adminRouter.get('/firebase/notification', permission('999'), asnycHandler(async (req, res) => {
+    // FcmToken
+    const currentPage = parseInt(req.query.page) || 1;
+    const fcmToken = await fcmDevice.getAllFcmToken(currentPage, 10);
+    const totalPages = fcmToken?.countPage;
+    const data = fcmToken?.data;
+    console.log(data)
+    res.render('admin/createSendNotification', { title: "Tạo thông báo", data, currentPage, totalPages });
+}));
+// Schedule Notification
+// hiển thị chiến dịch
+adminRouter.get('/firebase/scheduleNotification', permission('999'), asnycHandler(async (req, res) => {
+    const limit = 10;
+    const page = parseInt(req.query.page) || 1;
+    const jobs = await notificationService.getAllJobs(limit, page);
+    const data = jobs?.jobs;
+    const totalItems = jobs?.totalJobs;
+    const totalPages = Math.ceil(totalItems / limit);
+    res.render('admin/viewNotification', { title: "Lên lịch thông báo", data, currentPage: page, totalPages });
+}));
+
+new Date().getDay
+
 
 // Errors
 adminRouter.get('/404', (req, res) => {

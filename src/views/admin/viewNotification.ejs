@@ -1,0 +1,128 @@
+<%- include('comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <style>
+    .content {
+      padding: 30px;
+    }
+    .imagePost {
+      width: 100%;
+      height: 80%;
+      border-radius: 15px;
+    }
+    .table tbody tr td:nth-child(3) {
+      width: 35%;
+      text-align: left;
+    }
+    .table tbody tr td:nth-child(4) {
+      color: black;
+      font-weight: "bold";
+      width: 15%;
+      text-align: center;
+    }
+    .table tbody tr td:nth-child(5) {
+      color: black;
+      font-weight: "bold";
+      width: 10%;
+      text-align: center;
+    }
+  </style>
+  <!--Main-->
+  <div class="container content p-5">
+    <h3>Quản lý chiến dịch thông báo</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Tên chiến dịch</th>
+          <th scope="col">Nội dung chiến dịch</th>
+          <th scope="col">Ngày thực hiện</th>
+          <th scope="col">Số thiết bị</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(data && data.length > 0) {%> <% data.forEach((items, index) => {
+        %>
+        <tr>
+          <th scope="row"><%= index + 1 %></th>
+          <td><%= items?.jobId %></td>
+          <td>
+            <p>Title: <%=items?.data?.title %></p>
+            <p>Content: <%=items?.data?.body %></p>
+          </td>
+          <td>
+            <%=new Date(items?.date).getDate()%>-<%=new
+            Date(items?.date).getMonth() %>-<%=new
+            Date(items?.date).getFullYear()%>
+          </td>
+          <td><%= items?.data?.token.length %></td>
+
+          <td>
+            <button
+              type="button"
+              class="btn btn-primary btn-edit success"
+              value="<%= items?._id %>"
+            >
+              Edit
+            </button>
+            <button
+              class="btn btn-danger btn-delete delete"
+              value="<%= items?._id %>"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+
+        <% }) %> <% } else { %>
+        <tr>
+          <td colspan="4" class="text-center">No data</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <div class="card-footer mt-3">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/firebase/scheduleNotification?page=<%= currentPage - 1 %>"
+              tabindex="-1"
+              aria-disabled="true"
+              >Previous</a
+            >
+          </li>
+          <% for(let i=1; i <=totalPages; i++) { %>
+          <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/firebase/scheduleNotification?page=<%= i %>"
+            >
+              <%= i %>
+            </a>
+          </li>
+          <% } %>
+          <li
+            class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>"
+          >
+            <a
+              class="page-link"
+              href="/admin/dashboard?page=<%= currentPage + 1 %>"
+              >Next</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Popup -->
+  <div id="toasts"></div>
+  <!-- Main -->
+</div>
+
+<script type="module" src="/JS/viewFireBaseNotification.js"></script>
+<%- include('comon/footer') %>
