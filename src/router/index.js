@@ -16,7 +16,7 @@ const trakingQuizRouters = require('./trakingQuiz/trakingQuiz.router');
 const newsRoutes = require('./news/index');
 const popupRouter = require('./popup/popup');
 const firebaseRoutes = require('./firebase/notification.firebase');
-
+const fcmRouter = require('./firebase/fcmToken.firebase');
 
 
 // Initialize router
@@ -32,7 +32,7 @@ router.use(API_V1_PATH, trakingQuizRouters);
 router.use(API_V1_PATH, newsRoutes);
 router.use(API_V1_PATH, popupRouter);
 router.use(API_V1_PATH, firebaseRoutes);
-
+router.use(API_V1_PATH, fcmRouter);
 
 
 module.exports = router;
