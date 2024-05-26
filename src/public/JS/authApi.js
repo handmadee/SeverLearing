@@ -1,3 +1,4 @@
+import { LOCALHOST_API_URL } from "./config";
 export class authApi {
     constructor() {
         this.api = LOCALHOST_API_URL;
