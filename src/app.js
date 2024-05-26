@@ -4,7 +4,6 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
 const { checkOverloadConnect } = require('./helpers/check.connect');
-const path = require('path');
 const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const router = require('./router');
@@ -29,6 +28,9 @@ checkOverloadConnect();
 configViewEngine(app)
 // Initialize router
 app.use('/', router);
+app.use('/', router.get('/v1/api/keep', (req, res) => {
+    res.send('Keep alive');
+}));
 app.use('/admin', adminRouter);
 
 // Handle 404 errors

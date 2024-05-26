@@ -50,17 +50,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const fetchCourse = async (courseid) => {
+        const accessToken = document.cookie.split(';').find(cookie => cookie.includes('accessToken')).split('=')[1];
         try {
-            const cousrse = await fetch(`${localhost}/course/${courseid}`)
+            // gửi lên 1 header để xác định là admin
+            const cousrse = await fetch(`${localhost}course/${courseid}`, {
+                method: 'GET',
+                headers: {
+
+                    'authorization': `Bearer ${accessToken}`
+                }
+            })
+            console.log(cousrse)
             if (!cousrse.ok) {
-                return createToast('Tìm khoá học thất bại')
+                return createToast('error')
             }
             const data = await cousrse.json();
             const { title, detailCourse, imageCourse, category_id } = data?.data?.data;
             renderCourse(courseid, title, detailCourse, imageCourse, category_id);
         } catch (error) {
             console.log(error)
-            return createToast('Tìm khoá học thất bại')
+            return createToast('error')
         }
     }
 

@@ -1,269 +1,300 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, Pressable, Image, FlatList, Alert } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Container } from '../../components/Container';
-import { RowComponent } from '../../components/RowComponent';
-import { PlayCircle, Pause } from 'iconsax-react-native';
-import { Color, FontFamily, FontSize } from '../../../GlobalStyles';
-import LazyImage from '../../components/LazyImage';
-import Video from "react-native-youtube-iframe";
-import { getCourseById } from '../../apis/courseApi';
-import LoadingView from '../Auth/LoadingScreen';
-import { addLessonToTracking, getTracking } from '../../apis/trackingCourse';
-import { useSelector } from 'react-redux';
+import { createToast } from './Aleart.js';
+import { LOCALHOST_API_URL } from './config.js';
 
-const LessonCourse = ({ navigation, route }) => {
-    const idUser = useSelector(state => state?.authReducer?.authData?.id);
-    const idCourse = route.params?.courseID;
-    const total = route.params?.total;
-    const [loading, setLoading] = useState(true);
-    const [video, setVideo] = useState(false);
-    const [watching, setWatching] = useState(false);
-    const [dataLesson, setDataLesson] = useState([]);
-    const [haveLearn, setHaveLearn] = useState([]);
+document.addEventListener("DOMContentLoaded", function () {
+    const localhost = LOCALHOST_API_URL;
+    const editButtons = document.querySelectorAll(".btn-edit");
+    const deleteButtons = document.querySelectorAll(".btn-delete");
+    const showInfoButtons = document.querySelectorAll(".btn-infor");
+    const showModalInfo = document.querySelector('#studentModal');
+    const closeBtn = document.querySelector('#closeModal');
+    const closeMore = document.querySelector('#CloseInfor');
+    const cancelBtn = document.querySelector('#cancelPopUp');
+    const avatarView = document.querySelector('#student-avatar-view');
+    const saveBtn = document.querySelector('#saveInfor');
+    const showInfo = document.getElementById('studentInfoModal');
+    const roleUser = document.getElementById('student-role');
 
-    const fetchCourse = useCallback(async () => {
-        console.log("Hello")
+    editButtons.forEach(button => {
+        button.addEventListener("click", function (e) {
+            const studentId = e.target.value;
+            console.log(studentId);
+            fetchStudentInfo(studentId);
+        });
+    });
+
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const studentId = this.dataset.value1;
+            const accountID = this.dataset.value2;
+            deleteStudent(studentId, accountID);
+        });
+    });
+
+    showInfoButtons.forEach(button => {
+        button.addEventListener("click", function (e) {
+
+            const studentId = e.target.dataset.accountid;
+            const fullName = e.target.dataset.name;
+            const avatar = e.target.dataset.avatar;
+            const score = e.target.dataset.scorce;
+            const quiz = e.target.dataset.exam;
+            const learn = e.target.dataset.courselearn;
+            const finish = e.target.dataset.coursefinish;
+            const course = e.target.dataset.course;
+            console.log(studentId, fullName, avatar, score, quiz, learn, finish, course);
+            fetchStudentInfoMore(studentId, fullName, avatar, score, quiz, learn, finish, course);
+        });
+    });
+
+    cancelBtn.addEventListener('click', function () {
+        showModalInfo.classList.remove('show');
+    });
+
+    closeBtn.addEventListener('click', function () {
+        showModalInfo.classList.remove('show');
+    });
+    closeMore.addEventListener('click', () => {
+        showInfo.classList.remove('show');
+    })
+
+
+    async function fetchStudentInfo(studentId) {
         try {
-            setLoading(true);
-            const [CourseLesson, tracking] = await Promise.all([getCourseById(idCourse), getTracking(idUser, idCourse)]);
-            setDataLesson(CourseLesson.data?.data?.chapters);
-            setHaveLearn(tracking.data?.data?.data?.trackingCourse?.learnLesson);
-            // IF susscess course 
-            haveLearn.length == total && alert('Thông báo', 'Bạn đã hoàn thành khóa học')
-            // 
+            const response = await fetch(`${localhost}auth/user/${studentId}`);
+            const data = await response.json();
+            const student = data?.data?.data?.info;
+            const role = data?.data?.data?.pemission;
+            displayStudentInfoInModal12(student, role);
         } catch (error) {
+            createToast('error');
             console.log(error);
-        } finally {
-            setLoading(false);
         }
-    }, [idCourse, idUser]);
+    }
 
-    useEffect(() => {
-        fetchCourse();
-    }, [video]);
+    function displayStudentInfoInModal12(student, role) {
+        showModalInfo.classList.add('show');
+        document.getElementById('student-fullname').value = student?.fullname || '';
+        document.getElementById('student-email').value = student?.email || '';
+        document.getElementById('student-phone').value = student?.phone || '';
+        role && role.length > 0 ? document.getElementById('student-role').value = role[0] : '';
 
-    const handlePress = useCallback(async (id, url) => {
-        const idVideo = url.slice(32, 43);
-        setVideo(idVideo);
-        setWatching(id);
-        await addLessonToTrackingCourse(idUser, idCourse, id);
-    }, []);
+        avatarView.src = student?.avatar || '';
+        const avatarInput = document.getElementById('student-avatar');
+        avatarInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function () {
+                avatarView.src = reader.result;
+            }
+            reader.readAsDataURL(file);
+        });
+        saveBtn.addEventListener('click', function () {
+            updateStudentInfo(student._id);
+        });
+    }
 
-    const addLessonToTrackingCourse = async (idAccount, idCourse, idLesson) => {
+    async function updateStudentInfo(studentId) {
+        const formData = new FormData();
+        formData.append('fullname', document.getElementById('student-fullname').value);
+        formData.append('email', document.getElementById('student-email').value);
+        formData.append('phone', document.getElementById('student-phone').value);
+        formData.append('avatar', document.getElementById('student-avatar').files[0]);
+        // Validate 
+        if (!formData.get('fullname') || !formData.get('email') || !formData.get('phone')) {
+            createToast('error');
+            return;
+        }
         try {
-            await addLessonToTracking({ idAccount, idCourse, idLesson });
-        } catch (error) {
-            console.log({
-                addLessonError: error
+            const response = await fetch(`${localhost}user/${studentId}`, {
+                method: 'PUT',
+                body: formData
             });
+            const informationUser = await response.json();
+            if (informationUser) {
+                const id = informationUser?.data?.data?.accountId;
+                const role = roleUser.value;
+                const response = await fetch(`${localhost}auth/role/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pemission: [role]
+                    })
+                });
+                const data = await response.json();
+
+                if (data) {
+                    console.log(data);
+                    createToast('success');
+                    location.reload();
+                }
+                if (!response.ok) {
+                    throw new Error('Cập nhật role thất bại');
+                }
+            } else {
+                createToast('error');
+            }
+        } catch (error) {
+            createToast('error');
+            console.error('Error:', error);
         }
-    };
+    }
 
-    const handlerQuizTest = useCallback((data, time) => {
-        navigation.navigate('Quiz', { quizData: data, time });
-    }, [navigation]);
+    async function deleteStudent(studentId, accountID) {
+        const confirmed = await confirmDeleteDialog();
+        if (!confirmed) return;
 
-    const RenderItem = ({ id, index = 1, status = false, title = '', duration = 10, onPress }) => (
-        <Pressable
-            style={[styles.lesson, status && { backgroundColor: '#a5e6ca' }]}
-            onPress={onPress}
-        >
-            <RowComponent style={styles.rowC}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', width: '70%' }}>
-                    <View style={styles.circleOrder}>
-                        <Text style={[styles.section, styles.order]}>{index}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'column' }}>
-                        <Text style={[styles.section, { fontSize: FontSize.buttonMedium_size }]}>{title}</Text>
-                        <Text style={styles.minLesson}>{duration} mins</Text>
-                    </View>
-                </View>
-                <View style={{ flexDirection: 'column', alignItems: 'flex-end' }}>
-                    {!(watching === id) ? <PlayCircle size={28} color={Color.globalApp} variant="Bold" /> :
-                        <Pause size={28} color={Color.globalApp} variant="Bold" />
-                    }
-                    {status && (
-                        <Image
-                            source={require('./../../../assets/check.png')}
-                            style={{ width: 23, height: 23 }}
-                            resizeMode='contain'
-                        />
-                    )}
-                </View>
-            </RowComponent>
-        </Pressable>
-    );
+        try {
+            // Xoá thông tin của sinh viên
+            const response1 = await fetch(`${localhost}/user/${accountID}`, {
+                method: 'DELETE',
+            });
+            if (!response1.ok) {
+                throw new Error('Xoá thông tin sinh viên thất bại');
+            }
+            // Xoá tài khoản của sinh viên
+            const response2 = await fetch(`${localhost}/deleteAccount/${studentId}`, {
+                method: 'DELETE',
+            });
+            if (!response2.ok) {
+                throw new Error('Xoá tài khoản sinh viên thất bại');
+            }
+            alert('Xoá thành công');
+            location.reload();
+        } catch (error) {
+            createToast('error');
+            console.error('Lỗi:', error.message);
+        }
+    }
 
-    const Chapter = React.memo(({ index = 0, chapter = '', totalChapter = 90 }) => (
-        <RowComponent style={styles.rowC}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={styles.section}>Section {index}</Text>
-                <Text style={[styles.section, { color: Color.globalApp, marginLeft: 10 }]}>{chapter}</Text>
-            </View>
-            <Text style={styles.mins}>{totalChapter} Mins</Text>
-        </RowComponent>
-    ));
+    async function confirmDeleteDialog() {
+        return new Promise(resolve => {
+            const confirmed = confirm('Bạn có chắc chắn muốn xoá sinh viên này không ?');
+            resolve(confirmed);
+        });
+    }
 
-    const Test = React.memo(({ title = '', duration = '15 Mins', status = false, onPress }) => (
-        <Pressable
-            style={[styles.lesson, status && { backgroundColor: '#a5e6ca' }]}
-            onPress={onPress}
-        >
-            <RowComponent style={styles.rowC}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <View style={styles.circleOrder}>
-                        <Image
-                            source={require('./../../../assets/test.png')}
-                            style={{ width: '100%', height: '100%' }}
-                            resizeMode='contain'
-                        />
-                    </View>
-                    <View style={{ flexDirection: 'column' }}>
-                        <Text style={[styles.section, { fontSize: FontSize.buttonMedium_size }]}>{title}</Text>
-                        <Text style={styles.minLesson}>{duration} mins</Text>
-                    </View>
-                </View>
-                <View style={{ flexDirection: 'column', alignItems: 'flex-end' }}>
-                    {status && <PlayCircle size={32} color={Color.globalApp} variant="Bold" />}
-                    {status && (
-                        <Image
-                            source={require('./../../../assets/check.png')}
-                            style={{ width: 25, height: 25 }}
-                            resizeMode='contain'
-                        />
-                    )}
-                </View>
-            </RowComponent>
-        </Pressable>
-    ));
+    async function fetchStudentInfoMore(studentId, fullName, avatar, score, quiz, learn, finish, course) {
+        try {
+            const [rankResponse, examResponse, courseLearnResponse, courseFinishResponse] = await Promise.all([
+                fetch(`${localhost}trackingQuiz/ranking/user/${studentId}`),
+                fetch(`${localhost}trackingQuiz/selectExam/${studentId}`),
+                fetch(`${localhost}trackingLearn/${studentId}`),
+                fetch(`${localhost}trackingFinish/${studentId}`)
+            ]);
+            const [rankData, examData, courseLearnData, courseFinishData] = await Promise.all([
+                rankResponse.json(),
+                examResponse.json(),
+                courseLearnResponse.json(),
+                courseFinishResponse.json()
+            ])
+            displayStudentInfoInModal(fullName, avatar, score, quiz, learn,
+                finish, course,
+                rankData?.data?.data,
+                examData?.data?.data,
+                courseLearnData?.data?.data,
+                courseFinishData?.data?.data);
 
-    const RenderCourse = useMemo(() => () => (
-        <FlatList
-            data={dataLesson}
-            renderItem={({ item, index }) => (
-                item && (
-                    <View>
-                        <Chapter index={index + 1} chapter={item?.titleChapter} totalChapter={item?.duration} />
-                        {item?.lessons && item?.lessons.length > 0 && item?.lessons.map((lesson, index) => (
-                            <RenderItem
-                                key={index}
-                                index={index + 1}
-                                title={lesson?.titleLesson}
-                                duration={lesson?.timeLesson}
-                                status={haveLearn.includes(lesson?._id)}
-                                onPress={() => handlePress(lesson?._id, lesson?.urlVideo)}
-                                id={lesson._id}
-                            />
-                        ))}
-                        {item?.exams && item?.exams.length > 0 && item?.exams.map((test, index) => (
-                            <Test
-                                key={index}
-                                title={test?.title}
-                                duration={test?.time}
-                                status={test?.status}
-                                onPress={() => handlerQuizTest(test?.question, test?.time)}
+        } catch (error) {
+            createToast('error');
+            console.log(error);
+        }
+    }
 
-                            />
-                        ))}
-                    </View>
-                )
-            )}
-            keyExtractor={(item, index) => index.toString()}
-        />
-    ), [dataLesson, watching, haveLearn]);
+    function displayStudentInfoInModal(fullName, avatar, score, quiz, learn, finish, course,
+        rankData, examData,
+        courseLearnData,
+        courseFinishData) {
+        // Render thông tin cơ bản của học sinh
+        document.getElementById('avatarMore').src = avatar;
+        document.getElementById('nameStudents').innerText = fullName;
+        document.getElementById('score').innerText = score;
+        document.getElementById('rank').innerText = rankData;
+        document.getElementById('numTests').innerText = quiz;
+        document.getElementById('numCourses').innerText = course;
+        document.getElementById('numCoursesCompleted').innerText = finish;
+        document.getElementById('numCoursesInProgress').innerText = learn;
+        renderCoursesInProgress(courseLearnData);
+        renderCoursesCompleted(courseFinishData);
+        renderQuizzes(examData);
+        showInfo.classList.add('show');
+    }
 
-    return (
-        loading ? <LoadingView /> : <SafeAreaView style={styles.container}>
-            <Container style={styles.content}>
-                {video && (
-                    <Video
-                        width={'100%'}
-                        height={hp(24)}
-                        videoId={video}
-                        play={true}
-                    />
-                )}
-                <Container style={styles.viewLesson}>
-                    {
-                        dataLesson && dataLesson.length > 0 ? <RenderCourse /> : <Text
-                            style={{
-                                alignSelf: 'center',
-                                fontSize: FontSize.size_xl,
-                                fontFamily: FontFamily.mulishBold,
-                                marginTop: 20
-                            }}
-                        >Bài học đang được cập nhật</Text>
-                    }
-                </Container>
-            </Container>
-        </SafeAreaView>
-    );
-};
+    function renderCoursesInProgress(courseLearnData) {
+        const coursesInProgressTable = document.getElementById('coursesInProgressTable');
+        coursesInProgressTable.innerHTML = '';
+        if (courseLearnData.length === 0) {
+            coursesInProgressTable.innerHTML = '<tr><td colspan="3">Chưa có khoá học nào đang học</td></tr>';
+        }
+        courseLearnData.forEach(course => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+          <td>${course?.courseID?.title}</td>
+       <td  style = 
+       "
+        text-align: center;
+        font-weight: bold;
+       "  >${course?.completedLessonsCount}</td>
+         <td  style = 
+       "
+        text-align: center;
+        font-weight: bold;
+       "  >${course?.courseID?.totalLesson}</td>
+        `;
+            coursesInProgressTable.appendChild(row);
+        });
+    }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Color.colorGhostwhite,
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-    },
-    content: {
-        flex: 1,
-        width: wp(90),
-        backgroundColor: Color.colorGhostwhite,
-        marginTop: hp(2),
-    },
-    viewLesson: {
-        flex: 1,
-        width: wp(90),
-        backgroundColor: Color.primaryWhite,
-        borderRadius: 16,
-        padding: wp(1),
-        marginTop: hp(2),
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.08,
-        shadowRadius: 10,
-        elevation: 5,
-    },
-    section: {
-        fontFamily: FontFamily.jostSemiBold,
-        fontSize: FontSize.size_mini,
-        color: Color.colorGray_100,
-    },
-    mins: {
-        fontFamily: FontFamily.mulishExtraBold,
-        fontSize: FontSize.paragraphSmall_size,
-        color: Color.globalApp,
-    },
-    rowC: {
-        width: '100%',
-        justifyContent: 'space-between',
+    function renderCoursesCompleted(courseFinishData) {
+        console.log(courseFinishData)
 
-    },
-    minLesson: {
-        fontFamily: FontFamily.mulishBold,
-        fontSize: FontSize.size_smi,
-        color: Color.colorDimgray_100,
-        lineHeight: 20,
-    },
-    circleOrder: {
-        width: wp(10),
-        height: wp(10),
-        borderRadius: 50,
-        backgroundColor: Color.colorGhostwhite,
-        borderWidth: 3,
-        borderColor: Color.colorAliceblue,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: wp(3),
-    },
-    lesson: {
-        borderBottomColor: Color.colorAliceblue,
-        borderBottomWidth: 2,
-    },
-    order: { fontSize: FontSize.section },
+        const coursesCompletedTable = document.getElementById('coursesCompletedTable');
+        coursesCompletedTable.innerHTML = '';
+        if (courseFinishData.length === 0) {
+            coursesCompletedTable.innerHTML = '<tr><td colspan="3">Chưa có khoá học nào đưọc hoàn thành</td></tr>';
+        }
+        courseFinishData.forEach(course => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+         <td>${course?.courseID?.title}</td>
+           <td  style = 
+       "
+        text-align: center;
+        font-weight: bold;
+       "  >${course?.completedLessonsCount}</td>
+         <td  style = 
+       "
+        text-align: center;
+        font-weight: bold;
+       "  >${course?.courseID?.totalLesson}</td>
+        `;
+            coursesCompletedTable.appendChild(row);
+        });
+    }
+
+    function renderQuizzes(quiz) {
+        const quizzesTable = document.getElementById('quizzesTable');
+        console.log(quiz)
+        quizzesTable.innerHTML = '';
+        if (quizzesTable.length === 0) {
+            coursesCompletedTable.innerHTML = '<tr><td colspan="3">Chưa có khoá học nào đưọc hoàn thành</td></tr>';
+        }
+        quiz.forEach(quiz => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+      <td>${quiz?.quizID?.title}</td>
+      <td  style = 
+       "
+        text-align: center;
+        font-weight: bold;
+       "  >
+      ${quiz?.Score}/${quiz?.quizID?.points}</td>
+    `;
+
+            quizzesTable.appendChild(row);
+        });
+    }
+
 });
-
-export default React.memo(LessonCourse);

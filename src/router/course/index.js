@@ -32,7 +32,7 @@ router.get('/categoryFull', asnycHandler(categoryController.getFullCategory));
 router.post('/course', upload.single('imageCourse'), asnycHandler(courseController.createCourse));
 router.get('/course', asnycHandler(courseController.getCourses));
 // Check permission course 
-router.get('/course/:id', permission('888', '999'), asnycHandler(courseController.getCourseById));
+router.get('/course/:id', permission(['888', '999']), asnycHandler(courseController.getCourseById));
 router.put('/course/:id', upload.single('imageCourse'), asnycHandler(courseController.updateCourse));
 router.delete('/course/:id', asnycHandler(courseController.removeCourse));
 router.get('/search', asnycHandler(courseController.searchCourse));
