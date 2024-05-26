@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const InfoService = require('../../services/account/Info.service');
 const CourseService = require('../../services/course/course.service');
 const QuizService = require('../../services/trakingQuiz/Quiz.service');
@@ -33,7 +34,25 @@ const notificationService = new fireBaseNotification();
 const fcmDevice = new fcmTokenService();
 
 // Auth
-adminRouter.get('/auth', asnycHandler(async (req, res) => {
+adminRouter.get('/auth', (req, res, next) => {
+    try {
+        const token = req.cookies['accessToken'];
+        console.log(token)
+        if (!token) {
+            next();
+        } else {
+            const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            console.log(payload)
+            if (payload.role.includes('999')) {
+                return res.redirect('/admin/dashboard');
+            } else {
+                next();
+            }
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}, asnycHandler(async (req, res) => {
     res.render('admin/authAdmin');
 }));
 

@@ -2,10 +2,8 @@ import { LOCALHOST_API_URL } from './config.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('notification-form');
-
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-
         const selectUsers = document.getElementById('select-users').value;
         const type = document.getElementById('type').value;
         const title = document.getElementById('title').value;

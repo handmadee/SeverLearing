@@ -27,6 +27,7 @@ Array.from(forms).forEach(form => {
             })
             .then(data => {
                 if (data) {
+                    // Create
                     alert('Tạo thành công!');
                     form.reset();
                 } else {
