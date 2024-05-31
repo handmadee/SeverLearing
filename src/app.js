@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 });
 
 // Handle other errors
-app.use((error, req, res, next) => {
+app.use((error, res, next) => {
     res.status(error.statusCode || 500);
     res.json({
         error: {

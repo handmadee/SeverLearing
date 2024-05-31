@@ -2,7 +2,7 @@
 'use strict';
 
 const express = require('express');
-const upload = require('./../untils/upload');
+const { upload } = require('./../untils/upload');
 const NotificationController = require('../controllers/notification.controller');
 const { asnycHandler } = require('../helpers/asyncHandler');
 const router = express.Router();

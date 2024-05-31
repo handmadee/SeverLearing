@@ -1,0 +1,312 @@
+<%- include('./../comon/header') %>
+<!-- Main -->
+<div class="main">
+  <%- include('./../comon/topBarSearch') %>
+  <!-- Main -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      width: 95%;
+      height: 98vh;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 2px 2px 12px #aaa;
+    }
+    .title {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .import-section {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .import-section input[type="file"] {
+      padding: 5px;
+    }
+    .import-section button {
+      padding: 5px 10px;
+      margin-left: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table,
+    th,
+    td {
+      border: 1px solid black;
+    }
+    th,
+    td {
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    h5 {
+      background-color: rgba(26, 25, 25, 0.687);
+      color: rgb(237, 241, 18);
+      border-radius: 10px;
+      padding: 10px 0;
+      text-align: center;
+    }
+    h5:hover {
+      cursor: pointer;
+      background-color: #4a95e0;
+      color: white;
+    }
+  </style>
+  <div class="container">
+    <div class="title">
+      <h5>IMPORT DANH SÁCH HỌC SINH</h5>
+    </div>
+    <div class="import-section">
+      <input type="file" id="fileInput" />
+      <button class="btn btn-success" id="importButton">Import</button>
+      <!-- Import a students -->
+      <button class="btn btn-info text-white" id="importPersonal">
+        Personal add
+      </button>
+    </div>
+    <table id="studentTable">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Họ và tên</th>
+          <th>Số điện thoại phụ huynh</th>
+          <th>Ca</th>
+          <th>Thứ</th>
+          <th>Chức Năng</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (data && data.length > 0) { %> <% data.forEach((user, index) => {
+        %>
+        <tr>
+          <td scope="row"><%= index + 1 %></td>
+          <td><%= user.fullname %></td>
+          <td><%= user.phone %></td>
+          <td><%= user.study %></td>
+          <td><%= user.days %></td>
+          <td>
+            <button
+              value="<%= user._id %>"
+              class="btn btn-edit btn-primary accordion"
+            >
+              Edit
+            </button>
+            <button value="<%= user._id %>" class="btn btn-delete btn-danger">
+              Delete
+            </button>
+          </td>
+        </tr>
+        <% }) %> <% } else { %>
+        <tr>
+          <td colspan="6" class="text-center">No data</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <div class="card-footer">
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+          <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/schedule/importStudents?page=<%= currentPage - 1 %>"
+              tabindex="-1"
+              aria-disabled="true"
+              >Previous</a
+            >
+          </li>
+          <% for(let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+            <a
+              class="page-link"
+              href="/admin/schedule/importStudents?page=<%= i %>"
+              ><%= i %></a
+            >
+          </li>
+          <% } %>
+          <li
+            class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>"
+          >
+            <a
+              class="page-link"
+              href="/admin/schedule/importStudents?page=<%= currentPage + 1 %>"
+              >Next</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <!-- Popup -->
+  <div
+    class="modal fade"
+    id="editModal"
+    tabindex="-1"
+    aria-labelledby="editModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title mx-auto p-2" id="editModalLabel">
+            Chỉnh sửa học sinh
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            id="cancelPopup"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation" novalidate>
+            <div class="mb-3">
+              <label for="fullname" class="form-label">Tên học sinh</label>
+              <input type="text" class="form-control" id="fullname" required />
+              <div class="invalid-feedback">Vui lòng nhập tên.</div>
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label"
+                >Số điện thoại phụ huynh</label
+              >
+              <input type="tel" class="form-control" id="phone" required />
+              <div class="invalid-feedback">Vui lòng nhập sđt.</div>
+            </div>
+            <div class="mb-3">
+              <label for="study" class="form-label">Ca Học</label>
+              <input
+                type="number"
+                min="0"
+                class="form-control"
+                id="study"
+                required
+              />
+              <div class="invalid-feedback">Vui lòng nhập ca học.</div>
+            </div>
+            <div class="mb-3">
+              <label for="days" class="form-label">Ngày học</label>
+              <div id="daysContainer"></div>
+              <button type="button" id="addDayButton" class="btn btn-secondary">
+                Thêm ngày học
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            id="cancelPopup2"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Đóng
+          </button>
+          <button type="button" id="savePopup" class="btn btn-primary">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="PersonalModal"
+    tabindex="-1"
+    aria-labelledby="editModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6>Thêm học sinh mới</h6>
+          <button
+            type="button"
+            class="btn-close"
+            id="cancelPopup12"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form class="needs-validation123" novalidate>
+            <div class="mb-3">
+              <label for="fullname1" class="form-label">Tên học sinh</label>
+              <input type="text" class="form-control" id="fullname1" required />
+              <div class="invalid-feedback">Vui lòng nhập tên.</div>
+            </div>
+            <div class="mb-3">
+              <label for="phone1" class="form-label"
+                >Số điện thoại phụ huynh</label
+              >
+              <input type="tel" class="form-control" id="phone1" required />
+              <div class="invalid-feedback">Vui lòng nhập sđt.</div>
+            </div>
+            <div class="mb-3">
+              <label for="study1" class="form-label">Ca Học</label>
+              <input
+                type="number"
+                min="0"
+                class="form-control"
+                id="study1"
+                required
+              />
+              <div class="invalid-feedback">Vui lòng nhập ca học.</div>
+            </div>
+            <div class="mb-3">
+              <label for="daysContainer1" class="form-label">Ngày học</label>
+              <div id="daysContainer1">
+                <select class="form-select days" name="days" required="">
+                  <option disabled="">Ngày học học sinh trong tuần</option>
+                  <option value="2">Thứ 2</option>
+                  <option value="3">Thứ 3</option>
+                  <option value="4">Thứ 4</option>
+                  <option value="5">Thứ 5</option>
+                  <option value="6">Thứ 6</option>
+                  <option value="7">Thứ 7</option>
+                  <option value="8">Chủ nhật</option>
+                </select>
+              </div>
+              <button
+                type="button"
+                id="addDayButton1"
+                class="btn btn-secondary mt-4"
+              >
+                Thêm ngày học
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            id="cancelPopup1"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Đóng
+          </button>
+          <button type="button" id="savePopup1" class="btn btn-primary">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+  <script type="module" src="/JS/studentsScheducle.js"></script>
+  <%- include('./../comon/footer') %>
+</div>

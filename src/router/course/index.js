@@ -13,7 +13,7 @@ const quizController = require('../../controllers/course/exam.controller');
 const questionController = require('../../controllers/course/question.controller');
 const AnswerController = require('../../controllers/course/answer.controller');
 const { asnycHandler } = require('../../helpers/asyncHandler');
-const upload = require('./../../untils/upload');
+const { upload } = require('./../../untils/upload');
 const TrackingCourseController = require('../../controllers/trackingCourse/trackingCourse');
 const router = express.Router();
 

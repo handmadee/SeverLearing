@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", function () {
             fetchStudentInfo(studentId);
         });
     });
-
     deleteButtons.forEach(button => {
         button.addEventListener("click", function () {
             const studentId = this.dataset.value1;
@@ -30,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
             deleteStudent(studentId, accountID);
         });
     });
-
     showInfoButtons.forEach(button => {
         button.addEventListener("click", function (e) {
 

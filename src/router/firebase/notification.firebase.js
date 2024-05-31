@@ -2,7 +2,7 @@
 const express = require('express');
 const { asnycHandler } = require('../../helpers/asyncHandler');
 const NotificationFireBaseControler = require('../../controllers/firebase/push.notification');
-const upload = require('../../untils/upload');
+const { upload } = require('../../untils/upload');
 const router = express.Router();
 
 

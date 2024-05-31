@@ -2,7 +2,7 @@
 
 const express = require("express");
 const { asnycHandler } = require('./../../helpers/asyncHandler');
-const upload = require('./../../untils/upload');
+const { upload } = require('./../../untils/upload');
 const popupControler = require('./../../controllers/popup/popup.controler');
 const router = express.Router();
 

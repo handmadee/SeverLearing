@@ -3,7 +3,7 @@
 const express = require('express');
 const InfoController = require('./../../controllers/infor.controller');
 const { asnycHandler } = require('../../helpers/asyncHandler');
-const upload = require('../../untils/upload');
+const { upload } = require('../../untils/upload');
 const router = express.Router();
 
 // Create User 

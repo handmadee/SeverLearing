@@ -17,7 +17,7 @@ const TrackingCourseService = require('../../services/trackingCourse/trackingCou
 const PopupService = require('../../services/popup/popup.service');
 const fireBaseNotification = require('./../../services/firebase/notification.firebase.services');
 const fcmTokenService = require('../../services/firebase/fcmToken.firebase.services');
-
+const scheduleService = require('../../services/schedule/schedule.service');
 
 const CourseService12 = new CourseService();
 const QuizService12 = new QuizService();
@@ -54,6 +54,11 @@ adminRouter.get('/auth', (req, res, next) => {
     }
 }, asnycHandler(async (req, res) => {
     res.render('admin/authAdmin');
+}));
+
+// Create account 
+adminRouter.get('/students/create', permission('999'), asnycHandler(async (req, res) => {
+    res.render('admin/createAccount', { title: "Tạo tài khoản" });
 }));
 
 // Dashboard 
@@ -298,7 +303,31 @@ adminRouter.get('/firebase/scheduleNotification', permission('999'), asnycHandle
     res.render('admin/viewNotification', { title: "Lên lịch thông báo", data, currentPage: page, totalPages });
 }));
 
-new Date().getDay
+
+// Schedule students
+adminRouter.get('/schedule/importStudents', permission('999'), asnycHandler(async (req, res) => {
+    const currentPage = parseInt(req.query.page) || 1;
+    const data = await scheduleService.getAllShechedule(currentPage, 10);
+    const totalPages = data?.totalPages;
+    res.render('./admin/shechedule/importSchedule', { title: "Đăng tải học sinh", data: data?.data, totalPages, currentPage });
+}));
+adminRouter.get('/schedule/findShechedule', permission('999'), asnycHandler(async (req, res) => {
+    res.render('./admin/shechedule/findShechedule', { title: "Tìm kiếm thời khoá biểu " });
+}));
+adminRouter.get('/schedule/exportShechedule', permission('999'), asnycHandler(async (req, res) => {
+    res.render('./admin/shechedule/exportShechedule', { title: "Xuất thời khoá biểu" });
+}));
+
+adminRouter.get('/schedule/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
+    const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
+    const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
+    console.log(days)
+    res.render('./admin/shechedule/teacherShedule', { title: "Điểm danh", date, days });
+}));
+// 
+
+
+
 
 
 // Errors

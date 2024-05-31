@@ -1,5 +1,6 @@
 const multer = require('multer');
 const path = require('path');
+const xlsx = require('xlsx');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -20,9 +21,21 @@ const fileFilter = (req, file, cb) => {
     cb(null, true);
 };
 
+const uploadExcel = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        if (!file.originalname.match(/\.(xlsx|xls)$/)) {
+            return cb(new Error('Only .xlsx, .xls format allowed!'));
+        }
+        cb(null, true);
+    }
+});
+
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter
 });
 
-module.exports = upload;
+
+
+module.exports = { upload, uploadExcel };
