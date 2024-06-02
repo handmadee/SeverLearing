@@ -9,7 +9,7 @@
 
 body {
   background-color: #c9d6ff;
-  background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+  background: linear-gradient(to right, #e2e2e2, #5ee7ab);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,7 +47,7 @@ body {
 }
 
 .container button {
-  background-color: #512da8;
+  background-color: #40b883;
   color: #fff;
   font-size: 12px;
   padding: 10px 45px;
@@ -163,7 +163,7 @@ body {
 }
 
 .toggle {
-  background-color: #512da8;
+  background-color: #40b883;
   height: 100%;
   background: linear-gradient(to right, #5c6bc0, #512da8);
   color: #fff;
@@ -180,6 +180,7 @@ body {
 }
 
 .toggle-panel {
+  background-color: #40b883;
   position: absolute;
   width: 50%;
   height: 100%;

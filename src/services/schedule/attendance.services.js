@@ -12,7 +12,7 @@ class StudentEttendanceService extends BaseService {
     }
     // Tìm kiếm theo ngày tháng và ca học
     async getStudy(study, date) {
-        return await ettendanceModel.find({ study, date }).populate('studentAccount').select('studentAccount attendance ');
+        return await ettendanceModel.find({ study, date }).populate('studentAccount').select('studentAccount attendance  reason');
     }
     // Thay đổi trạng thái điểm danh
     async changeAttendance(id, attendance) {
@@ -76,6 +76,11 @@ class StudentEttendanceService extends BaseService {
             path: 'studentAccount',
             select: 'fullname'
         }).select('studentAccount attendance date');
+    }
+
+    // del find account id 
+    async delAccountID(studentAccount) {
+        return await ettendanceModel.deleteMany({ studentAccount });
     }
 
 

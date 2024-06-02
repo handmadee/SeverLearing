@@ -46,9 +46,9 @@ Chào mừng bạn đến với hệ thống học tập online và hệ thống
 
 Nếu bạn gặp bất kỳ vấn đề gì hoặc cần hỗ trợ, vui lòng liên hệ với chúng tôi qua các kênh sau:
 
-- **Email**: support@example.com
-- **Số điện thoại**: 123-456-789
-- **Địa chỉ**: 123 Đường ABC, Quận XYZ, Thành phố HCM
+- **Email**: handmadee38@gmail.com
+- **Số điện thoại**: 0377723422
+- **Địa chỉ**: K127-20 Mẹ Suốt TP.Đà Nẵng
 
 Chúng tôi luôn sẵn sàng hỗ trợ bạn!
 
