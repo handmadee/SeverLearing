@@ -1,9 +1,11 @@
 const { ForbiddenError } = require('../../core/error.response');
 const { OK } = require('../../core/success.response');
 const StudentShecheduleService = require('../../services/schedule/schedule.service');
+const attendanceService = require('../../services/schedule/attendance.services');
 const xlsx = require("xlsx");
 const fs = require("fs");
 const _ = require("lodash");
+
 
 class StudentShecheduleController {
 
@@ -41,6 +43,7 @@ class StudentShecheduleController {
     async deleteShechedule(req, res) {
         const id = req.params.id;
         await StudentShecheduleService.remove(id);
+        await attendanceService.delAccountID(id);
         return new OK({
             message: 'Delete success'
         }).send(res);
