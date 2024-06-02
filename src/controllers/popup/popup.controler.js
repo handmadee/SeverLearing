@@ -35,6 +35,7 @@ class PopupController {
     static async updatePopup(req, res) {
         const file = req.file ? req.file.filename : null;
         const popupImage = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+
         return new OK({
             message: "PopupService12 has been successfully updated.",
             data: await PopupService12.update(req.params.id, { popupImage })

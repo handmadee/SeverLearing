@@ -6,12 +6,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const editButtons = document.querySelectorAll(".btn-edit");
     const deleteButtons = document.querySelectorAll(".btn-delete");
     const showInfoButtons = document.querySelectorAll(".btn-infor");
-    const showModalInfo = document.querySelector('#studentModal');
-    const closeBtn = document.querySelector('#closeModal');
-    const closeMore = document.querySelector('#CloseInfor');
-    const cancelBtn = document.querySelector('#cancelPopUp');
-    const avatarView = document.querySelector('#student-avatar-view');
-    const saveBtn = document.querySelector('#saveInfor');
+    const showModalInfo = document.getElementById('studentModal');
+    const closeBtn = document.getElementById('closeModal');
+    const closeMore = document.getElementById('CloseInfor');
+    const cancelBtn = document.getElementById('cancelPopUp');
+    const avatarView = document.getElementById('student-avatar-view');
+    const saveBtn = document.getElementById('saveInfor');
     const showInfo = document.getElementById('studentInfoModal');
     const roleUser = document.getElementById('student-role');
 
@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             reader.readAsDataURL(file);
         });
+        saveBtn.removeEventListener('click', updateStudentInfo);
         saveBtn.addEventListener('click', function () {
             updateStudentInfo(student._id);
         });
