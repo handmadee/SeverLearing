@@ -49,7 +49,7 @@ class CourseController {
     static async updateCourse(req, res) {
         try {
             let updateData = { ...req.body };
-            console.log(req.file.filename)
+            console.log(req.body)
             if (req.file) {
                 const file = req.file.filename;
                 const avatar = `${process.env.LOCAL_HOST2}/uploads/${file}`;
