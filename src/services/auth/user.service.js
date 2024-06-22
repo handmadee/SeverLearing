@@ -1,5 +1,7 @@
 const { BadRequestError, UnauthorizedError } = require('../../core/error.response');
 const User = require('./../../models/account.model');
+const TrackingQuiz = require('./../../models/trakingQuiz/TrakingQuiz');
+const TrackingCourse = require('./../../models/traking /historyCourse.model');
 const Token = require('./../../models/token.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -119,12 +121,18 @@ exports.changePasswordByUsername = async (data) => {
 
 // Delete Account
 exports.deleteAccount = async (_id) => {
-    const user = await User.findByIdAndDelete(_id);
-    if (!user) {
-        throw new BadRequestError('User not found');
-    }
-}
+    try {
+        const deleteUser = User.findByIdAndDelete(_id);
+        const deleteTrackingCourses = TrackingCourse.deleteMany({ userID: _id });
+        const deleteTrackingQuizzes = TrackingQuiz.deleteMany({ userID: _id });
+        await Promise.all([deleteUser, deleteTrackingCourses, deleteTrackingQuizzes]);
 
+        console.log(`User with ID ${_id} and their tracking data have been deleted successfully.`);
+    } catch (error) {
+        console.error(`Error deleting user data for ID ${_id}:`, error);
+    }
+
+}
 // edit role
 exports.editRole = async (id, pemission) => {
     const user = await User.findOneAndUpdate(
@@ -137,3 +145,4 @@ exports.editRole = async (id, pemission) => {
     }
     return user;
 }
+

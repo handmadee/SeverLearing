@@ -54,21 +54,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    let isSavePopupListenerAdded = false;
     const renderCategory = async (id, nameCategory) => {
         const cate = document.getElementById('nameCategory');
         cate.value = nameCategory;
         editCoursePopup.classList.add('show');
         const image = document.getElementById('imageCategory');
         const form = new FormData();
-        savePopup.addEventListener('click', async function () {
 
-            if (image.files > 0) {
-                form.append('imageCategory', image.files[0]);
-            }
-            form.append('nameCategory', cate.value);
-            await updateCourse(form, id);
-        });
-    }
+        if (!isSavePopupListenerAdded) {
+            savePopup.addEventListener('click', async function () {
+                form.append('nameCategory', cate.value);
+                if (image.files.length > 0) {
+                    form.append('imageCategory', image.files[0]);
+                }
+                await updateCourse(form, id);
+            });
+            isSavePopupListenerAdded = true;
+        }
+    };
+
 
     const updateCourse = async (data, courseid) => {
         try {

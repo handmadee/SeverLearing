@@ -31,9 +31,16 @@ class CategoryQuizControler {
         }).send(res);
     }
     static async updateCategory(req, res) {
+        let updateData = { ...req.body };
+        console.log(req.body)
+        if (req.file) {
+            const file = req.file.filename;
+            const avatar = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+            updateData.imageCategory = avatar;
+        }
         return new OK({
             message: "Category updated successfully",
-            data: await category.update(req.params.id, req.body)
+            data: await category.update(req.params.id, updateData)
         }).send(res);
     }
     static async removeCategory(req, res) {

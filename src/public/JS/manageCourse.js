@@ -1,136 +1,130 @@
 'use strict';
+
 import { createToast } from './Aleart.js';
 import { LOCALHOST_API_URL } from './config.js';
-const localhost = LOCALHOST_API_URL;
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const editButtons = document.querySelectorAll(".btn-edit");
     const deleteButtons = document.querySelectorAll(".btn-delete");
-    // Control trong popup
     const editCoursePopup = document.getElementById('editModal');
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
-    // Control trong popup
-    cancelPopup.addEventListener('click', function () {
-        editCoursePopup.classList.remove('show');
-    });
-    cancelPopup2.addEventListener('click', function () {
-        editCoursePopup.classList.remove('show');
-    });
-    // Control 
+
+    cancelPopup.addEventListener('click', () => editCoursePopup.classList.remove('show'));
+    cancelPopup2.addEventListener('click', () => editCoursePopup.classList.remove('show'));
+
     editButtons.forEach(button => {
-        button.addEventListener("click", function (e) {
+        button.addEventListener("click", (e) => {
             const id = e.target.dataset.courseid;
-            fetchCourse(id)
+            if (id) fetchCourse(id);
         });
     });
 
     deleteButtons.forEach(button => {
-        button.addEventListener("click", function (e) {
+        button.addEventListener("click", (e) => {
             const id = e.target.dataset.courseid;
             if (!id) return createToast('error');
-            delCourse(id)
+            delCourse(id);
         });
     });
 
-    const delCourse = async (courseid) => {
+    const delCourse = async (courseId) => {
         try {
-            const cousrse = await fetch(`${localhost}/course/${courseid}`, {
-                method: 'DELETE',
-            });
-            if (!cousrse.ok) {
-                return createToast('Xoá khoá học thất bại')
-            }
-            alert('Xoá khoá học thành công ');
+            const response = await fetch(`${LOCALHOST_API_URL}/course/${courseId}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error('Xóa khóa học thất bại');
+            alert('Xóa khóa học thành công');
             location.reload();
         } catch (error) {
-            console.log(error)
-            return createToast('Xoá khoá học thất bại')
+            console.error(error);
+            createToast('error');
         }
-    }
+    };
 
-    const fetchCourse = async (courseid) => {
-        const accessToken = document.cookie.split(';').find(cookie => cookie.includes('accessToken')).split('=')[1];
+    const fetchCourse = async (courseId) => {
+        const accessToken = document.cookie.split(';').find(cookie => cookie.includes('accessToken'))?.split('=')[1];
+        if (!accessToken) {
+            return createToast('error');
+        }
+
         try {
-            // gửi lên 1 header để xác định là admin
-            const cousrse = await fetch(`${localhost}course/${courseid}`, {
+            const response = await fetch(`${LOCALHOST_API_URL}/course/${courseId}`, {
                 method: 'GET',
                 headers: {
-
-                    'authorization': `Bearer ${accessToken}`
+                    'Authorization': `Bearer ${accessToken}`
                 }
-            })
-            console.log(cousrse)
-            if (!cousrse.ok) {
-                return createToast('error')
-            }
-            const data = await cousrse.json();
+            });
+
+            if (!response.ok) throw new Error('Lấy khóa học thất bại');
+
+            const data = await response.json();
             const { title, detailCourse, imageCourse, category_id } = data?.data?.data;
-            renderCourse(courseid, title, detailCourse, imageCourse, category_id);
+            renderCourse(courseId, title, detailCourse, imageCourse, category_id);
         } catch (error) {
-            console.log(error)
-            return createToast('error')
+            console.error(error);
+            createToast('error');
         }
-    }
+    };
 
-
-    const renderCourse = async (idCourse, title, detailCourse, imageCourse, category_id) => {
-        const titleCourse = document.getElementById('title');
-        const detail = document.getElementById('detailCourse');
-        const image = document.getElementById('imageCourse');
-        const category123 = document.getElementById('chaptter_id');
+    const renderCourse = async (courseId, title, detailCourse, imageCourse, categoryId) => {
+        const titleInput = document.getElementById('title');
+        const detailInput = document.getElementById('detailCourse');
+        const imageInput = document.getElementById('imageCourse');
+        const categorySelect = document.getElementById('chaptter_id');
 
         try {
-            const categoryCourse = await fetch(`${localhost}/category`)
-            if (!categoryCourse.ok) {
-                return createToast('error')
-            }
-            const data = await categoryCourse.json();
-            console.log(data)
-            const category = data?.data?.data;
-            category.forEach(item => {
+            const response = await fetch(`${LOCALHOST_API_URL}/category`);
+            if (!response.ok) throw new Error('Lấy danh mục thất bại');
+
+            const data = await response.json();
+            const categories = data?.data?.data;
+
+            categorySelect.innerHTML = '';
+            categories.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item._id;
-                option.text = item?.nameCategory;
-                category123.appendChild(option);
+                option.textContent = item.nameCategory;
+                categorySelect.appendChild(option);
             });
-            titleCourse.value = title;
-            detail.value = detailCourse;
-            category123.value = category_id;
+
+            titleInput.value = title;
+            detailInput.value = detailCourse;
+            categorySelect.value = categoryId;
             editCoursePopup.classList.add('show');
-            // Save
-            savePopup.addEventListener('click', async function () {
+
+            const handleSave = async () => {
                 const formData = new FormData();
-                formData.append('title', titleCourse.value);
-                formData.append('detailCourse', detail.value);
-                if (image.files.length > 0) {
-                    formData.append('imageCourse', image.files[0]);
+                formData.append('title', titleInput.value);
+                formData.append('detailCourse', detailInput.value);
+                if (imageInput.files.length > 0) {
+                    formData.append('imageCourse', imageInput.files[0]);
                 }
-                formData.append('category_id', category123.value);
+                formData.append('category_id', categorySelect.value);
 
-                await updateCourse(formData, idCourse);
-            });
+                await updateCourse(formData, courseId);
+            };
+            savePopup.removeEventListener('click', handleSave);
+            savePopup.addEventListener('click', handleSave);
         } catch (error) {
-            console.log(error)
-            return createToast('error')
+            console.error(error);
+            createToast('error');
         }
-    }
+    };
 
-    const updateCourse = async (formData, courseid) => {
+    const updateCourse = async (formData, courseId) => {
         try {
-            const cousrse = await fetch(`${localhost}course/${courseid}`, {
+            const response = await fetch(`${LOCALHOST_API_URL}/course/${courseId}`, {
                 method: 'PUT',
                 body: formData
             });
-            if (!cousrse.ok) {
-                return createToast('error')
-            }
-            alert('Cập nhật khoá học thành công ');
+
+            if (!response.ok) throw new Error('Cập nhật khóa học thất bại');
+            alert('Cập nhật khóa học thành công');
             location.reload();
         } catch (error) {
-            return createToast('error')
+            console.error(error);
+            createToast('error');
         }
-    }
+    };
 });
-
-

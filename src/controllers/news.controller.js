@@ -35,9 +35,15 @@ class NewsController {
         }).send(res);
     }
     static async updateNews(req, res) {
+
+        const dataObj = { ...req.body };
+        const file = req.file ? req.file.filename : null;
+        if (file) {
+            dataObj.imagePost = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+        }
         return new OK({
             message: "News has been successfully updated.",
-            data: await News.update(req.params.id, req.body)
+            data: await News.update(req.params.id, dataObj)
         }).send(res);
     }
     static async removeNews(req, res) {

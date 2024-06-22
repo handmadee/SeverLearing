@@ -64,9 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 infor.addEventListener("click", async function () {
                     const id = infor.value;
                     const name = infor.getAttribute("data-name");
-
-                    console.log(id);
-                    console.log(study, date, date1)
                     const response = await fetch(`${LOCALHOST_API_URL}getAttendanceAloneByAccount/${id}`, {
                         method: "POST",
                         headers: {
@@ -87,18 +84,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     // RENDER 
                     emptyTable.innerHTML = "";
                     absent && absent.length > 0 ? absent.forEach((item, index) => {
+                        const study = new Date(item?.date).toISOString().slice(0, 10);
                         const tr = document.createElement("tr");
                         tr.innerHTML = `
-                        <td>${item?.date}</td>
+                        <td>${study}</td>
                         `;
                         emptyTable.appendChild(tr);
                     }) : emptyTable.innerHTML = '<tr><td colspan="1" class="text-center">Không có dữ liệu</td></tr>';
 
                     schoolBoard.innerHTML = "";
                     present && present.length > 0 ? present.forEach((item, index) => {
+                        const study = new Date(item?.date).toISOString().slice(0, 10);
                         const tr = document.createElement("tr");
                         tr.innerHTML = `
-                        <td>${item?.date}</td>
+                        <td>${study}</td>
                         `;
                         schoolBoard.appendChild(tr);
                     }) : schoolBoard.innerHTML = '<tr><td colspan="1" class="text-center">Không có dữ liệu</td></tr>';

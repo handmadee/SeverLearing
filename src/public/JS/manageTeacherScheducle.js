@@ -7,10 +7,10 @@ const saveInfor = document.getElementById("saveInfor");
 const contentTable = document.getElementById("contentTable");
 
 document.addEventListener("DOMContentLoaded", async function () {
-    // Handle shift change
+    // Xử lý thay đổi ca học
     const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
     day.value = days;
-    // Tự động select đúng h học 
+    // Tự động chọn ca học đúng dựa trên thời gian hiện tại
     const shiftNow = new Date().getHours() + (new Date().getMinutes() / 60);
     if (shiftNow >= 8 && shiftNow <= 9.30) {
         shift.value = 1;
@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     } else {
         shift.value = 5;
     }
-
 
     const renderLoad = async (value, days) => {
         contentTable.innerHTML = '';
@@ -40,30 +39,31 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const tr = document.createElement('tr');
                 tr.setAttribute('data-id', item?._id);
                 tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${item?.fullname}</td>
-            <td>
-                <input type="radio" name="attendance${index}" value="present"  />
-            </td>
-            <td>
-                <input type="radio" name="attendance${index}" value="absent" checked />
-            </td>
-            <td>
-                <input class="w-100 h-100 border-0 p-3" type="text" />
-            </td>
-        `;
+                    <td>${index + 1}</td>
+                    <td>${item?.fullname}</td>
+                    <td>
+                        <input type="radio" name="attendance${index}" value="present" checked />
+                    </td>
+                    <td>
+                        <input type="radio" name="attendance${index}" value="absent"  />
+                    </td>
+                    <td>
+                        <input class="w-100 h-100 border-0 p-3" type="text" />
+                    </td>
+                `;
                 contentTable.appendChild(tr);
             });
         } else {
             contentTable.innerHTML = `
-            <tr>
-                <td colspan="5" class="text-center">Không có học sinh học ca hiện tại</td>
-            </tr>
-        `;
+                <tr>
+                    <td colspan="5" class="text-center">Không có học sinh học ca hiện tại</td>
+                </tr>
+            `;
         }
-
     }
+
     await renderLoad(shift.value, days);
+
     shift.addEventListener("change", async function (e) {
         const days = day.value;
         const value = e.target.value;
@@ -71,13 +71,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     day.addEventListener("change", async function (e) {
-        // Handle day change
+        // Xử lý thay đổi ngày
         const days = e.target.value;
         const value = shift.value;
         await renderLoad(value, days);
     });
-    // Save schedule for teacher
+
+    let isSaving = false;
     saveInfor.addEventListener("click", async function () {
+        if (isSaving) return;
+        isSaving = true;
+
         const data = Array.from(contentTable.children).map((tr, index) => {
             const date = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
             const id = tr.getAttribute('data-id');
@@ -94,24 +98,37 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         });
         console.log(data)
-        // Call API to save data
-        const response = await fetch(`${LOCALHOST_API_URL}attendance`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        if (!response.ok) {
-            return createToast('error');
-        }
-        const result = await response.json();
-        if (result?.status === 200) {
-            createToast('success');
-        } else {
+
+        try {
+            const response = await fetch(`${LOCALHOST_API_URL}attendance`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                createToast('error');
+            } else {
+                const result = await response.json();
+                if (result?.status === 200) {
+                    createToast('success');
+                    // Xóa nội dung bảng sau khi lưu thành công
+                    contentTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center">Danh sách đã được lưu và xóa</td>
+                        </tr>
+                    `;
+                } else {
+                    createToast('error');
+                }
+            }
+        } catch (error) {
             createToast('error');
+            console.error('Error:', error);
+        } finally {
+            isSaving = false;
         }
     });
 });
-
-

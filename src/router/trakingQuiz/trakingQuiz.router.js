@@ -43,7 +43,7 @@ router.delete('/questionQuiz/:id', asnycHandler(QuestionQuizController.removeQue
 // Quiz
 router.get('/quizExam', asnycHandler(QuizController.getCategory));
 router.post('/quizExam', asnycHandler(QuizController.createCategory));
-router.get('/quizExam/:id', permission('888', '999'), asnycHandler(QuizController.getCategoryById));
+router.get('/quizExam/:id', permission(['888', '999']), asnycHandler(QuizController.getCategoryById));
 router.put('/quizExam/:id', asnycHandler(QuizController.updateCategory));
 router.delete('/quizExam/:id', asnycHandler(QuizController.removeCategory));
 router.get('/quizExam/level/:categoryQuiz_id/:level', asnycHandler(QuizController.selectQuizByCategoryAndLevel));

@@ -1,7 +1,5 @@
 'use strict';
-
-const { type } = require('express/lib/response');
-const { model, Schema, Types } = require('mongoose');
+const { model, Schema } = require('mongoose');
 
 const DOCUMENT_NAME = 'historyCourse';
 const COLLECTION_NAME = 'historyCourses';
@@ -23,4 +21,3 @@ const shopSechema = new Schema({
 // Export the model ff
 module.exports = model(DOCUMENT_NAME, shopSechema);
 
-//661e2e29aa067eaa3939e46f ID historycourse 

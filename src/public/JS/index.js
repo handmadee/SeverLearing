@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const data = await response.json();
             const { accessToken, refreshToken, role } = data?.data?.data;
-            alert(role == 789)
             if (role == 789) {
                 document.cookie = `accessToken=${accessToken}; path=/;`;
                 document.cookie = `refreshToken=${refreshToken}; path=/;`;
@@ -51,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = '/admin/dashboard';
         } catch (error) {
             console.log(error);
-            createToast('login')
+            createToast('error')
         }
     });
 

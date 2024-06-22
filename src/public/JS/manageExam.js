@@ -43,32 +43,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const delExam = async (id) => {
         try {
-            const exam = await fetch(`${localhost}/quizExam/${id}`, {
+            const exam = await fetch(`${localhost}quizExam/${id}`, {
                 method: 'DELETE',
             });
             if (!exam.ok) {
-                return createToast('Xoá bài kiểm tra thất bại')
+                return createToast('error')
             }
             alert('Xoá bài kiểm tra  thành công ');
             location.reload();
         } catch (error) {
             console.log(error)
-            return createToast('Xoá bài kiểm tra thất bại')
+            return createToast('error')
         }
     }
 
     const fetchExam = async (id) => {
+        const accessToken = document.cookie.split(';').find(cookie => cookie.includes('accessToken'))?.split('=')[1];
+        if (!accessToken) {
+            return createToast('error');
+        }
         try {
-            const cousrse = await fetch(`${localhost}/quizExam/${id}`)
+            const cousrse = await fetch(`${localhost}quizExam/${id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                }
+            )
             if (!cousrse.ok) {
-                return createToast('Tìm bài kiểm tra thất bại')
+                return createToast('error')
             }
             const data = await cousrse.json();
             const { title, time, points, level, categoryQuiz_id } = data?.data?.data;
             renderExam(id, title, time, points, level, categoryQuiz_id);
         } catch (error) {
             console.log(error)
-            return createToast('Tìm bài kiểm tra thất bại')
+            return createToast('error')
         }
     }
 
@@ -80,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const categoryExam12 = document.getElementById('categoryQuiz_id');
         const level = document.getElementById('level');
         try {
-            const categoryExam = await fetch(`${localhost}/categoryQuiz`)
+            const categoryExam = await fetch(`${localhost}categoryQuiz`)
             if (!categoryExam.ok) {
                 return createToast('error')
             }
@@ -126,13 +137,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify(data),
             });
             if (!cousrse.ok) {
-                return createToast('Cập nhật bài kiểm tra thất bại')
+                return createToast('error')
             }
             alert('Cập nhật bài kiểm tra thành công ');
             location.reload();
         } catch (error) {
             console.log(error)
-            return createToast('Cập nhật bài kiểm tra thất bại')
+            return createToast('error')
         }
     }
 
