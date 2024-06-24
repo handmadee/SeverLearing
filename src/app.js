@@ -2,9 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const { checkOverloadConnect } = require('./helpers/check.connect');
-const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const router = require('./router');
 const adminRouter = require('./router/layouts/admin');
@@ -20,6 +20,7 @@ app.use(compression()); // Compress response bodies for faster transmission
 app.use(express.json()); // Parse incoming request bodies with JSON payloads
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data with querystring library
 app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
+
 
 // Initialize database connection
 require('./dbs/init.mongodb');

@@ -38,7 +38,9 @@ const logout = document.getElementById('logoutAdmin');
 logout.addEventListener('click', (e) => {
     e.preventDefault();
     if (confirm('Bạn muốn đăng xuất dưới quyền admin atribiuter')) {
+        // Xóa cookie accessToken
         document.cookie = `accessToken=; max-age=0; path=/;`;
+        // Xóa cookie refreshToken
         document.cookie = `refreshToken=; max-age=0; path=/;`;
         window.location.href = '/admin/auth';
     }

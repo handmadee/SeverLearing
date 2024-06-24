@@ -42,6 +42,10 @@ exports.login = async (loginData) => {
 exports.verifyToken = async (token) => {
     try {
         const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        //  Payload 
+        console.log({
+            access: payload
+        });
         const user = await User.findById(payload.userId);
         if (!user) {
             throw new BadRequestError('User not found');
@@ -53,19 +57,29 @@ exports.verifyToken = async (token) => {
 };
 
 exports.refreshToken = async (refreshToken) => {
-    const token = await Token.findOne({ refresh_token: refreshToken });
-    if (!token) {
-        throw new BadRequestError('Invalid refresh token');
-    }
+    console.log("Resfesh token")
+    // const token = await Token.findOne({ refresh_token: refreshToken });
+    // if (!token) {
+    //     throw new BadRequestError('Invalid refresh token');
+    // }
     const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    console.log({
+        rf: payload
+    })
+
     const user = await User.findById(payload.userId);
     if (!user) {
         throw new BadRequestError('User not found');
     }
     const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
-    token.access_token = accessToken;
-    token.refresh_token = newRefreshToken;
-    await token.save();
+    console.log({
+        access: accessToken,
+        refesh: newRefreshToken
+    })
+
+    // token.access_token = accessToken;
+    // token.refresh_token = newRefreshToken;
+    // await token.save();
     return { accessToken, refreshToken: newRefreshToken };
 };
 
