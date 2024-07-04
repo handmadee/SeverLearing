@@ -133,7 +133,7 @@ adminRouter.get('/exam/category', permission('999'), asnycHandler(async (req, re
 
 // 
 // Exam by id 
-adminRouter.get('/exam/tracking/:id/:max', asnycHandler(async (req, res) => {
+adminRouter.get('/exam/tracking/:id/:max', permission('999'), asnycHandler(async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
     const limit = 10;
     const id = req.params.id;

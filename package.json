@@ -7,6 +7,10 @@
     "start": "nodemon sever.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "example",
+    "heroku"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -36,5 +40,8 @@
     "npm": "^10.8.1",
     "sharp": "^0.33.4",
     "xlsx": "^0.18.5"
+  },
+   "engines": {
+    "node": "20.x"
   }
 }
