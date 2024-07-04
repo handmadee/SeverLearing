@@ -21,46 +21,109 @@ class StudentShecheduleService extends BaseService {
         return await ShecheduleModel.insertMany(data);
     }
     // Get days and Study
+    // async getStudy(study, days) {
+    //     try {
+    //         const dayNow = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
+    //         console.log({
+    //             message: 'Delete dayNow',
+    //             date: dayNow
+    //         });
+    //         const person = await ShecheduleModel.findOne({ study, days });
+    //         if (!person) return {
+    //             status: true,
+    //             data: []
+    //         };
+    //         console.log({
+    //             message: 'Delete isChecked',
+    //             studentAccount: person._id,
+    //             date: days
+    //         });
+    //         const isChecked = await studentAttendance.findOne({
+    //             studentAccount: person._id,
+    //             date: dayNow
+    //         });
+
+
+    //         console.log({
+    //             message: 'Delete isChecked',
+    //             dayNow: dayNow,
+    //             isChecked: isChecked
+    //         });
+
+    //         if (!isChecked) {
+    //             const data = await ShecheduleModel.find({ study, days });
+    //             return {
+    //                 status: true,
+    //                 data
+    //             }
+
+    //         }
+    //         const data = await studentAttendance.find({ study, date: dayNow }).populate('studentAccount');
+    //         return {
+    //             status: false,
+    //             data
+    //         };
+    //     } catch (error) {
+    //         console.error('Error in getStudy:', error);
+    //         return [];
+    //     }
+    // }
+
+
+    // v2 
     async getStudy(study, days) {
         try {
             const dayNow = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
             console.log({
-                message: 'Delete dayNow',
+                message: 'Ngày hiện tại',
                 date: dayNow
             });
-            const person = await ShecheduleModel.findOne({ study, days });
-            if (!person) return {
-                status: true,
-                data: []
-            };
+
+            const person = await ShecheduleModel.findOne({ study, days }).lean();
+            if (!person) {
+                return {
+                    status: true,
+                    data: []
+                };
+            }
+
             console.log({
-                message: 'Delete isChecked',
+                message: 'Tìm thấy người',
                 studentAccount: person._id,
                 date: days
             });
-            const isChecked = await studentAttendance.findOne({ studentAccount: person._id, date: dayNow });
+
+            const isChecked = await studentAttendance.findOne({
+                studentAccount: person._id,
+                date: dayNow
+            }).lean();
+
             console.log({
-                message: 'Delete isChecked',
+                message: 'Kiểm tra điểm danh',
+                dayNow: dayNow,
                 isChecked: isChecked
             });
 
             if (!isChecked) {
-                const data = await ShecheduleModel.find({ study, days });
+                const data = await ShecheduleModel.find({ study, days }).lean();
                 return {
                     status: true,
                     data
-                }
-
+                };
             }
 
-            const data = await studentAttendance.find({ study, date: dayNow }).populate('studentAccount');
+            const data = await studentAttendance.find({ study, date: dayNow }).populate('studentAccount').lean();
             return {
                 status: false,
                 data
             };
         } catch (error) {
-            console.error('Error in getStudy:', error);
-            return [];
+            console.error('Lỗi trong getStudy:', error);
+            return {
+                status: false,
+                error: error.message,
+                data: []
+            };
         }
     }
 
