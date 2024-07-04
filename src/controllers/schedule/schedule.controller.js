@@ -33,9 +33,13 @@ class StudentShecheduleController {
             data: await StudentShecheduleService.importStudents(convertedData)
         }).send(res);
     }
+
+
+
     async getAllShechedule(req, res) {
         const { page, limit } = req.query;
         const shechedules = await StudentShecheduleService.getAllShechedule(page, limit);
+
         return new OK({
             data: shechedules
         }).send(res);

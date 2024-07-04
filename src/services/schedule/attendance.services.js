@@ -8,11 +8,16 @@ class StudentEttendanceService extends BaseService {
     }
     // Service điểm danh 
     async importEnttendance(data) {
+        // console.log({
+        //     message: 'Attendance I',
+        //     data: data
+        // })
         return await ettendanceModel.insertMany(data);
     }
     // Tìm kiếm theo ngày tháng và ca học
     async getStudy(study, date) {
         return await ettendanceModel.find({ study, date }).populate('studentAccount').select('studentAccount attendance  reason');
+
     }
     // Thay đổi trạng thái điểm danh
     async changeAttendance(id, attendance) {
@@ -83,7 +88,12 @@ class StudentEttendanceService extends BaseService {
         return await ettendanceModel.deleteMany({ studentAccount });
     }
 
-
+    // Update many 
+    async updateStudentMany({ _id, status, reason }) {
+        await ettendanceModel.updateOne({
+            _id
+        }, { status: status, reason: reason });
+    }
 
     //  date: { $gte: date, $lte: date1 },
 

@@ -1,8 +1,8 @@
 const app = require("./src/app");
 const config = require("./src/configs/config.mongodb");
-const PORT = config.app.port || 3080;
+const PORT = config.app.port || 8001;
 
-const server = app.listen(PORT, "0.0.0.0", () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 

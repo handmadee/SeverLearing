@@ -82,6 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+
+
     // Render load on first time
     renderLoad(shift.value, `${new Date(date.value).getFullYear()}-${new Date(date.value).getMonth() + 1}-${new Date(date.value).getDate()}`);
 

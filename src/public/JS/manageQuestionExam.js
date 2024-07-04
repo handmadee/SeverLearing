@@ -135,8 +135,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         await updateLesson(formData, currentIdAnswer);
     }
-
-
     const renderAnswer = async (id, title, correct) => {
         const titleAnswer = document.getElementById('titleAnswer');
         const isCorrect = document.getElementById('isCorrect');
