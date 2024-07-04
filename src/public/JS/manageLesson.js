@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log(cancelChapter)
     const cancelChapter2 = document.getElementById('cancelChapter2');
     const saveChapter = document.getElementById('saveChapter');
+    let currenIdChapter = null;
+    let currenIdLesson = null;
     //Lesson
     const edit = document.querySelectorAll(".btn-edit-lesson");
     const deleteLeson = document.querySelectorAll(".btn-delete-lesson");
@@ -40,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const id = e.target.value;
             const idCourse = e.target.dataset.idcourse;
             const titleChapter = e.target.dataset.titlechapter;
+            currenIdChapter = id;
             renderCourse(id, titleChapter, idCourse);
         });
     });
@@ -58,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const titleLesson = e.target.dataset.titlelesson;
             const urlVideo = e.target.dataset.urlvideo;
             const time = e.target.dataset.time;
+            currenIdLesson = id;
             renderLesson(id, titleLesson, urlVideo, time);
         });
     });
@@ -102,6 +106,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    const editChapter = async () => {
+        const formData = {
+            titleChapter: document.getElementById('txtChapter').value,
+            courseId: document.getElementById('chaptter_id').value
+        }
+        try {
+            await updateChapter(formData, currenIdChapter);
+        } catch (error) {
+            createToast('error')
+        }
+    }
+
+    // @edit Lesson 
+    const fneditLesson = async () => {
+        const formData = {
+            titleLesson: document.getElementById('titleLesson').value,
+            time: document.getElementById('timeLesson').value,
+            urlVideo: document.getElementById('urlVideo').value
+        }
+        await updateLesson(formData, currenIdLesson);
+    }
+
+
     const renderCourse = async (id, titleChapter, idCourse) => {
         const titleChapter12 = document.getElementById('txtChapter');
         const category123 = document.getElementById('chaptter_id');
@@ -121,14 +148,9 @@ document.addEventListener('DOMContentLoaded', function () {
             titleChapter12.value = titleChapter;
             category123.value = idCourse;
             editChapterPopup.classList.add('show');
+            saveChapter.removeEventListener('click', editChapter);
             // Save
-            saveChapter.addEventListener('click', async function () {
-                const formData = {
-                    titleChapter: titleChapter12.value,
-                    courseId: category123.value
-                }
-                await updateChapter(formData, id);
-            });
+            saveChapter.addEventListener('click', editChapter);
         } catch (error) {
             console.log(error)
             return createToast('error')
@@ -144,14 +166,8 @@ document.addEventListener('DOMContentLoaded', function () {
         timer.value = urlVideo;
         editLesson.classList.add('show');
         // Save
-        saveLesson.addEventListener('click', async function () {
-            const formData = {
-                titleLesson: title.value,
-                time: url.value,
-                urlVideo: timer.value
-            }
-            await updateLesson(formData, id);
-        });
+        saveLesson.removeEventListener('click', fneditLesson);
+        saveLesson.addEventListener('click', fneditLesson);
     }
     const updateChapter = async (formData, id) => {
         console.log(formData)
@@ -167,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!cousrse.ok) {
                 return createToast('error')
             }
-            alert('Cập nhật chương học thành công ');
+            createToast('success')
             location.reload();
         } catch (error) {
             return createToast('error')
@@ -200,3 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+
+for (let i = 0; i < 6; i++) {
+    console.log(i * "*")
+}

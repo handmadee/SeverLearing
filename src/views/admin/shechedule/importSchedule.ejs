@@ -17,7 +17,7 @@
       box-shadow: 2px 2px 12px #aaa;
     }
     .title {
-      text-align: center;
+      text-align: left;
       margin-bottom: 20px;
     }
     .import-section {
@@ -36,11 +36,7 @@
       border-collapse: collapse;
       margin-bottom: 20px;
     }
-    table,
-    th,
-    td {
-      border: 1px solid black;
-    }
+
     th,
     td {
       padding: 8px;
@@ -49,31 +45,100 @@
     th {
       background-color: #f2f2f2;
     }
-    h5 {
-      background-color: rgba(26, 25, 25, 0.687);
-      color: rgb(237, 241, 18);
-      border-radius: 10px;
-      padding: 10px 0;
-      text-align: center;
+    /* Border Tr */
+    #studentTable tr {
+      border-bottom: 0.5px solid #aaa;
     }
-    h5:hover {
-      cursor: pointer;
-      background-color: #4a95e0;
+    #studentTable tr td:nth-child(2) {
+      text-transform: uppercase;
+      text-align: left;
+      margin-left: 20px;
+    }
+
+    .fileInput {
+      display: inline-block;
+      background-color: #198754;
+      border-radius: 10px;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    .fileInput label {
       color: white;
+    }
+    .import-section input[type="file"] {
+      background-color: aqua;
+    }
+    #studentTable tbody tr {
+      width: 45px;
+    }
+    #studentTable {
+      border-radius: 10px;
+    }
+    #studentTable thead tr th {
+      background-color: #198754;
+      color: white;
+    }
+    #studentTable tbody tr td {
+      padding: 5px 0;
+      font-weight: 500;
+      color: #898686;
+    }
+    #studentTable tbody tr td:nth-child(2) {
+      padding-left: 20px;
+    }
+
+    #countSudents {
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #198754;
+      color: white;
+      border-radius: 10px;
+      margin-left: 10px;
+      padding: 0 10px;
+    }
+    #countSudents span {
+      margin: 0 10px;
     }
   </style>
   <div class="container">
-    <div class="title">
-      <h5>IMPORT DANH SÁCH HỌC SINH</h5>
+    <div class="row">
+      <div class="title col-4">
+        <h5>Danh sách học sinh Tsmart</h5>
+      </div>
+      <div
+        class="import-section col-8 d-flex align-content-center justify-content-end"
+      >
+        <div class="fileInput">
+          <label for="fileInput" class="btn">
+            Select
+            <i style="pointer-events: none" class="fa-solid fa-file-excel"></i>
+          </label>
+          <input id="fileInput" style="display: none" type="file" />
+        </div>
+
+        <!-- <input type="file" id="fileInput" /> -->
+        <button class="btn btn-success" id="importButton">
+          Import
+          <!-- <i style="pointer-events: none" class="fa-solid fa-file-excel"></i> -->
+        </button>
+        <!-- Import a students -->
+        <button class="btn btn-info text-#19cb54" id="importPersonal">
+          <i
+            style="pointer-events: none; color: white"
+            class="fa-solid fa-user-plus"
+          ></i>
+        </button>
+
+        <!-- Số lượng học sin có trong trung tâm -->
+        <div id="countSudents">
+          <span>Tổng số học sinh: <srong><%= total %></srong></span>
+          <i class="fa-regular fa-user"></i>
+        </div>
+        <!-- The end -->
+      </div>
     </div>
-    <div class="import-section">
-      <input type="file" id="fileInput" />
-      <button class="btn btn-success" id="importButton">Import</button>
-      <!-- Import a students -->
-      <button class="btn btn-info text-white" id="importPersonal">
-        Personal add
-      </button>
-    </div>
+
     <table id="studentTable">
       <thead>
         <tr>
@@ -99,10 +164,13 @@
               value="<%= user._id %>"
               class="btn btn-edit btn-primary accordion"
             >
-              Edit
+              <i
+                style="pointer-events: none"
+                class="fa-solid fa-pen-to-square"
+              ></i>
             </button>
             <button value="<%= user._id %>" class="btn btn-delete btn-danger">
-              Delete
+              <i style="pointer-events: none" class="fa-solid fa-trash"></i>
             </button>
           </td>
         </tr>
@@ -148,7 +216,7 @@
       </nav>
     </div>
   </div>
-  <!-- Popup -->
+
   <div
     class="modal fade"
     id="editModal"
@@ -256,13 +324,14 @@
             </div>
             <div class="mb-3">
               <label for="study1" class="form-label">Ca Học</label>
-              <input
-                type="number"
-                min="0"
-                class="form-control"
-                id="study1"
-                required
-              />
+              <select class="form-select" id="study1">
+                <option value="1">1 (8h-9h30)</option>
+                <option value="2">2 (9h30-11h)</option>
+                <option value="3">3 (14h-15h30)</option>
+                <option value="4">4 (17h-18h30)</option>
+                <option value="5">5 (18h30-20h)</option>
+              </select>
+
               <div class="invalid-feedback">Vui lòng nhập ca học.</div>
             </div>
             <div class="mb-3">

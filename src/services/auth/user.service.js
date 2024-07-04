@@ -5,6 +5,7 @@ const TrackingCourse = require('./../../models/traking /historyCourse.model');
 const Token = require('./../../models/token.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const fcmTokenModel = require('../../models/firebase/fcmToken.model');
 
 
 const generateTokens = (user) => {
@@ -139,7 +140,10 @@ exports.deleteAccount = async (_id) => {
         const deleteUser = User.findByIdAndDelete(_id);
         const deleteTrackingCourses = TrackingCourse.deleteMany({ userID: _id });
         const deleteTrackingQuizzes = TrackingQuiz.deleteMany({ userID: _id });
-        await Promise.all([deleteUser, deleteTrackingCourses, deleteTrackingQuizzes]);
+        const delNotificatino = fcmTokenModel.deleteMany({
+            accountId: _id
+        })
+        await Promise.all([deleteUser, deleteTrackingCourses, deleteTrackingQuizzes, delNotificatino]);
 
         console.log(`User with ID ${_id} and their tracking data have been deleted successfully.`);
     } catch (error) {

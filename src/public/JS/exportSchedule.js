@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const editCoursePopup = document.getElementById('editModal');
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
-    const days = document.querySelectorAll('.days');
     const fullname = document.getElementById('fullName');
     const emptyTable = document.getElementById('absentTable');
     const schoolBoard
@@ -49,9 +48,10 @@ document.addEventListener('DOMContentLoaded', function () {
                   class="text-danger"
                 >${item?.attendanceFalseCount}</td>
                 <td>  <button
-                data-name = ${item?.fullname}
-                value = ${item?.accountID}
+                 data-name="${item?.fullname}"
+                 value="${item?.accountID}"
               class="btn btn-success delete"  >
+              <i style="pointer-events: none"  class="fa-solid fa-circle-info"></i>
                 Infor
             </button></td>
                 
@@ -76,28 +76,42 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     const arr = await response.json();
                     const render1 = arr?.data?.data;
+                    console.log({
+                        message: `[render]:: `,
+                        render: render1
+                    })
                     editCoursePopup.classList.add('show');
-                    console.log(name)
-                    fullname.innerHTML = name;
+
+                    fullname.textContent = name;
                     const absent = render1.filter((item) => item.attendance === false);
                     const present = render1.filter((item) => item.attendance === true);
                     // RENDER 
                     emptyTable.innerHTML = "";
                     absent && absent.length > 0 ? absent.forEach((item, index) => {
-                        const study = new Date(item?.date).toISOString().slice(0, 10);
+                        const study = new Date(item?.date);
+                        const formattedDate = new Intl.DateTimeFormat('vi-VN', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        }).format(study);
                         const tr = document.createElement("tr");
                         tr.innerHTML = `
-                        <td>${study}</td>
+                        <td>${formattedDate}</td>
                         `;
                         emptyTable.appendChild(tr);
                     }) : emptyTable.innerHTML = '<tr><td colspan="1" class="text-center">Không có dữ liệu</td></tr>';
 
                     schoolBoard.innerHTML = "";
                     present && present.length > 0 ? present.forEach((item, index) => {
-                        const study = new Date(item?.date).toISOString().slice(0, 10);
+                        const study = new Date(item?.date);
+                        const formattedDate = new Intl.DateTimeFormat('vi-VN', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                        }).format(study);
                         const tr = document.createElement("tr");
                         tr.innerHTML = `
-                        <td>${study}</td>
+                        <td>${formattedDate}</td>
                         `;
                         schoolBoard.appendChild(tr);
                     }) : schoolBoard.innerHTML = '<tr><td colspan="1" class="text-center">Không có dữ liệu</td></tr>';
@@ -124,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const day = `${new Date(fromDate.value).getFullYear()}-${new Date(fromDate.value).getMonth() + 1}-${new Date(fromDate.value).getDate()}`;
         const day1 = `${new Date(toDate.value).getFullYear()}-${new Date(toDate.value).getMonth() + 1}-${new Date(toDate.value).getDate()}`;
         await renderLoad(day, day1, study);
-
         console.log(study, day, day1);
     });
 

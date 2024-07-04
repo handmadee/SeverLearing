@@ -46,6 +46,7 @@
                     class="imagePost"
                     src="<%= news?.imagePost %>"
                     alt="imagePost"
+                    loading="lazy"
                     />
                 </td>
                 <td><%= news?.contentNews %></td>
@@ -57,13 +58,16 @@
                     data-image = "<%= news?.imagePost %>"
                     data-content = "<%= news?.contentNews %>"
                     >
-                    Edit
+                      <i
+                style="pointer-events: none"
+                class="fa-solid fa-pen-to-square"
+              ></i>
                     </button>
                     <button
                     class="btn btn-danger btn-delete delete"
                     value="<%= news?._id %>"
                     >
-                    Delete
+                   <i style="pointer-events: none" class="fa-solid fa-trash"></i>
                     </button>
                 </td>
             </tr>

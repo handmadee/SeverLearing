@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
+    let currentIdPopup = null;
+
     // Control trong popup
     cancelPopup.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
@@ -21,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     editButtons.forEach(button => {
         button.addEventListener("click", function (e) {
             const id = e.target.value;
+            currentIdPopup = id;
             renderExam(id);
         });
     });
@@ -49,16 +52,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    const renderExam = async (id) => {
+    const handlerEditSilider = async function () {
         const imagePost = document.getElementById('urlImage');
+        const formData = new FormData();
+        if (imagePost.files.length > 0) {
+            formData.append('listNotificaiton', imagePost.files[0]);
+        }
+        await updateCourse(formData, currentIdPopup);
+    }
+
+    const renderExam = async (id) => {
         editCoursePopup.classList.add('show');
-        savePopup.addEventListener('click', async function () {
-            const formData = new FormData();
-            if (imagePost.files.length > 0) {
-                formData.append('listNotificaiton', imagePost.files[0]);
-            }
-            await updateCourse(formData, id);
-        });
+        savePopup.removeEventListener('click', handlerEditSilider);
+        savePopup.addEventListener('click', handlerEditSilider);
     }
 
     const updateCourse = async (data, id) => {

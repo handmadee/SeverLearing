@@ -48,15 +48,20 @@
   <div class="details">
     <div class="recentOrders">
       <div class="card">
-        <h2 class="card-title">Top Course</h2>
+        <h2 class="card-title">
+          Bảng xếp hạng khoá học
+          <strong>
+            <i class="fa-solid fa-medal"></i>
+          </strong>
+        </h2>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>Image Course</th>
-                  <th>Total Lesson</th>
-                  <th>Students Studying</th>
+                  <th>Hình ảnh</th>
+                  <th>Số bài học</th>
+                  <th>Số học sinh đang học</th>
                 </tr>
               </thead>
               <tbody>
@@ -66,9 +71,10 @@
                 <tr>
                   <td>
                     <img
-                      src="<%= user?.imageCourse %>"
+                      src="<%= user?.imageCourse || '/image/courseDefauft.png'  %>"
                       alt="Avatar"
                       width="50"
+                      loading="lazy"
                     />
                   </td>
                   <td style="color: #000000"><%=user?.title %></td>
@@ -76,7 +82,9 @@
                 </tr>
                 <% }); %> <% } else { %>
                 <tr>
-                  <td colspan="4">No data</td>
+                  <td style="text-align: center" colspan="12">
+                    Hiện tại chưa có khoá học nào
+                  </td>
                 </tr>
                 <% } %>
               </tbody>
@@ -121,15 +129,15 @@
     <div class="recentCustomers">
       <div class="card">
         <div class="cardHeader">
-          <h2>Leaderboard</h2>
+          <h2>Bảng xếp hạng học sinh</h2>
         </div>
         <div class="learnBoard">
           <table class="table table-striped">
             <thead>
               <tr>
-                <th>Avatar</th>
-                <th>Name</th>
-                <th>Points</th>
+                <th>Hình ảnh</th>
+                <th>Họ tên</th>
+                <th>Số điểm</th>
               </tr>
             </thead>
             <tbody>
@@ -137,14 +145,21 @@
               { %>
               <tr>
                 <td>
-                  <img src="<%= user?.avatar %>" alt="Avatar" width="60" />
+                  <img
+                    src="<%= user?.avatar || '/image/userDefault.png'  %>"
+                    alt="Avatar"
+                    width="60"
+                    loading="lazy"
+                  />
                 </td>
                 <td><%= user?.name %></td>
                 <td><%= user?.Score %></td>
               </tr>
               <% }); %> <% } else { %>
               <tr>
-                <td colspan="3">No data</td>
+                <td style="text-align: center" colspan="3">
+                  Sinh viên đang được cập nhật
+                </td>
               </tr>
               <% } %>
             </tbody>

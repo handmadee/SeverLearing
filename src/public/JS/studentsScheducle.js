@@ -75,6 +75,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const daysContainer = document.getElementById('daysContainer');
     const addDayButton = document.getElementById('addDayButton');
     const days = document.querySelectorAll('.days');
+    let currentIdStudent = null;
+
 
     // Popup 2 
     const importPersonal = document.getElementById('importPersonal');
@@ -123,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
         dayEntry.querySelector('.remove-day').addEventListener('click', () => {
             daysContainer1.removeChild(dayEntry);
         });
+
     }
     // Function to add a new day field
     addDayButton1.addEventListener('click', addDayField1)
@@ -227,13 +230,31 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             const data = await cousrse.json();
             const { fullname, phone, study, days } = data?.data?.data;
+            currentIdStudent = id;
             renderExam(fullname, phone, study, days, id);
-
-
         } catch (error) {
             console.log(error)
             return createToast('error')
         }
+    }
+
+    const handlerUpdateStudents = async function () {
+        const fullnamePop = document.getElementById('fullname');
+        const tel = document.getElementById('phone');
+        const studys = document.getElementById('study');
+        const indays = document.querySelectorAll('#daysContainer .days');
+        console.log({
+            message: `[indays :: --]`,
+            indays: indays
+        })
+
+        const dataStudents = {
+            fullname: fullnamePop.value,
+            phone: tel.value,
+            study: studys.value,
+            days: Array.from(indays).map(day => day.value)
+        }
+        await updateCourse(dataStudents, currentIdStudent)
     }
 
 
@@ -244,22 +265,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const fullnamePop = document.getElementById('fullname');
         const tel = document.getElementById('phone');
         const studys = document.getElementById('study');
-        const indays = document.querySelectorAll('.days');
+        const indays = document.querySelectorAll('#daysContainer .days');
         fullnamePop.value = fullname;
         tel.value = phone;
         studys.value = study;
         indays.forEach((day, index) => {
             day.value = days[index];
         });
-        savePopup.addEventListener('click', function () {
-            const dataStudents = {
-                fullname: fullnamePop.value,
-                phone: tel.value,
-                study: studys.value,
-                days: Array.from(indays).map(day => day.value)
-            }
-            updateCourse(dataStudents, id)
-        });
+
+        savePopup.removeEventListener('click', handlerUpdateStudents);
+        savePopup.addEventListener('click', handlerUpdateStudents);
 
     }
 

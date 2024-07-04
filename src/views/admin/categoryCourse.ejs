@@ -47,13 +47,16 @@
               value="<%= category?._id %>"
               data-namecategory="<%= category?.nameCategory %>"
             >
-              Edit
+              <i
+                style="pointer-events: none"
+                class="fa-solid fa-pen-to-square"
+              ></i>
             </button>
             <button
               class="btn btn-danger btn-delete delete"
               value="<%= category?._id %>"
             >
-              Delete
+              <i style="pointer-events: none" class="fa-solid fa-trash"></i>
             </button>
           </td>
         </tr>

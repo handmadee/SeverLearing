@@ -10,7 +10,6 @@ const categoryQuizService = require('../../services/trakingQuiz/categoryQuiz.ser
 const examQuiz = require('../../services/trakingQuiz/Quiz.service');
 const permission = require('../../auth/permission');
 const { asnycHandler } = require('../../helpers/asyncHandler');
-const authService = require('./../../services/auth/user.service');
 const NewsService = require('../../services/news/news.service');
 const NotificationService = require('./../../services/notification/listNotification');
 const TrackingCourseService = require('../../services/trackingCourse/trackingCourse.service');
@@ -134,7 +133,7 @@ adminRouter.get('/exam/category', permission('999'), asnycHandler(async (req, re
 
 // 
 // Exam by id 
-adminRouter.get('/exam/:id/:max', asnycHandler(async (req, res) => {
+adminRouter.get('/exam/tracking/:id/:max', asnycHandler(async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
     const limit = 10;
     const id = req.params.id;
@@ -216,7 +215,7 @@ adminRouter.get('/rank', permission('999'), asnycHandler(async (req, res) => {
     const totalItems = data?.totalItems;
     const totalPages = Math.ceil(totalItems / limit);
     if (!data) throw new Error('No data found');
-    res.render('admin/rank', { title: "Xếp hạng toàn bộ thời gian", data: data?.rank, totalPages, currentPage: page, totalItems });
+    res.render('admin/rank', { title: "Xếp hạng toàn bộ thời gian", data: data?.rank, totalPages, currentPage: page, totalItems, page1: 1 });
 }));
 
 // Rank in month
@@ -227,7 +226,7 @@ adminRouter.get('/rank/inMonth', permission('999'), asnycHandler(async (req, res
     const totalItems = data?.totalItems;
     const totalPages = Math.ceil(totalItems / limit);
     if (!data) throw new Error('No data found');
-    res.render('admin/rank', { title: "Xếp hạng trong tháng", data: data?.rank, totalPages, currentPage: page, totalItems });
+    res.render('admin/rank', { title: "Xếp hạng trong tháng", data: data?.rank, totalPages, currentPage: page, totalItems, page1: 2 });
 }));
 
 // Rank in week
@@ -238,7 +237,7 @@ adminRouter.get('/rank/inWeek', permission('999'), asnycHandler(async (req, res)
     const totalItems = data?.totalItems;
     const totalPages = Math.ceil(totalItems / limit);
     if (!data) throw new Error('No data found');
-    res.render('admin/rank', { title: "Xếp hạng trong tuần", data: data?.rank, totalPages, currentPage: page, totalItems });
+    res.render('admin/rank', { title: "Xếp hạng trong tuần", data: data?.rank, totalPages, currentPage: page, totalItems, page1: 3 });
 }));
 
 
@@ -307,8 +306,13 @@ adminRouter.get('/firebase/scheduleNotification', permission('999'), asnycHandle
 adminRouter.get('/schedule/importStudents', permission('999'), asnycHandler(async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
     const data = await scheduleService.getAllShechedule(currentPage, 10);
+    console.log({
+        message: `[Account] :: `,
+        data: data
+    })
+    const total = data?.total || 0;
     const totalPages = data?.totalPages;
-    res.render('./admin/shechedule/importSchedule', { title: "Đăng tải học sinh", data: data?.data, totalPages, currentPage });
+    res.render('./admin/shechedule/importSchedule', { title: "Đăng tải học sinh", data: data?.data, totalPages, currentPage, total });
 }));
 adminRouter.get('/schedule/findShechedule', permission('999'), asnycHandler(async (req, res) => {
     res.render('./admin/shechedule/findShechedule', { title: "Tìm kiếm thời khoá biểu " });
@@ -323,7 +327,19 @@ adminRouter.get('/schedule/teacherShedule', permission('789 999'), asnycHandler(
     console.log(days)
     res.render('./admin/shechedule/teacherShedule', { title: "Điểm danh", date, days });
 }));
-// 
+
+// @Role Teacher    
+adminRouter.get('/teacher/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
+    const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
+    const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
+    res.render('./admin/teacher/teacherShedule', { title: "Điểm danh", date, days });
+}));
+
+adminRouter.get('/teacher/changeSub', permission('789 999'), asnycHandler(async (req, res) => {
+    res.render('./admin/teacher/changeSub', { title: "Tìm kiếm thời khoá biểu " });
+}));
+
+
 
 
 

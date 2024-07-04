@@ -32,8 +32,8 @@ class InfoController {
     static async editInfoUser(req, res, next) {
         try {
             let updateData = { ...req.body };
-            if (req.file) {
-                const file = req.file.filename;
+            const file = req.file ? req.file.filename : null;
+            if (file) {
                 const avatar = `${process.env.LOCAL_HOST2}/uploads/${file}`;
                 updateData.avatar = avatar;
             }

@@ -7,9 +7,10 @@
       padding: 30px;
     }
     .imagePost {
-      width: 60%;
+      width: 300px;
       height: 100px;
       border-radius: 15px;
+      object-fit: fill;
     }
     .table tbody tr td:nth-child(2) {
       width: 75%;
@@ -36,6 +37,7 @@
               class="imagePost"
               src="<%= popup?.popupImage %>"
               alt="imagePost"
+              loading="lazy"
             />
           </td>
           <td>
@@ -44,13 +46,16 @@
               class="btn btn-primary btn-edit success"
               value="<%= popup?._id %>"
             >
-              Edit
+              <i
+                style="pointer-events: none"
+                class="fa-solid fa-pen-to-square"
+              ></i>
             </button>
             <button
               class="btn btn-danger btn-delete delete"
               value="<%= popup?._id %>"
             >
-              Delete
+              <i style="pointer-events: none" class="fa-solid fa-trash"></i>
             </button>
           </td>
         </tr>

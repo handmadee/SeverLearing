@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
+    let currentIdExam = null;
+
     // Control trong popup
     cancelPopup.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
@@ -22,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
     editButtons.forEach(button => {
         button.addEventListener("click", function (e) {
             const id = e.target.value;
+            currentIdExam = id;
             fetchExam(id)
         });
     });
@@ -83,6 +86,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    const editExam = async function () {
+        const formData = {
+            title: document.getElementById('title').value,
+            time: document.getElementById('time').value,
+            points: document.getElementById('points').value,
+            level: document.getElementById('level').value,
+            categoryQuiz_id: document.getElementById('categoryQuiz_id').value
+        }
+        return await updateCourse(formData, currentIdExam);
+    }
 
     const renderExam = async (idExam, title, timeEx, pointsEx, levelEx, categoryEx) => {
         const titleXam = document.getElementById('title');
@@ -110,17 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
             categoryExam12.value = categoryEx;
             level.value = levelEx;
             editCoursePopup.classList.add('show');
-
-            savePopup.addEventListener('click', async function () {
-                const formData = {
-                    title: titleXam.value,
-                    time: time.value,
-                    points: points.value,
-                    level: level.value,
-                    categoryQuiz_id: categoryExam12.value
-                }
-                return await updateCourse(formData, idExam);
-            });
+            savePopup.removeEventListener('click', editExam);
+            savePopup.addEventListener('click', editExam);
         } catch (error) {
             console.log(error)
             return createToast('error')

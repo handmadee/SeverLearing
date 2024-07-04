@@ -45,11 +45,13 @@
                                 <% data.forEach((question, index) => { %>
                                     <tr>
                                         <th scope="row"><%= index + 1 %></th>
-                                         <td>
+                                         <td  class="col-4"> 
                                             <img
+                                            
                                             src="<%= question?.imageQuestion %>"
                                             alt="imageQuestion"
-                                            class="imageQuestion"
+                                            class="imageQuestion w-100 h-100"
+                                            loading="lazy"
                                             />
                                          </td>
                                         <td><%= question?.title %></td>

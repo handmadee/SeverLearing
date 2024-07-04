@@ -45,8 +45,15 @@
                                             value="<%= chapter._id %>"
                                             data-idcourse = "<%= courseid %>"
                                             data-titlechapter = "<%= chapter?.titleChapter %>"
-                                            class="btn btn-edit-chapter btn-primary">Chỉnh sửa</button>
-                                            <button value="<%= chapter._id %>" class="btn btn-delete-chapter btn-danger">Xóa</button>
+                                            class="btn btn-edit-chapter btn-primary">
+                                             <i
+                style="pointer-events: none"
+                class="fa-solid fa-pen-to-square"
+              ></i>
+                                          </button>
+                                            <button value="<%= chapter._id %>" class="btn btn-delete-chapter btn-danger">
+                                               <i style="pointer-events: none" class="fa-solid fa-trash"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 <% }) %>
@@ -87,10 +94,15 @@
                                         data-titlelesson="<%=lesson.titleLesson  %>"
                                         data-urlvideo="<%=lesson.urlVideo  %>"
                                         data-time="<%=lesson.timeLesson  %>"
-                                         class="btn btn-edit-lesson btn-primary">Chỉnh sửa</button>
+                                         class="btn btn-edit-lesson btn-primary">
+                                           <i
+                style="pointer-events: none"
+                class="fa-solid fa-pen-to-square"
+              ></i>
+                                        </button>
                                         <button
                                         value="<%= lesson._id %>"
-                                        class="btn btn-delete-lesson btn-danger">Xóa</button>
+                                        class="btn btn-delete-lesson btn-danger"> <i style="pointer-events: none" class="fa-solid fa-trash"></i></button>
                                     </td>
                                 </tr>
                             <% }) %>

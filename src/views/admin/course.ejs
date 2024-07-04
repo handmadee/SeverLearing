@@ -1,11 +1,17 @@
 <%- include('comon/header') %>
 <!-- Main -->
-<div class="main">
+<div class="main ">
   <%- include('comon/topBarSearch') %>
- 
+  <style>
+    .manageCourse h4 {
+      text-align: left;
+      margin-left: 10px;
+      text-transform: capitalize;
+    }
+  </style>
   <!--Main-->
-  <div class="container p-5">
-         <h1 class="text-center">Quản lý khoá học</h1>
+  <div class="container manageCourse p-5">
+         <h4>Quản lý khoá học</h4>
       <table class="table">
         <thead>
           <tr>
@@ -34,14 +40,21 @@
               <button 
               data-courseid="<%= user._id %>"
               class="btn btn-edit btn-primary accordion
-              ">Edit</button>
+              ">
+             <i
+                style="pointer-events: none"
+                class="fa-solid fa-pen-to-square"
+              ></i>
+              </button>
               <button 
                data-courseid="<%= user._id %>"
-              class="btn btn-delete btn-danger">Delete</button>
+              class="btn btn-delete btn-danger">
+                <i style="pointer-events: none" class="fa-solid fa-trash"></i>
+              </button>
                <button 
                class="btn btn-info btn-info">
                <a href="/admin/course/lesson/find/<%=user?._id %>">
-                More
+                <i  style="pointer-events: none"class="fa-solid fa-circle-info"></i>
                 </a>
                </button>
             </td>
@@ -99,7 +112,9 @@
           <div class="mb-3">
   <label for="imageCourse" class="form-label">Hình ảnh khoá học</label>
   <input type="file" class="form-control" id="imageCourse" name="imageCourse" required>
-  <img id="preview" src="" alt="Image Preview" style="max-width: 200px; margin-top: 10px; display: none;">
+  <img id="preview" src="" alt="Image Preview" 
+  loading="lazy"
+  style="max-width: 200px; margin-top: 10px; display: none;">
   <div class="invalid-feedback">
     Vui lòng chọn hình ảnh.
   </div>

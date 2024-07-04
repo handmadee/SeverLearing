@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelChapter2 = document.getElementById('cancelChapter2');
     const saveChapter = document.getElementById('saveChapter');
 
-
-
+    let currentIdQuestion = null;
+    let currentIdAnswer = null;
     //Lesson
     const edit = document.querySelectorAll(".btn-edit-answer");
     const deleteLeson = document.querySelectorAll(".btn-delete-answer");
@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener("click", function (e) {
             const id = e.target.value;
             const titleQuestion = e.target.dataset.title;
+            currentIdQuestion = id;
             renderQuestion(id, titleQuestion);
 
         });
@@ -61,7 +62,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const title = e.target.dataset.title;
             const correct = e.target.dataset.iscorrect;
             console.log(correct)
-            renderLesson(id, title, correct);
+            currentIdAnswer = id;
+            renderAnswer(id, title, correct);
         });
     });
     deleteLeson.forEach(button => {
@@ -105,34 +107,44 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    const renderQuestion = async (id, titleChapter) => {
+    const editQuestion = async function () {
         const titleChapter12 = document.getElementById('txtChapter');
         const image = document.getElementById('imageQuestion12');
-        titleChapter12.value = titleChapter;
-        editChapterPopup.classList.add('show');
-        saveChapter.addEventListener('click', async function () {
-            const formData = new FormData();
-            formData.append('title', titleChapter12.value);
-            if (image.files.length > 0) {
-                formData.append('imageQuestion', image.files[0]);
-            }
-            await updateQuestion(formData, id);
-        });
+        const formData = new FormData();
+        formData.append('title', titleChapter12.value);
+        if (image.files.length > 0) {
+            formData.append('imageQuestion', image.files[0]);
+        }
+        await updateQuestion(formData, currentIdQuestion);
     }
 
-    const renderLesson = async (id, title, correct) => {
+    const renderQuestion = async (id, titleChapter) => {
+        const titleChapter12 = document.getElementById('txtChapter');
+        titleChapter12.value = titleChapter;
+        editChapterPopup.classList.add('show');
+        saveChapter.removeEventListener('click', editQuestion);
+        saveChapter.addEventListener('click', editQuestion);
+    }
+
+    const editAnswer = async function () {
+        const titleAnswer = document.getElementById('titleAnswer');
+        const isCorrect = document.getElementById('isCorrect');
+        const formData = {
+            titleAnswer: titleAnswer.value,
+            isCorrect: isCorrect.value
+        }
+        await updateLesson(formData, currentIdAnswer);
+    }
+
+
+    const renderAnswer = async (id, title, correct) => {
         const titleAnswer = document.getElementById('titleAnswer');
         const isCorrect = document.getElementById('isCorrect');
         titleAnswer.value = title;
         isCorrect.value = correct;
         editLesson.classList.add('show');
-        saveLesson.addEventListener('click', async function () {
-            const formData = {
-                titleAnswer: titleAnswer.value,
-                isCorrect: isCorrect.value
-            }
-            await updateLesson(formData, id);
-        });
+        saveLesson.removeEventListener('click', editAnswer);
+        saveLesson.addEventListener('click', editAnswer);
     }
     const updateQuestion = async (formData, id) => {
         try {

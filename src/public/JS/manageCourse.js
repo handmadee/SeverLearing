@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
+    let currentIDCourse = null;
+
 
     cancelPopup.addEventListener('click', () => editCoursePopup.classList.remove('show'));
     cancelPopup2.addEventListener('click', () => editCoursePopup.classList.remove('show'));
@@ -60,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const data = await response.json();
             const { title, detailCourse, imageCourse, category_id } = data?.data?.data;
+            currentIDCourse = courseId;
             renderCourse(courseId, title, detailCourse, imageCourse, category_id);
         } catch (error) {
             console.error(error);
@@ -67,19 +70,40 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    //  const handleSave = async () => {
+    //     const formData = new FormData();
+    //     formData.append('title', titleInput.value);
+    //     formData.append('detailCourse', detailInput.value);
+    //     if (imageInput.files.length > 0) {
+    //         formData.append('imageCourse', imageInput.files[0]);
+    //     }
+    //     formData.append('category_id', categorySelect.value);
+
+    //     await updateCourse(formData, courseId);
+    // };
+
+    const handleSave = async () => {
+        const formData = new FormData();
+        formData.append('title', document.getElementById('title').value);
+        formData.append('detailCourse', document.getElementById('detailCourse').value);
+        if (document.getElementById('imageCourse').files.length > 0) {
+            formData.append('imageCourse', document.getElementById('imageCourse').files[0]);
+        }
+        formData.append('category_id', document.getElementById('chaptter_id').value);
+        await updateCourse(formData, currentIDCourse);
+    };
+
+
     const renderCourse = async (courseId, title, detailCourse, imageCourse, categoryId) => {
         const titleInput = document.getElementById('title');
         const detailInput = document.getElementById('detailCourse');
         const imageInput = document.getElementById('imageCourse');
         const categorySelect = document.getElementById('chaptter_id');
-
         try {
             const response = await fetch(`${LOCALHOST_API_URL}/category`);
             if (!response.ok) throw new Error('Lấy danh mục thất bại');
-
             const data = await response.json();
             const categories = data?.data?.data;
-
             categorySelect.innerHTML = '';
             categories.forEach(item => {
                 const option = document.createElement('option');
@@ -92,18 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
             detailInput.value = detailCourse;
             categorySelect.value = categoryId;
             editCoursePopup.classList.add('show');
-
-            const handleSave = async () => {
-                const formData = new FormData();
-                formData.append('title', titleInput.value);
-                formData.append('detailCourse', detailInput.value);
-                if (imageInput.files.length > 0) {
-                    formData.append('imageCourse', imageInput.files[0]);
-                }
-                formData.append('category_id', categorySelect.value);
-
-                await updateCourse(formData, courseId);
-            };
+            // Resove -> 
             savePopup.removeEventListener('click', handleSave);
             savePopup.addEventListener('click', handleSave);
         } catch (error) {
@@ -111,6 +124,9 @@ document.addEventListener('DOMContentLoaded', function () {
             createToast('error');
         }
     };
+
+
+
 
     const updateCourse = async (formData, courseId) => {
         try {

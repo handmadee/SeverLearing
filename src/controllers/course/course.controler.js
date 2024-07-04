@@ -3,8 +3,10 @@
 const { OK } = require("../../core/success.response");
 const CourseService = require("../../services/course/course.service");
 const courseService = new CourseService();
+const sharp = require('sharp');
 
 class CourseController {
+
     static async createCourse(req, res) {
         const file = req.file ? req.file.filename : null;
         const imageCourse = `${process.env.LOCAL_HOST2}/uploads/${file}`;

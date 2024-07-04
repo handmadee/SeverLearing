@@ -32,7 +32,7 @@
           <td><%= rank.email %></td>
           <td><%= rank?.name %></td>
           <td><%= rank?.Score %></td>
-          <td><%= (rank?.Score / max) * 100 %> %</td>
+          <td><%= ((rank?.Score / max) * 100).toFixed(2)%> %</td>
         </tr>
         <% }); %> <% } else { %>
         <tr>

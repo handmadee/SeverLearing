@@ -1,5 +1,4 @@
 'use strict';
-'use strict';
 import { createToast } from './Aleart.js';
 import { LOCALHOST_API_URL } from './config.js';
 const localhost = LOCALHOST_API_URL;
@@ -11,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
+
+    let idCategoryQuiz = null;
     // Control trong popup
     cancelPopup.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener("click", function (e) {
             const newid = e.target.value;
             const nameCategory = e.target.dataset?.namecategory;
+            idCategoryQuiz = newid;
             renderCategory(newid, nameCategory);
         });
     });
@@ -53,27 +55,24 @@ document.addEventListener('DOMContentLoaded', function () {
             return createToast('error')
         }
     }
-
-    let isSavePopupListenerAdded = false;
+    const handlerEditCategoryQuiz = async function () {
+        const form = new FormData();
+        const cate = document.getElementById('nameCategory');
+        const image = document.getElementById('imageCategory');
+        form.append('nameCategory', cate.value);
+        if (image.files.length > 0) {
+            form.append('imageCategory', image.files[0]);
+        }
+        await updateCourse(form, idCategoryQuiz);
+    }
     const renderCategory = async (id, nameCategory) => {
         const cate = document.getElementById('nameCategory');
         cate.value = nameCategory;
         editCoursePopup.classList.add('show');
-        const image = document.getElementById('imageCategory');
-        const form = new FormData();
+        savePopup.removeEventListener('click', handlerEditCategoryQuiz);
+        savePopup.addEventListener('click', handlerEditCategoryQuiz);
 
-        if (!isSavePopupListenerAdded) {
-            savePopup.addEventListener('click', async function () {
-                form.append('nameCategory', cate.value);
-                if (image.files.length > 0) {
-                    form.append('imageCategory', image.files[0]);
-                }
-                await updateCourse(form, id);
-            });
-            isSavePopupListenerAdded = true;
-        }
     };
-
 
     const updateCourse = async (data, courseid) => {
         try {

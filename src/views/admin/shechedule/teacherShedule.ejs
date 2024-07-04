@@ -1,5 +1,5 @@
-<!-- <%- include('./../comon/header') %> -->
-<!-- Main -->
+<%- include('./../comon/header') %>
+
 <div class="main">
   <%- include('./../comon/topBarSearch') %>
   <!-- Main -->
@@ -7,6 +7,17 @@
     body {
       font-family: Arial, sans-serif;
     }
+    .sheduleTeacher {
+      margin: 0 auto;
+      padding: 20px;
+      height: 85vh;
+      overflow: scroll;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 2px 2px 12px #aaa;
+      margin: 20px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -21,10 +32,10 @@
       background-color: #f2f2f2;
     }
     h5 {
-      background-color: #4a95e0;
+      background-color: rgba(25, 135, 84, 1);
       color: white;
-      border-radius: 10px;
-      padding: 10px 0;
+      border-radius: 5px;
+      padding: 15px 0;
       text-align: center;
     }
     h5:hover {
@@ -38,7 +49,7 @@
       align-items: center;
       justify-content: space-evenly;
       margin: 10px auto;
-      width: 60%;
+      width: 60vw;
     }
     .sheduleControler .item {
       margin: 0 10px;
@@ -46,25 +57,128 @@
     }
     /*  */
     tr td:nth-child(3) input {
+      width: 20px;
+      height: 20px;
       cursor: pointer;
     }
     tr td:nth-child(4) input {
+      width: 20px;
+      height: 20px;
       cursor: pointer;
+      color: #d20606;
     }
+    tr td:nth-child(4) input:checked {
+      background-color: #d20606;
+    }
+    .sheduleControler .item {
+      padding: 5px;
+      border-radius: 5px;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+    .sheduleControler .item h6 {
+      margin-bottom: 0;
+    }
+
     /*  */
+
+    /* Custom checkbox */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 130px;
+      height: 34px;
+      border-radius: 10px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* The slider */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #d20606;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+      border-radius: 10px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      border-radius: 10px;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+    }
+
+    input:checked + .slider {
+      background-color: #07cb56;
+    }
+
+    input:focus + .slider {
+      box-shadow: 0 0 1px #07cb56;
+    }
+
+    input:checked + .slider:before {
+      -webkit-transform: translateX(95px);
+      -ms-transform: translateX(95px);
+      transform: translateX(95px);
+    }
+    .slider {
+      text-align: center;
+    }
+    .slider small {
+      line-height: 34px;
+      font-weight: 700;
+      color: white;
+      text-transform: uppercase;
+    }
+    .present {
+      color: rgb(40, 37, 37);
+    }
+    .sheduleTeacher table tbody tr th {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+    }
+
+    #contentTable .item-child {
+      height: 40px;
+    }
+    #contentTable .item-child td {
+      height: 40px;
+      padding: 0;
+    }
+    #contentTable .item-child td:nth-child(2) {
+      font-weight: 500;
+    }
   </style>
-  <!--  -->
   <div class="sheduleTeacher p-5">
     <h5>Hệ thống điểm danh trung tâm Tsmart</h5>
     <div class="sheduleControler mt-4">
-      <h6>Ngày <%= date %></h6>
+      <div class="item">
+        <h6>Ngày <%= date %></h6>
+      </div>
       <div class="item flex">
         <label for="shift">Ca:</label>
         <select id="shift">
           <option value="1">1 (8h-9h30)</option>
           <option value="2">2 (9h30-11h)</option>
-          <option value="3">3 (17h-18h30)</option>
-          <option value="4">4 (18h30-20h)</option>
+          <option value="3">3 (14h-15h30)</option>
+          <option value="4">4 (17h-18h30)</option>
+          <option value="5">5 (18h30-20h)</option>
         </select>
       </div>
       <div class="item flex">
@@ -87,12 +201,26 @@
       <tr>
         <th>STT</th>
         <th>Họ và tên</th>
-        <th>Có mặt</th>
+        <th>Có Mặt</th>
         <th>Vắng mặt</th>
         <th>Lý Do</th>
       </tr>
       <!--BODY -->
       <tbody id="contentTable">
+        <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" checked />
+              <span class="slider round">
+                <small>Absent</small>
+              </span>
+            </label>
+          </td>
+          <td>1</td>
+        </tr>
         <td colspan="5">
           <p>Không có dữ liệu</p>
         </td>

@@ -24,6 +24,7 @@ body {
   background-color: #dbe2f4;
 }
 .container {
+  margin-top: 2vw !important;
   padding: 0;
 }
 .container12 {
@@ -222,7 +223,7 @@ body {
 /* ===================== Main ===================== */
 .main {
   position: absolute;
-  left: 300px;
+  left: 19vw;
   min-height: 100vh;
   background: var(--white);
   transition: 0.5s;

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (role == 789) {
                 document.cookie = `accessToken=${accessToken}; path=/;`;
                 document.cookie = `refreshToken=${refreshToken}; path=/;`;
-                return window.location.href = '/admin/schedule/teacherShedule';
+                return window.location.href = '/admin/teacher/teacherShedule';
             }
             if (!role.includes('999')) {
                 return window.location.href = '/admin/403';

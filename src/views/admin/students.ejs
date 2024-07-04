@@ -6,10 +6,19 @@
     .content {
       padding: 30px;
     }
+    .content h3 {
+      font-size: 1.2rem;
+      text-transform: uppercase;
+    }
+    .contentData td:nth-child(2) img {
+      border-radius: 15px;
+    }
+
     .contentData td:nth-child(3) {
       color: green;
       font-weight: 500;
-      text-align: center;
+      text-align: left !important;
+      text-transform: uppercase !important;
     }
     .contentData td:nth-child(n + 5):nth-child(-n + 9) {
       color: green;
@@ -62,7 +71,12 @@
         <tr>
           <th scope="row"><%= index + 1 %></th>
           <td>
-            <img src="<%= user?.avatar %>" alt="Avatar" width="60" />
+            <img
+              src="<%= user?.avatar %>"
+              alt="Avatar"
+              width="60"
+              loading="lazy"
+            />
           </td>
           <td><%= user?.fullname %></td>
           <td><%= user?.phone %></td>
@@ -77,14 +91,17 @@
               class="btn btn-primary btn-edit success"
               value="<%= user?.accountId %>"
             >
-              Edit
+              <i
+                style="pointer-events: none"
+                class="fa-solid fa-pen-to-square"
+              ></i>
             </button>
             <button
               class="btn btn-danger btn-delete delete"
               data-value1="<%= user?.accountId %>"
               data-value2="<%= user?._id %>"
             >
-              Delete
+              <i style="pointer-events: none" class="fa-solid fa-trash"></i>
             </button>
             <button
               data-accountid="<%= user?.accountId %>"
@@ -97,7 +114,10 @@
               data-coursefinish="<%= user?.course?.courseFinish %>"
               class="btn btn-light btn-infor"
             >
-              <img style="pointer-events: none" src="/image/info.png" />
+              <i
+                style="pointer-events: none; color: green; font-size: 20px"
+                class="fa-solid fa-circle-info"
+              ></i>
             </button>
           </td>
         </tr>
@@ -180,6 +200,7 @@
               width="250"
               height="150"
               id="student-avatar-view"
+              loading="lazy"
             />
           </div>
           <!-- Image Course -->
@@ -285,6 +306,7 @@
               width="150"
               height="150"
               id="avatarMore"
+              loading="lazy"
             />
           </div>
           <div class="col-md-8">

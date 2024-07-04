@@ -45,13 +45,16 @@
               class="btn btn-primary btn-edit success"
               value="<%= quiz?._id %>"
             >
-              Edit
+               <i
+                style="pointer-events: none"
+                class="fa-solid fa-pen-to-square"
+              ></i>
             </button>
             <button
               class="btn btn-danger btn-delete delete"
               value="<%= quiz?._id %>"
             >
-              Delete
+             <i style="pointer-events: none" class="fa-solid fa-trash"></i>
             </button>
             <button
               value="<%= quiz?._id %>
@@ -61,12 +64,12 @@
 
               <a href="/admin/exam/question/view/<%= quiz?._id %>">
 
-              More
+             <i style="pointer-events: none"  class="fa-solid fa-circle-info"></i>
               </a>
             </button>
             <!-- Check user -->
             <!-- More -->
-            <a class="btn btn-info" href="/admin/exam/<%= quiz?._id %>/<%= quiz?.points %>">
+            <a class="btn btn-info" href="/admin/exam/tracking/<%= quiz?._id %>/<%= quiz?.points %>">
               <i 
            style="pointer-events: none"
            class="fa-solid fa-ellipsis-vertical"></i>

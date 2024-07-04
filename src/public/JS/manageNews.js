@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
+    let currenIdNews = null;
     // Control trong popup
     cancelPopup.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
@@ -23,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const newid = e.target.dataset?.newid;
             const imagePost = e.target.dataset?.image;
             const contentNews = e.target.dataset?.content;
-            renderExam(newid, imagePost, contentNews);
+            currenIdNews = newid;
+            renderNews(newid, imagePost, contentNews);
         });
     });
 
@@ -54,19 +56,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    const renderExam = async (id, image, content) => {
+    const handlerEditNews = async function () {
         const imagePost = document.getElementById('imagePost');
+        const contentNews = document.getElementById('contentNews');
+        const formData = new FormData();
+        formData.append('contentNews', contentNews.value);
+        if (imagePost.files.length > 0) {
+            formData.append('imagePost', imagePost.files[0]);
+        }
+        await updateCourse(formData, currenIdNews);
+    }
+
+    const renderNews = async (id, image, content) => {
         const contentNews = document.getElementById('contentNews');
         contentNews.value = content;
         editCoursePopup.classList.add('show');
-        savePopup.addEventListener('click', async function () {
-            const formData = new FormData();
-            formData.append('contentNews', contentNews.value);
-            if (imagePost.files.length > 0) {
-                formData.append('imagePost', imagePost.files[0]);
-            }
-            await updateCourse(formData, id);
-        });
+        savePopup.removeEventListener('click', handlerEditNews);
+        savePopup.addEventListener('click', handlerEditNews);
     }
 
     const updateCourse = async (data, courseid) => {

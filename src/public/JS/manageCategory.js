@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
+    let currentIdCategory = null;
     // Control trong popup
     cancelPopup.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener("click", function (e) {
             const newid = e.target.value;
             const nameCategory = e.target.dataset?.namecategory;
+            currentIdCategory = newid;
             renderCategory(newid, nameCategory);
         });
     });
@@ -54,13 +56,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    const handlerEditCategory = async function () {
+        const cate = document.getElementById('nameCategory');
+        await updateCourse({ nameCategory: cate?.value }, currentIdCategory);
+    }
+
     const renderCategory = async (id, nameCategory) => {
         const cate = document.getElementById('nameCategory');
         cate.value = nameCategory;
         editCoursePopup.classList.add('show');
-        savePopup.addEventListener('click', async function () {
-            await updateCourse({ nameCategory: cate?.value }, id);
-        });
+        savePopup.removeEventListener('click', handlerEditCategory);
+        savePopup.addEventListener('click', handlerEditCategory);
     }
 
     const updateCourse = async (data, courseid) => {
