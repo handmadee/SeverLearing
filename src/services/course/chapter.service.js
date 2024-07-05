@@ -2,16 +2,18 @@
 
 const { BadRequestError } = require('../../core/error.response');
 const CourseModel = require('../../models/course.model');
+const lessonModel = require('../../models/lesson.model');
+const ExamModel = require('./../../models/exam.model');
 const BaseService = require('../base.service');
-const ChapterModel = require('./../../models/chapter.model');
+const chapterModel = require('./../../models/chapter.model');
 
 class ChapterService extends BaseService {
     constructor() {
-        super(ChapterModel);
+        super(chapterModel);
     }
 
     async getChapterFull() {
-        return this.model.find().populate('courseId').select('titleChapter  courseId');
+        return this.model.find().populate('courseId').select('titleChapter  courseId').lean();
     }
 
     async createChapter(data) {
@@ -36,7 +38,6 @@ class ChapterService extends BaseService {
             .lean();
 
     }
-
     //update chapter
     async updateChapter(id, data) {
         const chapter = await this.model.findById(id);
@@ -44,6 +45,26 @@ class ChapterService extends BaseService {
             throw new BadRequestError('Chapter not found');
         }
         return this.model.findByIdAndUpdate(id, { ...chapter.toObject(), ...data }, { new: true });
+    }
+    //  delete by Chapter 
+    async deleteChapter(_id) {
+        try {
+            await Promise.all([
+                this.model.findByIdAndDelete(_id).exec(),
+                ExamModel.deleteMany({
+                    chaptter_id: _id
+                }).exec(),
+                lessonModel.deleteMany({
+                    chaptter_id: _id
+                }).exec()
+
+            ]);
+            console.log(`Course with ID ${_id} and related categories and chapters deleted successfully.`);
+            return true;
+        } catch (error) {
+            console.error(`Error deleting course with ID ${_id}:`, error);
+            throw error;
+        }
     }
 
 }

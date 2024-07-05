@@ -46,7 +46,7 @@ class CategoryQuizControler {
     static async removeCategory(req, res) {
         return new OK({
             message: "Category removed",
-            data: await category.remove(req.params.id)
+            data: await category.deleteCategoryQuiz(req.params.id)
         }).send(res);
     }
 }

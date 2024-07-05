@@ -69,7 +69,7 @@ class CourseController {
     }
 
     static async removeCourse(req, res) {
-        await courseService.remove(req.params.id);
+        await courseService.deleteCourse(req.params.id);
         return new OK({
             message: "Course removed successfully"
         }).send(res);

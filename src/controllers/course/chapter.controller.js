@@ -46,7 +46,7 @@ class ChapterController {
     }
 
     static async removeChapter(req, res) {
-        await chapterService.remove(req.params.id);
+        await chapterService.deleteChapter(req.params.id);
         return new OK({
             message: "Chapter removed successfully"
         }).send(res);

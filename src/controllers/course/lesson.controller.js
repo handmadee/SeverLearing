@@ -38,7 +38,7 @@ class LessonController {
     }
 
     static async removeLesson(req, res) {
-        await lessonService.remove(req.params.id);
+        await lessonService.removeLesson(req.params.id);
         return new OK({
             message: "Lesson removed successfully"
         }).send(res);

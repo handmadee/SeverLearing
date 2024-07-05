@@ -22,6 +22,22 @@ class LessonService extends BaseService {
     await courseModel.findByIdAndUpdate(chapter.courseId, { $inc: { totalLesson: 1 } });
     return lesson;
   }
+
+  async removeLesson(_id) {
+    try {
+      await Promise.all([
+        this.model.findByIdAndDelete(_id).exec(),
+        ChapterModel.deleteMany({
+          lessons: _id
+        }).exec(),
+      ]);
+      console.log(`Course with ID ${_id} and related categories and chapters deleted successfully.`);
+      return true;
+    } catch (error) {
+      console.error(`Error deleting course with ID ${_id}:`, error);
+      throw error;
+    }
+  }
 }
 
 module.exports = LessonService;

@@ -1,13 +1,16 @@
 'use strict';
 
 
-const { populate } = require('../../models/chapter.model');
 const { CategoryQuiz } = require('../../models/trakingQuiz/categoryQuiz');
 const QuizModel = require('../../models/trakingQuiz/Quiz');
 const BaseService = require('../base.service');
 const { BadRequestError } = require('./../../core/error.response');
 const TrakingQuizServices = require('./TrakingQuiz.services');
 const trakingQuiz = new TrakingQuizServices();
+const TrakingQuizModel = require('../../models/trakingQuiz/TrakingQuiz');
+
+
+
 
 class QuizService extends BaseService {
     constructor() {
@@ -126,6 +129,30 @@ class QuizService extends BaseService {
             return quizsWithCount;
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    // @remove Quiz 
+    async deleteQuiz(_id) {
+        //del quiz hiện tại 
+        // del tracking 
+        // del chapter 
+
+        try {
+            await Promise.all([
+                this.model.findByIdAndDelete(_id).exec(),
+                TrakingQuizModel.deleteMany({
+                    quizID: _id
+                }).exec(),
+                CategoryQuiz.deleteMany({
+                    quizes: _id
+                }).exec(),
+            ]);
+            console.log(`Course with ID ${_id} and related categories and chapters deleted successfully.`);
+            return true;
+        } catch (error) {
+            console.error(`Error deleting course with ID ${_id}:`, error);
+            throw error;
         }
     }
 

@@ -38,7 +38,7 @@ class ExamController {
     }
 
     static async removeExam(req, res) {
-        await examService.remove(req.params.id);
+        await examService.deleteExam(req.params.id);
         return new OK({
             message: "Exam removed successfully"
         }).send(res);

@@ -6,6 +6,7 @@ const lessonModel = require('../../models/lesson.model');
 const BaseService = require('../base.service');
 const Course = require('./../../models/course.model');
 const TrackingCourseService = require("../trackingCourse/trackingCourse.service");
+const chapterModel = require('../../models/chapter.model');
 
 
 
@@ -156,8 +157,25 @@ class CourseService extends BaseService {
     }
     // get course by 
     async getCourseByChapter() {
-        return await Course.find().select("title");
+        return await Course.find().select("title").lean();
     }
+
+    // delete course
+    async deleteCourse(_id) {
+        try {
+            await Promise.all([
+                Course.findByIdAndDelete(_id).exec(),
+                categoryModel.deleteMany({ courses: _id }).exec(),
+                chapterModel.deleteMany({ courseId: _id }).exec()
+            ]);
+            console.log(`Course with ID ${_id} and related categories and chapters deleted successfully.`);
+            return true;
+        } catch (error) {
+            console.error(`Error deleting course with ID ${_id}:`, error);
+            throw error;
+        }
+    }
+
 }
 
 module.exports = CourseService;
