@@ -18,12 +18,5 @@ dels.forEach((del) => {
         } catch (error) {
             console.error('Error:', error);
         }
-
-        // if (data.success) {
-        //     alert('Xóa thông báo thành công!');
-        //     location.reload();
-        // } else {
-        //     alert('Xóa thông báo thất bại.');
-        // }
     });
 });

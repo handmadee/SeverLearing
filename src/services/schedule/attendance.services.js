@@ -49,6 +49,8 @@ class StudentEttendanceService extends BaseService {
                 $group: {
                     _id: '$studentAccount._id',
                     fullname: { $first: '$studentAccount.fullname' },
+                    phone: { $first: '$studentAccount.phone' },
+                    study: { $first: '$studentAccount.study' },
                     attendanceCount: { $sum: 1 },
                     attendanceCountTrue: {
                         $sum: { $cond: [{ $eq: ['$attendance', true] }, 1, 0] }
@@ -64,6 +66,8 @@ class StudentEttendanceService extends BaseService {
                     _id: 0, // Loại bỏ trường _id khỏi kết quả
                     accountID: '$_id',
                     fullname: 1,
+                    phone: 1,
+                    study: 1,
                     attendanceCountTrue: 1,
                     attendanceFalseCount: 1,
                     attendanceCount: 1 // Bao gồm trường đếm số lượng bản ghi
@@ -79,8 +83,8 @@ class StudentEttendanceService extends BaseService {
 
         return await ettendanceModel.find({ studentAccount, date: { $gte: date, $lte: date1 }, study }).populate({
             path: 'studentAccount',
-            select: 'fullname'
-        }).select('studentAccount attendance date');
+            select: 'fullname '
+        }).select('studentAccount attendance date reason study ');
     }
 
     // del find account id 

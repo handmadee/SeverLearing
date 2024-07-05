@@ -12,8 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
     let currentIDCourse = null;
-
-
     cancelPopup.addEventListener('click', () => editCoursePopup.classList.remove('show'));
     cancelPopup2.addEventListener('click', () => editCoursePopup.classList.remove('show'));
 
@@ -70,18 +68,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    //  const handleSave = async () => {
-    //     const formData = new FormData();
-    //     formData.append('title', titleInput.value);
-    //     formData.append('detailCourse', detailInput.value);
-    //     if (imageInput.files.length > 0) {
-    //         formData.append('imageCourse', imageInput.files[0]);
-    //     }
-    //     formData.append('category_id', categorySelect.value);
-
-    //     await updateCourse(formData, courseId);
-    // };
-
     const handleSave = async () => {
         const formData = new FormData();
         formData.append('title', document.getElementById('title').value);
@@ -124,9 +110,6 @@ document.addEventListener('DOMContentLoaded', function () {
             createToast('error');
         }
     };
-
-
-
 
     const updateCourse = async (formData, courseId) => {
         try {

@@ -19,10 +19,28 @@
       width: 15%;
       text-align: left;
     }
+    h5 {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+      border-radius: 5px;
+      padding: 15px;
+      text-align: center;
+    }
+    .table thead tr th {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+    }
   </style>
   <!--Main-->
   <div class="container content">
-    <h3>Quản lý danh mục khoá học</h3>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h5>Quản lý danh mục khoá học</h5>
+      <a class="btn btn-success" href="/admin/students/create">
+        <i style="pointer-events: none" class="fa-solid fa-list"></i>
+        <strong>Category: </strong>
+        <%= data.length %>
+      </a>
+    </div>
     <table class="table">
       <thead>
         <tr>

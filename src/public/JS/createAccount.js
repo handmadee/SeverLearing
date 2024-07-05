@@ -2,6 +2,7 @@
 
 const forms = document.querySelectorAll('.needs-validation123');
 import { LOCALHOST_API_URL } from './config.js'
+const listDel = document.querySelectorAll('.delete');
 
 Array.from(forms).forEach(form => {
     form.addEventListener('submit', event => {
@@ -31,7 +32,7 @@ Array.from(forms).forEach(form => {
             .then(data => {
                 if (data) {
                     alert('Tạo thành công!');
-                    form.reset();
+                    location.reload();
                 } else {
                     console.log(formData);
                 }
@@ -45,3 +46,18 @@ Array.from(forms).forEach(form => {
             });
     });
 });
+
+listDel.forEach(item => {
+    item.addEventListener('click', async (e) => {
+        try {
+            const id = e.target.value;
+            await fetch(`${LOCALHOST_API_URL}deleteAccount/${id}`, {
+                method: 'DELETE',
+            });
+            alert('Xoá thành công')
+            location.reload();
+        } catch (error) {
+            alert('Có lỗi xảy ra, vui lòng thử lại.' + error);
+        }
+    })
+})

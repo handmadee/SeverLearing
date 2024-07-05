@@ -11,6 +11,13 @@ class AccountService extends BaseService {
     static SelectAll() {
         return accountModel.find().lean();
     }
+    // Select Account Admin or GV 
+    static accountSupper() {
+        return accountModel.find({
+            pemission: { $elemMatch: { $in: ["789", "999"] } }
+        }).lean();
+    }
+
 
 
 

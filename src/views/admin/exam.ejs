@@ -9,10 +9,41 @@
     .modal {
       background-color: #2e2d2d5f;
     }
+      h5 {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+      border-radius: 5px;
+      padding: 15px;
+      text-align: center;
+    }
+    .table thead tr th {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+    }
   </style>
   <!--Main-->
   <div class="container content">
-    <h3>Quản lý bài kiểm tra</h3>
+ <div class="d-flex align-items-center justify-content-between mb-3">
+      <h5>Quản lý bài kiểm tra</h5>
+      <div class="action">
+        <a class="btn btn-success" href="/admin/exam/quiz/create">
+        <i style="pointer-events: none" class="fa-solid fa-book-open"></i>
+          Exam
+      </a>
+           <a class="btn btn-success" href="/admin/exam/category">
+        <i style="pointer-events: none" class="fa-solid fa-list"></i>
+          Category
+      </a>
+
+        </a>
+           <a class="btn btn-success" >
+          
+        <i style="pointer-events: none" class="fa-solid fa-book-open"></i>
+          <strong>Exam: </strong>
+          <%= totalItems%>
+      </a>
+      </div>
+    </div>
     <table class="table">
       <thead>
         <tr>

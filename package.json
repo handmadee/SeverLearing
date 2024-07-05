@@ -1,7 +1,7 @@
 {
   "name": "ecommerce_backend_nodejs",
   "version": "1.0.0",
-  "description": "",
+  "description": "app learing",
   "main": "index.js",
   "scripts": {
     "start": "nodemon sever.js",

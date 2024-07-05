@@ -185,6 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function fetchStudentInfoMore(studentId, fullName, avatar, score, quiz, learn, finish, course) {
         try {
+
             const [rankResponse, examResponse, courseLearnResponse, courseFinishResponse] = await Promise.all([
                 fetch(`${localhost}trackingQuiz/ranking/user/${studentId}`),
                 fetch(`${localhost}trackingQuiz/selectExam/${studentId}`),
@@ -214,6 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
         rankData, examData,
         courseLearnData,
         courseFinishData) {
+
         // Render thông tin cơ bản của học sinh
         document.getElementById('avatarMore').src = avatar;
         document.getElementById('nameStudents').innerText = fullName;
@@ -223,10 +225,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('numCourses').innerText = course;
         document.getElementById('numCoursesCompleted').innerText = finish;
         document.getElementById('numCoursesInProgress').innerText = learn;
+        showInfo.classList.add('show');
         renderCoursesInProgress(courseLearnData);
         renderCoursesCompleted(courseFinishData);
         renderQuizzes(examData);
-        showInfo.classList.add('show');
     }
 
     function renderCoursesInProgress(courseLearnData) {
@@ -308,201 +310,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
-// Ver 2
-
-// import { createToast } from './Aleart.js';
-// import { LOCALHOST_API_URL } from './config.js';
-
-// document.addEventListener("DOMContentLoaded", function () {
-//     const localhost = LOCALHOST_API_URL;
-//     const showModalInfo = document.getElementById('studentModal');
-//     const closeModalButtons = Array.from(document.querySelectorAll('#closeModal, #CloseInfor, #cancelPopUp'));
-//     const avatarView = document.getElementById('student-avatar-view');
-//     const saveBtn = document.getElementById('saveInfor');
-//     const showInfo = document.getElementById('studentInfoModal');
-//     const roleUser = document.getElementById('student-role');
-//     let currentStudentId = null; // Biến lưu trữ ID của sinh viên hiện tại
-
-//     document.addEventListener('click', function (e) {
-//         if (e.target.classList.contains('btn-edit')) {
-//             const studentId = e.target.value;
-//             fetchStudentInfo(studentId);
-//         } else if (e.target.classList.contains('btn-delete')) {
-//             const studentId = e.target.dataset.value1;
-//             const accountID = e.target.dataset.value2;
-//             deleteStudent(studentId, accountID);
-//         } else if (e.target.classList.contains('btn-infor')) {
-//             const studentData = e.target.dataset;
-//             fetchStudentInfoMore(studentData);
-//         } else if (closeModalButtons.includes(e.target)) {
-//             showModalInfo.classList.remove('show');
-//             showInfo.classList.remove('show');
-
-//             // this.location.reload(); // Error FNC
-//         }
-//     });
-
-//     async function fetchStudentInfo(studentId) {
-//         try {
-//             const response = await fetch(`${localhost}auth/user/${studentId}`);
-//             const data = await response.json();
-//             const student = data?.data?.data?.info;
-//             const role = data?.data?.data?.permission;
-//             currentStudentId = student._id;
-//             displayStudentInfoInModal(student, role);
-//         } catch (error) {
-//             createToast('error');
-//             console.error(error);
-//         }
-//     }
-
-//     function handleSaveClick() {
-//         updateStudentInfo(currentStudentId);
-//     }
-//     function displayStudentInfoInModal(student, role) {
-//         showModalInfo.classList.add('show');
-//         document.getElementById('student-fullname').value = student?.fullname || '';
-//         document.getElementById('student-email').value = student?.email || '';
-//         document.getElementById('student-phone').value = student?.phone || '';
-//         role && role.length > 0 ? document.getElementById('student-role').value = role[0] : '';
-//         avatarView.src = student?.avatar || '';
-//         document.getElementById('student-avatar').addEventListener('change', function (e) {
-//             const file = e.target.files[0];
-//             const reader = new FileReader();
-//             reader.onload = function () {
-//                 avatarView.src = reader.result;
-//             }
-//             reader.readAsDataURL(file);
-//         });
-//         saveBtn.removeEventListener('click', handleSaveClick);
-//         saveBtn.addEventListener('click', handleSaveClick);
-//     }
-
-//     async function updateStudentInfo(studentId) {
-
-//         const formData = new FormData();
-//         formData.append('fullname', document.getElementById('student-fullname').value);
-//         formData.append('email', document.getElementById('student-email').value);
-//         formData.append('phone', document.getElementById('student-phone').value);
-//         formData.append('avatar', document.getElementById('student-avatar').files[0]);
-
-//         if (!formData.get('fullname') || !formData.get('email') || !formData.get('phone')) {
-//             createToast('error');
-//             return;
-//         }
-
-//         try {
-//             const response = await fetch(`${localhost}user/${studentId}`, {
-//                 method: 'PUT',
-//                 body: formData
-//             });
-
-//             if (response.ok) {
-//                 const data = await response.json();
-//                 const id = data?.data?.data?.accountId;
-//                 const role = roleUser.value;
-
-//                 const roleResponse = await fetch(`${localhost}auth/role/${id}`, {
-//                     method: 'PATCH',
-//                     headers: {
-//                         'Content-Type': 'application/json'
-//                     },
-//                     body: JSON.stringify({ permission: [role] })
-//                 });
-
-//                 if (roleResponse.ok) {
-//                     createToast('success');
-//                     location.reload();
-//                 } else {
-//                     throw new Error('Updating role failed');
-//                 }
-//             } else {
-//                 throw new Error('Updating student info failed');
-//             }
-//         } catch (error) {
-//             createToast('error');
-//             console.error('Error:', error);
-//         }
-//     }
-
-//     async function deleteStudent(studentId, accountID) {
-//         if (!confirm('Are you sure you want to delete this student?')) return;
-
-//         try {
-//             const response1 = await fetch(`${localhost}/user/${accountID}`, { method: 'DELETE' });
-//             if (!response1.ok) throw new Error('Failed to delete student info');
-
-//             const response2 = await fetch(`${localhost}/deleteAccount/${studentId}`, { method: 'DELETE' });
-//             if (!response2.ok) throw new Error('Failed to delete student account');
-
-//             alert('Delete successful');
-//             location.reload();
-//         } catch (error) {
-//             createToast('error');
-//             console.error('Error:', error);
-//         }
-//     }
-
-//     async function fetchStudentInfoMore(studentData) {
-//         const { accountid: studentId, name: fullName, avatar, score, exam: quiz, courselearn: learn, coursefinish: finish, course } = studentData;
-
-//         try {
-//             const [rankResponse, examResponse, courseLearnResponse, courseFinishResponse] = await Promise.all([
-//                 fetch(`${localhost}trackingQuiz/ranking/user/${studentId}`),
-//                 fetch(`${localhost}trackingQuiz/selectExam/${studentId}`),
-//                 fetch(`${localhost}trackingLearn/${studentId}`),
-//                 fetch(`${localhost}trackingFinish/${studentId}`)
-//             ]);
-
-//             const [rankData, examData, courseLearnData, courseFinishData] = await Promise.all([
-//                 rankResponse.json(),
-//                 examResponse.json(),
-//                 courseLearnResponse.json(),
-//                 courseFinishResponse.json()
-//             ]);
-
-//             displayStudentInfoInModalMore(fullName, avatar, score, quiz, learn, finish, course, rankData?.data?.data, examData?.data?.data, courseLearnData?.data?.data, courseFinishData?.data?.data);
-
-//         } catch (error) {
-//             createToast('error');
-//             console.error(error);
-//         }
-//     }
-
-//     function displayStudentInfoInModalMore(fullName, avatar, score, quiz, learn, finish, course, rankData, examData, courseLearnData, courseFinishData) {
-//         document.getElementById('avatarMore').src = avatar;
-//         document.getElementById('nameStudents').innerText = fullName;
-//         document.getElementById('score').innerText = score;
-//         document.getElementById('rank').innerText = rankData;
-//         document.getElementById('numTests').innerText = quiz;
-//         document.getElementById('numCourses').innerText = course;
-//         document.getElementById('numCoursesCompleted').innerText = finish;
-//         document.getElementById('numCoursesInProgress').innerText = learn;
-
-//         renderTableData('coursesInProgressTable', courseLearnData, 'Chưa có khoá học nào đang học');
-//         renderTableData('coursesCompletedTable', courseFinishData, 'Chưa có khoá học nào được hoàn thành');
-//         renderTableData('quizzesTable', examData, 'Chưa có bài kiểm tra nào');
-
-//         showInfo.classList.add('show');
-//     }
-
-//     function renderTableData(tableId, data, emptyMessage) {
-//         const table = document.getElementById(tableId);
-//         table.innerHTML = '';
-//         if (data.length === 0) {
-//             table.innerHTML = `<tr><td colspan="3">${emptyMessage}</td></tr>`;
-//         } else {
-//             data.forEach(item => {
-//                 const row = document.createElement('tr');
-//                 row.innerHTML = `
-//                     <td>${item?.courseID?.title || item?.quizID?.title}</td>
-//                     <td style="text-align: center; font-weight: bold;">${item?.completedLessonsCount || item?.Score}</td>
-//                     <td style="text-align: center; font-weight: bold;">${item?.courseID?.totalLesson || item?.quizID?.points}</td>
-//                 `;
-//                 table.appendChild(row);
-//             });
-//         }
-//     }
-// });

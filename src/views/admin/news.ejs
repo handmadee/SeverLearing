@@ -19,6 +19,17 @@
           width: 15%;
     text-align: left;
     }
+        h5 {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+      border-radius: 5px;
+      padding: 15px;
+      text-align: center;
+    }
+    .table thead tr th {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+    }
     
 
 
@@ -26,7 +37,24 @@
   </style>
   <!--Main-->
   <div class="container content">
-    <h3>Quản lý bài viết</h3>
+  <div class="d-flex align-items-center justify-content-between mb-3">
+      <h5>Quản lý bài viết</h5>
+      <div class="action">
+        <a class="btn btn-success" href="/admin/news/create">
+        <i style="pointer-events: none" class="fa-solid fa-newspaper"></i>
+          + News
+      </a>
+    
+
+        </a>
+           <a class="btn btn-success" >
+          
+        <i style="pointer-events: none" class="fa-solid fa-newspaper"></i>
+          <strong>News: </strong>
+          <%= data.length%>
+      </a>
+      </div>
+    </div>
     <table class="table">
       <thead>
         <tr>
@@ -54,7 +82,7 @@
                     <button
                     type="button"
                     class="btn btn-primary btn-edit success"
-                                        data-newid = "<%= news?._id %>"
+                    data-newid = "<%= news?._id %>"
                     data-image = "<%= news?.imagePost %>"
                     data-content = "<%= news?.contentNews %>"
                     >
@@ -79,9 +107,6 @@
 
       </tbody>
     </table>
-    <!-- <div class="controlTable">
-
-    </div> -->
   </div>
   <!-- Popup -->
   <div

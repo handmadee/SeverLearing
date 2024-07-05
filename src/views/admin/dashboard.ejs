@@ -2,6 +2,19 @@
 <!-- Main -->
 <div class="main">
   <%- include('comon/topBarSearch') %>
+  <style>
+    h5 {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+      border-radius: 5px;
+      padding: 15px;
+      text-align: center;
+    }
+    .table thead tr th {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+    }
+  </style>
   <!--Main-->
   <div class="cardBox">
     <a class="card" href="students">
@@ -48,12 +61,12 @@
   <div class="details">
     <div class="recentOrders">
       <div class="card">
-        <h2 class="card-title">
+        <h5>
           Bảng xếp hạng khoá học
           <strong>
-            <i class="fa-solid fa-medal"></i>
+            <i class="fa-solid fa-book-open"></i>
           </strong>
-        </h2>
+        </h5>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-striped">
@@ -78,7 +91,10 @@
                     />
                   </td>
                   <td style="color: #000000"><%=user?.title %></td>
-                  <td><%= user?.count %></td>
+                  <td>
+                    <%= user?.count %>
+                    <i class="fa-solid fa-user"></i>
+                  </td>
                 </tr>
                 <% }); %> <% } else { %>
                 <tr>
@@ -129,7 +145,10 @@
     <div class="recentCustomers">
       <div class="card">
         <div class="cardHeader">
-          <h2>Bảng xếp hạng học sinh</h2>
+          <h5>
+            Bảng xếp hạng học sinh
+            <i class="fa-solid fa-trophy"></i>
+          </h5>
         </div>
         <div class="learnBoard">
           <table class="table table-striped">
@@ -153,7 +172,10 @@
                   />
                 </td>
                 <td><%= user?.name %></td>
-                <td><%= user?.Score %></td>
+                <td>
+                  <%= user?.Score %>
+                  <i class="fa-brands fa-bitcoin"></i>
+                </td>
               </tr>
               <% }); %> <% } else { %>
               <tr>

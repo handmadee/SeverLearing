@@ -27,10 +27,36 @@
       width: 10%;
       text-align: center;
     }
+    h5 {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+      border-radius: 5px;
+      padding: 15px;
+      text-align: center;
+    }
+    .table thead tr th {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+    }
   </style>
   <!--Main-->
   <div class="container content p-5">
-    <h3>Quản lý chiến dịch thông báo</h3>
+ <div class="d-flex align-items-center justify-content-between mb-3">
+      <h5>Quản lý chiến dịch thông báo</h5>
+      <div class="action">
+        <a class="btn btn-success" href="/admin/firebase/notification">
+        <i style="pointer-events: none" class="fa-solid fa-bell"></i>
+          + Thông báo 
+      </a>
+        </a>
+           <a class="btn btn-success" >
+          
+        <i style="pointer-events: none" class="fa-solid fa-bell"></i>
+          <strong> Thông báo : </strong>
+          <%= data.length %>
+      </a>
+      </div>
+    </div>
     <table class="table">
       <thead>
         <tr>
@@ -78,7 +104,7 @@
 
         <% }) %> <% } else { %>
         <tr>
-          <td colspan="4" class="text-center">No data</td>
+          <td colspan="6" class="text-center">No data</td>
         </tr>
         <% } %>
       </tbody>

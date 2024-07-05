@@ -18,9 +18,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const schoolBoard
         = document.getElementById('presentTable');
 
+    // @infor 
+    const phoneC = document.getElementById('phoneC');
+    const studyC = document.getElementById('studyC');
+
+
 
     const renderLoad = async (date, date1, study) => {
-        content.innerHTML = "";
+        content.innerHTML = `
+        <tr>
+        <td colspan="5" class="py-5">
+            <div class="d-flex mx-2 col-12 justify-content-center">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </td>
+        </tr>`
+
         const response = await fetch(`${LOCALHOST_API_URL}attendanceTeacherByDate`, {
             method: "POST",
             headers: {
@@ -28,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify({ study, date, date1 }),
         });
+        content.innerHTML = ''
         if (!response.ok) {
             return createToast("error");
         }
@@ -49,6 +65,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 >${item?.attendanceFalseCount}</td>
                 <td>  <button
                  data-name="${item?.fullname}"
+                 data-study="${item?.study}"
+                 data-phone="${item?.phone}"
                  value="${item?.accountID}"
               class="btn btn-success delete"  >
               <i style="pointer-events: none"  class="fa-solid fa-circle-info"></i>
@@ -64,6 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 infor.addEventListener("click", async function () {
                     const id = infor.value;
                     const name = infor.getAttribute("data-name");
+                    const studyD = infor.getAttribute("data-study");
+                    const phoneD = infor.getAttribute("data-phone");
                     const response = await fetch(`${LOCALHOST_API_URL}getAttendanceAloneByAccount/${id}`, {
                         method: "POST",
                         headers: {
@@ -81,8 +101,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         render: render1
                     })
                     editCoursePopup.classList.add('show');
-
                     fullname.textContent = name;
+                    phoneC.textContent = phoneD;
+                    studyC.textContent = studyD;
                     const absent = render1.filter((item) => item.attendance === false);
                     const present = render1.filter((item) => item.attendance === true);
                     // RENDER 
@@ -96,7 +117,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         }).format(study);
                         const tr = document.createElement("tr");
                         tr.innerHTML = `
-                        <td>${formattedDate}</td>
+                        <td  colspan="2" ><strong>Ngày Học</strong> ${formattedDate}</td>
+                        <td colspan="1" ><strong>Ca Học</strong> ${item?.study}</td>
+                         <td colspan="2" ><strong>Ghi chú</strong>: ${item?.reason}</td>
                         `;
                         emptyTable.appendChild(tr);
                     }) : emptyTable.innerHTML = '<tr><td colspan="1" class="text-center">Không có dữ liệu</td></tr>';
@@ -110,8 +133,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             year: 'numeric'
                         }).format(study);
                         const tr = document.createElement("tr");
+                        tr.ATTRIBU
                         tr.innerHTML = `
-                        <td>${formattedDate}</td>
+                        <td  colspan="2" ><strong>Ngày Học</strong> ${formattedDate}</td>
+                        <td colspan="1" ><strong>Ca Học</strong> ${item?.study}</td>
+                         <td colspan="2" ><strong>Ghi chú</strong>: ${item?.reason}</td>
                         `;
                         schoolBoard.appendChild(tr);
                     }) : schoolBoard.innerHTML = '<tr><td colspan="1" class="text-center">Không có dữ liệu</td></tr>';

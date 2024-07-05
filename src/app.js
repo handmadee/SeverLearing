@@ -40,7 +40,6 @@ app.use((req, res, next) => {
     error.status = 404;
     next(error);
 });
-
 // Handle other errors
 app.use((error, res, next) => {
     res.status(error.statusCode || 500);

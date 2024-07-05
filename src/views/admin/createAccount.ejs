@@ -3,35 +3,34 @@
 <div class="main">
   <%- include('comon/topBarSearch') %>
   <!--Main-->
-<style>
-  .container {
-    padding: 30px;
-  }
-  h5 {
-    background-color: rgba(26, 25, 25, 0.687);
-    color: rgb(237, 241, 18);
-    border-radius: 10px;
-    padding: 10px 0;
-    text-align: center;
-  }
-  h5:hover {
-    cursor: pointer;
-    background-color: #4a95e0;
-    color: white;
-  }
-</style>
-
-        <div class="createChapter col-10 mx-auto mt-2">
-  <form
+  <style>
+    .container {
+      padding: 30px;
+    }
+    h5 {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+      border-radius: 5px;
+      padding: 15px 0;
+      text-align: center;
+    }
+    /* TR 1 */
+    .recentOrders .table tr td:first-child {
+      text-align: left;
+      padding-left: 30px;
+    }
+  </style>
+  <div id="createAccount" class="row">
+    <!-- Create account -->
+    <div class="createChapter col-5 mx-auto mt-2">
+      <form
         id="formChapter"
         class="row col-12 mx-auto g-3 needs-validation123"
         novalidate
       >
-      <h5>Tạo tài khoản</h5>
+        <h5>Tạo tài khoản</h5>
         <div class="col-12">
-          <label for="username" class="form-label">
-            UserName
-          </label>
+          <label for="username" class="form-label">UserName</label>
           <input
             type="email"
             class="form-control"
@@ -42,10 +41,8 @@
           <div class="valid-feedback">Looks good!</div>
           <div class="invalid-feedback">Vui lòng nhập username</div>
         </div>
-          <div class="col-12">
-          <label for="password" class="form-label">
-            Password
-          </label>
+        <div class="col-12">
+          <label for="password" class="form-label">Password</label>
           <input
             type="password"
             class="form-control"
@@ -57,36 +54,79 @@
           <div class="invalid-feedback">Vui lòng nhập mật khẩu</div>
         </div>
         <div class="col-12">
-          <label for="pemission" class="form-label">Loại tài khoản </label>
-          <select
-            class="form-select"
-            id="pemission"
-            name="pemission"
-            required
-          >
+          <label for="pemission" class="form-label">Loại tài khoản</label>
+          <select class="form-select" id="pemission" name="pemission" required>
             <option selected disabled value="">Loại tài khoản</option>
             <option value="001">Khách</option>
             <option value="888">Học Viên</option>
             <option value="789">Giáo viên</option>
             <option value="999">Admin</option>
           </select>
-          <div class="invalid-feedback">Vui lòng chọn đúng loại tài khoản </div>
+          <div class="invalid-feedback">Vui lòng chọn đúng loại tài khoản</div>
         </div>
         <!-- Submit form -->
         <div class="col-12">
-          <button class="btn btn-primary" type="submit">Tạo tài khoản </button>
+          <button class="btn btn-primary" type="submit">Tạo tài khoản</button>
         </div>
         <!--  -->
       </form>
-        </div>
-     
-        
-
     </div>
-
-
-
+    <!-- Select Table account -->
+    <div class="recentOrders col-7">
+      <div class="card">
+        <h5>
+          Danh sách tài khoản quản trị
+          <strong>
+            <i class="fa-solid fa-medal"></i>
+          </strong>
+        </h5>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>UserName</th>
+                  <th>Role</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Add data -->
+                <% if(data && data.length > 0) { %> <%
+                data.forEach(function(user) { %>
+                <tr>
+                  <td><%= user.username %></td>
+                  <td style="color: #000000">
+                    <%= user.pemission.includes('999') ? 'Admin' :
+                    user.pemission.includes('789') ? 'Teacher' : 'User' %>
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-danger btn-delete delete"
+                      value="<%= user._id %>"
+                    >
+                      <i
+                        style="pointer-events: none"
+                        class="fa-solid fa-trash"
+                      ></i>
+                    </button>
+                  </td>
+                </tr>
+                <% }); %> <% } else { %>
+                <tr>
+                  <td style="text-align: center" colspan="3">
+                    Hiện tại chưa có học sinh nào
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <!--  -->
-  <script type="module"src="/JS/createAccount.js"></script>
+  <script type="module" src="/JS/createAccount.js"></script>
   <%- include('comon/footer') %>
 </div>

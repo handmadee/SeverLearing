@@ -15,10 +15,37 @@
     .table tbody tr td:nth-child(2) {
       width: 75%;
     }
+      h5 {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+      border-radius: 5px;
+      padding: 15px;
+      text-align: center;
+    }
+    .table thead tr th {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+    }
   </style>
   <!--Main-->
   <div class="container content">
-    <h3>Quản lý Popup</h3>
+  <div class="d-flex align-items-center justify-content-between mb-3">
+      <h5>Quản lý popup</h5>
+      <div class="action">
+        <a class="btn btn-success" href="/admin/course/create">
+        <i style="pointer-events: none" class="fa-solid fa-book"></i>
+          + Popup
+      </a>
+   
+        </a>
+           <a class="btn btn-success" >
+          
+        <i style="pointer-events: none" class="fa-solid fa-book"></i>
+          <strong>Popup: </strong>
+          <%= data.length%>
+      </a>
+      </div>
+    </div>
     <table class="table">
       <thead>
         <tr>

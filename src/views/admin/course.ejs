@@ -8,10 +8,41 @@
       margin-left: 10px;
       text-transform: capitalize;
     }
+     h5 {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+      border-radius: 5px;
+      padding: 15px;
+      text-align: center;
+    }
+    .table thead tr th {
+      background-color: rgba(25, 135, 84, 1);
+      color: white;
+    }
   </style>
   <!--Main-->
   <div class="container manageCourse p-5">
-         <h4>Quản lý khoá học</h4>
+  <div class="d-flex align-items-center justify-content-between mb-3">
+      <h5>Quản lý khoá học</h5>
+      <div class="action">
+        <a class="btn btn-success" href="/admin/course/create">
+        <i style="pointer-events: none" class="fa-solid fa-book"></i>
+          Course
+      </a>
+           <a class="btn btn-success" href="/admin/course/category">
+        <i style="pointer-events: none" class="fa-solid fa-list"></i>
+          Category
+      </a>
+
+        </a>
+           <a class="btn btn-success" >
+          
+        <i style="pointer-events: none" class="fa-solid fa-book"></i>
+          <strong>Course: </strong>
+          <%= totalItems%>
+      </a>
+      </div>
+    </div>
       <table class="table">
         <thead>
           <tr>
@@ -54,7 +85,7 @@
                <button 
                class="btn btn-info btn-info">
                <a href="/admin/course/lesson/find/<%=user?._id %>">
-                <i  style="pointer-events: none"class="fa-solid fa-circle-info"></i>
+                <i  style="pointer-events: none"class="fa-solid fa-circle-info fs-4"></i>
                 </a>
                </button>
             </td>
@@ -154,7 +185,6 @@
 
 </div>
   <div id="toasts"></div>
-      <!-- Main -->
 
     </div>
     <script type="module" src="/JS/manageCourse.js"></script>

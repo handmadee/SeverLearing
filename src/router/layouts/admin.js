@@ -17,6 +17,7 @@ const PopupService = require('../../services/popup/popup.service');
 const fireBaseNotification = require('./../../services/firebase/notification.firebase.services');
 const fcmTokenService = require('../../services/firebase/fcmToken.firebase.services');
 const scheduleService = require('../../services/schedule/schedule.service');
+const AccountService = require('../../services/account/account.service');
 
 const CourseService12 = new CourseService();
 const QuizService12 = new QuizService();
@@ -54,9 +55,25 @@ adminRouter.get('/auth', (req, res, next) => {
     res.render('admin/authAdmin');
 }));
 
+// viewAccout 
+adminRouter.get('/selectAccout', asnycHandler(async (req, res) => {
+    const arAccout = await AccountService.accountSupper();
+    console.log({
+        messaging: 'Accout ::',
+        arAccout
+    })
+    res.json({
+        arAccout
+    })
+}
+));
+
+// 
+
 // Create account 
 adminRouter.get('/students/create', permission('999'), asnycHandler(async (req, res) => {
-    res.render('admin/createAccount', { title: "Tạo tài khoản" });
+    const data = await AccountService.accountSupper();
+    res.render('admin/createAccount', { title: "Tạo tài khoản", data });
 }));
 
 // Dashboard 
@@ -99,6 +116,8 @@ adminRouter.get('/exam/category/create', permission('999'), asnycHandler(async (
 }));
 
 
+
+
 // Create Exam Quiz
 adminRouter.get('/exam/quiz/create', permission('999'), asnycHandler(async (req, res) => {
     const quiz = await examQuizService.getAll();
@@ -131,7 +150,7 @@ adminRouter.get('/exam/category', permission('999'), asnycHandler(async (req, re
 }));
 
 
-// 
+
 // Exam by id 
 adminRouter.get('/exam/tracking/:id/:max', permission('999'), asnycHandler(async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
@@ -143,7 +162,7 @@ adminRouter.get('/exam/tracking/:id/:max', permission('999'), asnycHandler(async
     const totalPages = Math.ceil(totalItem / limit);
     console.log(data)
     if (!data) throw new Error('No data found');
-    res.render('admin/examById', { title: "Quản lý bài kiểm tra", TrackingExam: data?.rank, totalPages, currentPage, max, id });
+    res.render('admin/examRank', { title: "Quản lý bài kiểm tra", TrackingExam: data?.rank, totalPages, currentPage, max, id });
 }))
 
 // Students
