@@ -8,8 +8,7 @@ const PopupService12 = new PopupService();
 
 class PopupController {
     static async createPopup(req, res) {
-        const file = req.file ? req.file.filename : null;
-        const popupImage = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+        const popupImage = req.file ? req.file.path : null;
         const postPopup = await PopupService12.create({
             popupImage
         });
@@ -33,9 +32,7 @@ class PopupController {
         }).send(res);
     }
     static async updatePopup(req, res) {
-        const file = req.file ? req.file.filename : null;
-        const popupImage = `${process.env.LOCAL_HOST2}/uploads/${file}`;
-
+        const popupImage = req.file ? req.file.path : null;
         return new OK({
             message: "PopupService12 has been successfully updated.",
             data: await PopupService12.update(req.params.id, { popupImage })

@@ -5,26 +5,27 @@ const localhost = LOCALHOST_API_URL;
 document.addEventListener('DOMContentLoaded', function () {
     const editButtons = document.querySelectorAll(".btn-edit");
     const deleteButtons = document.querySelectorAll(".btn-delete");
-    // Control trong popup
     const editCoursePopup = document.getElementById('editModal');
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
-    let currenIdNews = null;
-    // Control trong popup
+
+    let currentIdNews = null;
+
     cancelPopup.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
     });
+
     cancelPopup2.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
     });
-    // Control 
+
     editButtons.forEach(button => {
         button.addEventListener("click", function (e) {
             const newid = e.target.dataset?.newid;
             const imagePost = e.target.dataset?.image;
             const contentNews = e.target.dataset?.content;
-            currenIdNews = newid;
+            currentIdNews = newid;
             renderNews(newid, imagePost, contentNews);
         });
     });
@@ -33,26 +34,27 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener("click", function (e) {
             const id = e.target.value;
             if (!id) return createToast('error');
-            delExam(id)
+            delExam(id);
         });
     });
 
-
-
-
     const delExam = async (id) => {
         try {
+
             const exam = await fetch(`${localhost}/news/${id}`, {
                 method: 'DELETE',
             });
+
+
             if (!exam.ok) {
-                return createToast('error')
+                return createToast('error');
             }
-            alert('Xoá bài kiểm tra  thành công ');
+
+            alert('Xoá bài viết thành công');
             location.reload();
         } catch (error) {
-            console.log(error)
-            return createToast('error')
+            console.log(error);
+            createToast('error');
         }
     }
 
@@ -64,8 +66,27 @@ document.addEventListener('DOMContentLoaded', function () {
         if (imagePost.files.length > 0) {
             formData.append('imagePost', imagePost.files[0]);
         }
-        await updateCourse(formData, currenIdNews);
-    }
+
+        savePopup.disabled = true; // Disable button để ngăn người dùng bấm lại trong khi đang xử lý
+        savePopup.querySelector('.spinner-border').classList.remove('d-none'); // Hiển thị spinner
+
+        try {
+            const response = await updateCourse(formData, currentIdNews);
+
+            if (response.ok) {
+                alert('Cập nhật bài viết thành công');
+                location.reload();
+            } else {
+                createToast('error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            createToast('error');
+        } finally {
+            savePopup.disabled = false; // Enable lại button sau khi hoàn thành
+            savePopup.querySelector('.spinner-border').classList.add('d-none'); // Ẩn spinner
+        }
+    };
 
     const renderNews = async (id, image, content) => {
         const contentNews = document.getElementById('contentNews');
@@ -77,25 +98,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const updateCourse = async (data, courseid) => {
         try {
-            const cousrse = await fetch(`${localhost}news/${courseid}`, {
+            const response = await fetch(`${localhost}/news/${courseid}`, {
                 method: 'PUT',
-                // headers: {
-                //     'Content-Type': 'application/json'
-                // },
                 body: data
             });
-            if (!cousrse.ok) {
-                return createToast('error')
-            }
-            alert('Cập nhật bài viết thành công ');
-            location.reload();
+
+            return response;
         } catch (error) {
-            console.log(error)
-            return createToast('error')
+            console.error('Error:', error);
+            throw error;
         }
     }
-
-
 });
-
-

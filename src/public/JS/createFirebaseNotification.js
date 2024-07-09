@@ -58,6 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(data.status === 200 ? 'Notification sent successfully!' : 'Notification failed to send!');
             if (data.status === 200) location.reload();
         } catch (error) {
+            console.log({
+                message: `error:: `,
+                error
+            })
             console.error('Error:', error);
         }
     });

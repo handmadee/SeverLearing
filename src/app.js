@@ -15,7 +15,15 @@ app.set("view engine", "ejs");
 // Middleware
 app.use(cors()); // Enable Cross-Origin Resource Sharing
 app.use(morgan('dev')); // Log HTTP requests
-app.use(helmet()); // Set various HTTP headers for security
+app.use(helmet());
+app.use(
+    helmet.contentSecurityPolicy({
+        useDefaults: true,
+        directives: {
+            "img-src": ["'self'", "https: data: blob:"],
+        },
+    })
+);
 app.use(compression()); // Compress response bodies for faster transmission
 app.use(express.json()); // Parse incoming request bodies with JSON payloads
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data with querystring library

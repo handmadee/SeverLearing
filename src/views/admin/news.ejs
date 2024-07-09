@@ -30,6 +30,20 @@
       background-color: rgba(25, 135, 84, 1);
       color: white;
     }
+
+    #overlay {
+          position: absolute;
+    top: 5%;
+    right: 10%;
+    background: rgb(0 0 0 / 20%);
+    padding: 10px;
+    border-radius: 10px;
+    display: none;
+    }
+
+
+
+
     
 
 
@@ -156,12 +170,15 @@
             Đóng
           </button>
           <button type="button" id="savePopup" class="btn btn-primary">
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+
             Lưu thay đổi
           </button>
         </div>
       </div>
     </div>
   </div>
+
   <div id="toasts"></div>
   <!-- Main -->
 </div>
