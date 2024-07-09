@@ -5,8 +5,8 @@ const { OK, Created } = require("../core/success.response");
 class InfoController {
     static async createInfoUser(req, res, next) {
         try {
-            const file = req.file ? req.file.filename : null;
-            const avatar = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+            const file = req.file ? req.file.path : null;
+            const avatar = file;
             const createdInfo = await InfoService.createInfoUser({ ...req.body, avatar });
             return new Created({
                 message: 'Create info success',
@@ -32,9 +32,9 @@ class InfoController {
     static async editInfoUser(req, res, next) {
         try {
             let updateData = { ...req.body };
-            const file = req.file ? req.file.filename : null;
+            const file = req.file ? req.file.path : null;
             if (file) {
-                const avatar = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+                const avatar = file;
                 updateData.avatar = avatar;
             }
             const updatedInfo = await InfoService.updateInfoUser(req.params.id, updateData);

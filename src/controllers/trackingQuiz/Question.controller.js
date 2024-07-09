@@ -7,8 +7,8 @@ const QuestionQuiz = new QuestionQuizService();
 class QuestionQuizController {
 
     static async createQuestion(req, res) {
-        const file = req.file ? req.file.filename : null;
-        const imageQuestion = file ? `${process.env.LOCAL_HOST2}/uploads/${file}` : null;
+        const file = req.file ? req.file.path : null;
+        const imageQuestion = file;
         const question = await QuestionQuiz.createQuestion({
             ...req.body,
             imageQuestion
@@ -34,8 +34,8 @@ class QuestionQuizController {
     static async updateQuestion(req, res) {
         const updateData = { ...req.body };
         if (req.file) {
-            const file = req.file.filename;
-            const imageQuestion = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+            const file = req.file.path;
+            const imageQuestion = file;
             updateData.imageQuestion = imageQuestion;
         }
         return new OK({

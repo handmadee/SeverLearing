@@ -8,8 +8,7 @@ const News = new NewsService();
 class NewsController {
 
     static async createNews(req, res) {
-        const file = req.file ? req.file.filename : null;
-        const imagePost = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+        const imagePost = req.file ? req.file.path : null;
         const postNews = await News.create({
             ...req.body,
             imagePost
@@ -37,9 +36,9 @@ class NewsController {
     static async updateNews(req, res) {
 
         const dataObj = { ...req.body };
-        const file = req.file ? req.file.filename : null;
+        const file = req.file ? req.file.path : null;
         if (file) {
-            dataObj.imagePost = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+            dataObj.imagePost = file
         }
         return new OK({
             message: "News has been successfully updated.",

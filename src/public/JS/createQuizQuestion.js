@@ -86,11 +86,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 form.classList.add('was-validated');
                 return;
             }
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+            submitBtn.disabled = true;
+
             const question = form?.title?.value;
             const image = form?.imageQuestion?.files[0];
             const quiz = form?.selectGame?.value;
             const arrAnswer = document.querySelectorAll('.answerInput');
             const isCorrect = document.getElementById('isCorrectAnswer').value;
+
 
             const questionForm = new FormData();
             questionForm.append('title', question);
@@ -132,6 +137,8 @@ document.addEventListener('DOMContentLoaded', function () {
             } catch (error) {
                 alert('Có lỗi xảy ra, vui lòng thử lại.');
             } finally {
+                submitBtn.innerHTML = 'Create Question'; // Hoặc nội dung ban đầu của nút
+                submitBtn.disabled = false;
                 formQuestion.classList.add('was-validated');
             }
 

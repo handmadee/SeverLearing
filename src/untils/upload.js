@@ -1,6 +1,10 @@
+const configCloudinary = require('./../configs/config.cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
 const multer = require('multer');
 const path = require('path');
 const xlsx = require('xlsx');
+
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -12,6 +16,23 @@ const storage = multer.diskStorage({
         const fileName = `${file.fieldname}-${uniqueSuffix}${fileExtension}`;
         cb(null, fileName);
     }
+});
+
+const storageCloud = new CloudinaryStorage({
+    cloudinary: configCloudinary,
+    params: {
+        folder: 'uploads',
+        allowed_formats: ['jpg', 'jpeg', 'png'],
+        transformation: [
+            { width: 2000, height: 2000, crop: 'limit' },
+            { quality: 'auto', fetch_format: 'auto' }
+        ]
+    },
+    cleanup: {
+        folder: 'uploads',
+        enabled: true
+    }
+
 });
 
 const fileFilter = (req, file, cb) => {
@@ -31,8 +52,9 @@ const uploadExcel = multer({
     }
 });
 
+
 const upload = multer({
-    storage: storage,
+    storage: storageCloud,
     fileFilter: fileFilter
 });
 

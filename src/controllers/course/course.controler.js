@@ -8,8 +8,7 @@ const sharp = require('sharp');
 class CourseController {
 
     static async createCourse(req, res) {
-        const file = req.file ? req.file.filename : null;
-        const imageCourse = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+        const imageCourse = req.file ? req.file.path : null;
         const course = await courseService.createCourse({
             ...req.body,
             imageCourse
@@ -53,9 +52,7 @@ class CourseController {
             let updateData = { ...req.body };
             console.log(req.body)
             if (req.file) {
-                const file = req.file.filename;
-                const avatar = `${process.env.LOCAL_HOST2}/uploads/${file}`;
-                updateData.imageCourse = avatar;
+                updateData.imageCourse = req.file.path;
             }
             const updatedInfo = await courseService.updateCourse(req.params.id, updateData);
             return new OK({

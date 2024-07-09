@@ -1,5 +1,8 @@
 var admin = require("firebase-admin");
-var serviceAccount = require("./tsmarts-firebase-adminsdk-2afsu-6d890bf738.json");
+const serviceAccount = require("./service.account");
+
+
+
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),

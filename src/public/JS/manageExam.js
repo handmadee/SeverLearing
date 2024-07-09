@@ -2,30 +2,40 @@
 import { createToast } from './Aleart.js';
 import { LOCALHOST_API_URL } from './config.js';
 const localhost = LOCALHOST_API_URL;
+
 document.addEventListener('DOMContentLoaded', function () {
     const editButtons = document.querySelectorAll(".btn-edit");
     const deleteButtons = document.querySelectorAll(".btn-delete");
     const showInfoButtons = document.querySelectorAll(".btn-infor");
-    // Control trong popup
     const editCoursePopup = document.getElementById('editModal');
     const cancelPopup = document.getElementById('cancelPopup');
     const cancelPopup2 = document.getElementById('cancelPopup2');
     const savePopup = document.getElementById('savePopup');
+    const loadingOverlay = document.getElementById('loadingOverlay');
     let currentIdExam = null;
 
-    // Control trong popup
+    function showLoading() {
+        loadingOverlay.classList.remove('d-none');
+    }
+
+    function hideLoading() {
+        loadingOverlay.classList.add('d-none');
+    }
+
     cancelPopup.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
     });
+
     cancelPopup2.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
     });
-    // Control 
+
     editButtons.forEach(button => {
         button.addEventListener("click", function (e) {
             const id = e.target.value;
             currentIdExam = id;
-            fetchExam(id)
+            showLoading();
+            fetchExam(id);
         });
     });
 
@@ -33,16 +43,16 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener("click", function (e) {
             const id = e.target.value;
             if (!id) return createToast('error');
-            delExam(id)
+            showLoading();
+            delExam(id);
         });
     });
 
     showInfoButtons.forEach(button => {
         button.addEventListener("click", function (e) {
-
+            // Có thể thêm xử lý hiển thị thông tin nếu cần
         });
     });
-
 
     const delExam = async (id) => {
         try {
@@ -50,15 +60,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'DELETE',
             });
             if (!exam.ok) {
-                return createToast('error')
+                return createToast('error');
             }
-            alert('Xoá bài kiểm tra  thành công ');
-            location.reload();
         } catch (error) {
-            console.log(error)
-            return createToast('error')
+            console.log(error);
+            createToast('error');
+        } finally {
+            hideLoading();
+            this.location.reload();
+
         }
-    }
+    };
 
     const fetchExam = async (id) => {
         const accessToken = document.cookie.split(';').find(cookie => cookie.includes('accessToken'))?.split('=')[1];
@@ -66,36 +78,36 @@ document.addEventListener('DOMContentLoaded', function () {
             return createToast('error');
         }
         try {
-            const cousrse = await fetch(`${localhost}quizExam/${id}`,
-                {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
+            const cousrse = await fetch(`${localhost}quizExam/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
                 }
-            )
+            });
             if (!cousrse.ok) {
-                return createToast('error')
+                return createToast('error');
             }
             const data = await cousrse.json();
             const { title, time, points, level, categoryQuiz_id } = data?.data?.data;
             renderExam(id, title, time, points, level, categoryQuiz_id);
         } catch (error) {
-            console.log(error)
-            return createToast('error')
+            console.log(error);
+            createToast('error');
+        } finally {
+            hideLoading();
         }
-    }
+    };
 
-    const editExam = async function () {
+    const editExam = async () => {
         const formData = {
             title: document.getElementById('title').value,
             time: document.getElementById('time').value,
             points: document.getElementById('points').value,
             level: document.getElementById('level').value,
             categoryQuiz_id: document.getElementById('categoryQuiz_id').value
-        }
+        };
         return await updateCourse(formData, currentIdExam);
-    }
+    };
 
     const renderExam = async (idExam, title, timeEx, pointsEx, levelEx, categoryEx) => {
         const titleXam = document.getElementById('title');
@@ -104,9 +116,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const categoryExam12 = document.getElementById('categoryQuiz_id');
         const level = document.getElementById('level');
         try {
-            const categoryExam = await fetch(`${localhost}categoryQuiz`)
+            const categoryExam = await fetch(`${localhost}categoryQuiz`);
             if (!categoryExam.ok) {
-                return createToast('error')
+                return createToast('error');
             }
             const data = await categoryExam.json();
             const category = data?.data?.data;
@@ -116,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 option.text = item?.nameCategory;
                 categoryExam12.appendChild(option);
             });
-            //  Change value
             titleXam.value = title;
             time.value = timeEx;
             points.value = pointsEx;
@@ -126,10 +137,12 @@ document.addEventListener('DOMContentLoaded', function () {
             savePopup.removeEventListener('click', editExam);
             savePopup.addEventListener('click', editExam);
         } catch (error) {
-            console.log(error)
-            return createToast('error')
+            console.log(error);
+            createToast('error');
+        } finally {
+            hideLoading();
         }
-    }
+    };
 
     const updateCourse = async (data, courseid) => {
         try {
@@ -141,17 +154,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: JSON.stringify(data),
             });
             if (!cousrse.ok) {
-                return createToast('error')
+                return createToast('error');
             }
             alert('Cập nhật bài kiểm tra thành công ');
             location.reload();
         } catch (error) {
-            console.log(error)
-            return createToast('error')
+            console.log(error);
+            createToast('error');
         }
-    }
-
+    };
 
 });
-
 

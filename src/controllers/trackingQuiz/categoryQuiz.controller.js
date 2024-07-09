@@ -8,8 +8,7 @@ const category = new categoryQuizService();
 class CategoryQuizControler {
     // Create Category
     static async createCategory(req, res) {
-        const file = req.file ? req.file.filename : null;
-        const imageCategory = file ? `${process.env.LOCAL_HOST2}/uploads/${file}` : null;
+        const imageCategory = req.file ? req.file.path : null;
         return new OK({
             message: "Category created successfully",
             data: await category.create({
@@ -34,8 +33,7 @@ class CategoryQuizControler {
         let updateData = { ...req.body };
         console.log(req.body)
         if (req.file) {
-            const file = req.file.filename;
-            const avatar = `${process.env.LOCAL_HOST2}/uploads/${file}`;
+            const avatar = req.file.path;
             updateData.imageCategory = avatar;
         }
         return new OK({

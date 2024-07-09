@@ -12,8 +12,8 @@ class NotificationController {
         }).send(res);
     }
     static async createNotification(req, res) {
-        const image = req.file ? req.file.filename : null;
-        const imageNotification = `${process.env.LOCAL_HOST2}/uploads/${image}`;
+        const image = req.file ? req.file.path : null;
+        const imageNotification = image;
         const notification = await listNotification.create({
             ...req.body,
             urlImage: imageNotification
@@ -30,8 +30,8 @@ class NotificationController {
         }).send(res);
     }
     static async updateNotification(req, res) {
-        const image = req.file ? req.file.filename : null;
-        const imageNotification = `${process.env.LOCAL_HOST2}/uploads/${image}`;
+        const image = req.file ? req.file.path : null;
+        const imageNotification = image;
         const notification = await listNotification.update(req.params.id, { urlImage: imageNotification })
         return new OK({
             message: "Notification updated successfully",

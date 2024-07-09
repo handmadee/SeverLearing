@@ -1,3 +1,5 @@
+'use strict';
+
 import { createToast } from './Aleart.js';
 import { LOCALHOST_API_URL } from './config.js';
 
@@ -14,16 +16,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const saveBtn = document.getElementById('saveInfor');
     const showInfo = document.getElementById('studentInfoModal');
     const roleUser = document.getElementById('student-role');
+    const loadingOverlay = document.getElementById('loadingOverlay');
     let currentStudentId = null;
 
     editButtons.forEach(button => {
         button.addEventListener("click", function (e) {
             const studentId = e.target.value;
-            console.log(studentId);
+            showLoading(); // Hiển thị loading khi bắt đầu fetch dữ liệu
             fetchStudentInfo(studentId);
         });
     });
-
 
     deleteButtons.forEach(button => {
         button.addEventListener("click", function () {
@@ -43,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const learn = e.target.dataset.courselearn;
             const finish = e.target.dataset.coursefinish;
             const course = e.target.dataset.course;
+            showLoading(); // Hiển thị loading khi bắt đầu fetch dữ liệu
             fetchStudentInfoMore(studentId, fullName, avatar, score, quiz, learn, finish, course);
         });
     });
@@ -54,10 +57,10 @@ document.addEventListener("DOMContentLoaded", function () {
     closeBtn.addEventListener('click', function () {
         showModalInfo.classList.remove('show');
     });
+
     closeMore.addEventListener('click', () => {
         showInfo.classList.remove('show');
-    })
-
+    });
 
     async function fetchStudentInfo(studentId) {
         try {
@@ -70,6 +73,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             createToast('error');
             console.log(error);
+        } finally {
+            hideLoading(); // Ẩn loading khi fetch hoàn tất
         }
     }
 
@@ -94,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             reader.readAsDataURL(file);
         });
+
         saveBtn.removeEventListener('click', updateInfor);
         saveBtn.addEventListener('click', updateInfor);
     }
@@ -107,16 +113,21 @@ document.addEventListener("DOMContentLoaded", function () {
         if (avatarFile) {
             formData.append('avatar', avatarFile);
         }
-        // Validate 
+
+        // Validate
         if (!formData.get('fullname') || !formData.get('email') || !formData.get('phone')) {
             createToast('error');
             return;
         }
+
+        showLoading(); // Hiển thị loading khi gửi request
+
         try {
             const response = await fetch(`${localhost}user/${studentId}`, {
                 method: 'PUT',
                 body: formData
             });
+
             const informationUser = await response.json();
             if (informationUser) {
                 const id = informationUser?.data?.data?.accountId;
@@ -146,12 +157,16 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             createToast('error');
             console.error('Error:', error);
+        } finally {
+            hideLoading(); // Ẩn loading sau khi hoàn tất request
         }
     }
 
     async function deleteStudent(studentId, accountID) {
         const confirmed = await confirmDeleteDialog();
         if (!confirmed) return;
+
+        showLoading(); // Hiển thị loading khi xoá sinh viên
 
         try {
             // Xoá thông tin của sinh viên
@@ -173,6 +188,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             createToast('error');
             console.error('Lỗi:', error.message);
+        } finally {
+            hideLoading(); // Ẩn loading sau khi hoàn tất request
         }
     }
 
@@ -184,22 +201,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function fetchStudentInfoMore(studentId, fullName, avatar, score, quiz, learn, finish, course) {
-        try {
+        showLoading(); // Hiển thị loading khi fetch thông tin chi tiết
 
+        try {
             const [rankResponse, examResponse, courseLearnResponse, courseFinishResponse] = await Promise.all([
                 fetch(`${localhost}trackingQuiz/ranking/user/${studentId}`),
                 fetch(`${localhost}trackingQuiz/selectExam/${studentId}`),
                 fetch(`${localhost}trackingLearn/${studentId}`),
                 fetch(`${localhost}trackingFinish/${studentId}`)
             ]);
+
             const [rankData, examData, courseLearnData, courseFinishData] = await Promise.all([
                 rankResponse.json(),
                 examResponse.json(),
                 courseLearnResponse.json(),
                 courseFinishResponse.json()
-            ])
-            displayStudentInfoInModal(fullName, avatar, score, quiz, learn,
-                finish, course,
+            ]);
+
+            displayStudentInfoInModal(fullName, avatar, score, quiz, learn, finish, course,
                 rankData?.data?.data,
                 examData?.data?.data,
                 courseLearnData?.data?.data,
@@ -208,7 +227,17 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             createToast('error');
             console.log(error);
+        } finally {
+            hideLoading(); // Ẩn loading sau khi fetch hoàn tất
         }
+    }
+
+    function showLoading() {
+        loadingOverlay.classList.remove('d-none');
+    }
+
+    function hideLoading() {
+        loadingOverlay.classList.add('d-none');
     }
 
     function displayStudentInfoInModal(fullName, avatar, score, quiz, learn, finish, course,
@@ -305,8 +334,10 @@ document.addEventListener("DOMContentLoaded", function () {
             quizzesTable.appendChild(row);
         });
     }
-
 });
+
+
+
 
 
 
