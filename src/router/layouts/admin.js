@@ -22,7 +22,6 @@ const AccountService = require('../../services/account/account.service');
 const CourseService12 = new CourseService();
 const QuizService12 = new QuizService();
 const trakingQuizServices = new TrakingQuizServices();
-const trackingCourse = new TrackingCourseService();
 const categoryCourse = new categoryService();
 const chapterCourse = new ChapterService();
 const categoryQuiz = new categoryQuizService();
@@ -333,6 +332,11 @@ adminRouter.get('/schedule/importStudents', permission('999'), asnycHandler(asyn
     const totalPages = data?.totalPages;
     res.render('./admin/shechedule/importSchedule', { title: "Đăng tải học sinh", data: data?.data, totalPages, currentPage, total });
 }));
+adminRouter.get('/schedule/ettendanceTeacher', permission('999'), asnycHandler(async (req, res) => {
+    // const data = await AccountService.selectTeachers();
+    const data = await AccountService.accountSupper();
+    res.render('./admin/shechedule/exportTeacher', { title: "Lịch giảng viên", data });
+}))
 adminRouter.get('/schedule/findShechedule', permission('999'), asnycHandler(async (req, res) => {
     res.render('./admin/shechedule/findShechedule', { title: "Tìm kiếm thời khoá biểu " });
 }));
@@ -343,15 +347,20 @@ adminRouter.get('/schedule/exportShechedule', permission('999'), asnycHandler(as
 adminRouter.get('/schedule/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
     const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
     const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
-    console.log(days)
-    res.render('./admin/shechedule/teacherShedule', { title: "Điểm danh", date, days });
+    const { userId } = req.payload;
+    console.log({
+        message: 'user:: id',
+        userId
+    })
+    res.render('./admin/shechedule/teacherShedule', { title: "Điểm danh", date, days, userId });
 }));
 
 // @Role Teacher    
 adminRouter.get('/teacher/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
     const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
     const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
-    res.render('./admin/teacher/teacherShedule', { title: "Điểm danh", date, days });
+    const { userId } = req.payload;
+    res.render('./admin/teacher/teacherShedule', { title: "Điểm danh", date, days, userId });
 }));
 
 adminRouter.get('/teacher/changeSub', permission('789 999'), asnycHandler(async (req, res) => {

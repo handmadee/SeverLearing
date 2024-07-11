@@ -9,6 +9,9 @@ const studentShecheduleQuizSchema = new Schema({
     studentAccount: {
         type: Types.ObjectId, ref: 'studentShechedule'
     },
+    teacherAccount: {
+        type: Types.ObjectId, ref: 'account'
+    },
     attendance: {
         type: Boolean,
         default: false,

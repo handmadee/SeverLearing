@@ -16,6 +16,11 @@ module.exports = (roles) => {
             if (!roles.includes(payload.role)) {
                 return res.status(403).redirect('/admin/403');
             }
+            console.log({
+                message: `user:: `,
+                payload
+            });
+            req.payload = payload;
             next();
         } catch (error) {
             if (error instanceof jwt.JsonWebTokenError || error instanceof jwt.TokenExpiredError) {
@@ -43,15 +48,9 @@ module.exports = (roles) => {
                     // Đặt cookie mới
                     res.cookie('accessToken', accessToken, {
                         path: '/',
-                        // httpOnly: true,
-                        // secure: true,
-                        // sameSite: 'Strict'
                     });
                     res.cookie('refreshToken', refreshToken, {
                         path: '/',
-                        // httpOnly: true,
-                        // secure: true,
-                        // sameSite: 'Strict'
                     });
                     // Gửi lại request gốc sau khi refresh token thành công
                     return res.redirect(req.originalUrl);

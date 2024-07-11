@@ -35,6 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return createToast('login');
             }
             const data = await response.json();
+            console.log({
+                message: `:: dataAccout: `,
+                data: data
+            })
             const { accessToken, refreshToken, role } = data?.data?.data;
             if (role == 789) {
                 document.cookie = `accessToken=${accessToken}; path=/;`;

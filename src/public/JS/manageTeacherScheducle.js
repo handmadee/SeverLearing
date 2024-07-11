@@ -5,15 +5,15 @@ const shift = document.getElementById("shift");
 const day = document.getElementById("day");
 const saveInfor = document.getElementById("saveInfor");
 const contentTable = document.getElementById("contentTable");
+const teacherAccount = saveInfor.getAttribute('data-id');
+
 
 document.addEventListener("DOMContentLoaded", async function () {
     const now = new Date();
     const currentDay = now.getDay();
     const currentHour = now.getHours() + (now.getMinutes() / 60);
-
     // Set the day value
     day.value = currentDay === 0 ? 8 : currentDay + 1;
-
     // Automatically select the correct shift based on the current time
     if (currentHour >= 8 && currentHour < 9.30) {
         shift.value = 1;
@@ -25,8 +25,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         shift.value = 4;
     } else if (currentHour >= 18.5 && currentHour < 20) {
         shift.value = 5;
-    } else {
+    } else if (currentHour >= 19.5 && currentHour < 21) {
         shift.value = 6;
+    } else {
+        shift.value = 7;
     }
 
     let isStatus = true;
@@ -185,6 +187,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const note = tr.querySelector('input[type="text"]').value;
             return {
                 studentAccount: id,
+                teacherAccount,
                 fullname,
                 study: shift.value,
                 attendance: attendance === 'present',

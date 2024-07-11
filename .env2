@@ -1,0 +1,23 @@
+
+# test
+TEST_DB_HOST="mongodb+srv://handmadee38:LhFGdedYKlHzasKx@tsmart.eur1dzx.mongodb.net/?retryWrites=true&w=majority&appName=Tsmart"
+LOCALHOST_API_URL = "https://app-learing-tsmart-c0c598e19be5.herokuapp.com/v1/api/"
+# key token 
+ACCESS_TOKEN_SECRET= '3df701113abe'
+REFRESH_TOKEN_SECRET= '4ef701113abe'
+# Notification 
+GOOGLE_PRIVATE_KEY= "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCbzYJ36864t7rb\nZB750RYHlrTyHDlvGI32Bt/CMSjrhCk0J6o3T9/Ncotx5Eq6Qaa33o8AqKwmzBok\nXQo1D3jHRjAixbGNk6f4lYXx8xxggxNvxhKYyTithBEcqWOqnoJ+tHqgGtqKOuXy\nk3ye3KEwCqmGCq9I4JFYzN1muOVdr1GKgp7mJBJ64xaFJJkqDTemmtKcu4BRJ/3q\nonWCzgElOx8opk8YhihAnESy+HHykEojtsYtwiQm76KJk3CD/2BaldwpN+FWVkoP\n3lV8zrWCdFHlufpDfyyibM0q+umAC8yyetYDX1ednleAIjfqJEJJVG1jEYLeSNU0\n7TGsDu5DAgMBAAECggEAN4eRnqg+73sccCFJIQSyc1X1e+0vUzdPMYbVrWLUEMzz\n2pDgjAI94/2VUaxqLeRERXhfQ37ajKFmF9vJTYwMIgoUEfCgDbO4xFKWgNuDG6rb\n/JR+AFKHjuBpMOv2h9Mi84HjyriHd4jyd/i1C/HayUKjlRCt1K2lYB70Mi5oIXFS\nnsiXq+zba7LY8Ubi1Mj/KrsjAn9/zXpIseoLVdFpqYxBfbDqx6ucwwinJ+GISAb2\nBspDaqe6ur06DsNVOSv+xioiuOzetJtn49g06KP2d2Iq+gPP15NXlbI/OqekGSsI\nQmXmQKAqZQik/qRwDM1v9rB0go3GeH96VmJOc83LoQKBgQDLI75FrRRJjxysPgME\nIqp3F0maTiC0bW+qs3TNOWJhcSJQTbngm/n3RAWVHrKjcswfwYRw9mh7zGrJlPSN\nghLVgSEQCLU3on0CjuSPI85R5IT57fO3ar3iSkjfKs1OB6vF7d0G+mPIpupijYaR\nCQQv+NS7BasEsEsQRcrrAoxBmwKBgQDEWGV0BmZD4mP3gUk2NTjBLTOQwcl7aWKj\nnWG5j573Jwts9mJrivdq72vaS3hJMDpguacpm57G8sYHI/OxtGF2ayV7c2/hvCez\n1s/mYoyIDfs9+Bg4a224SDTiqIihqiRu3vCzrG7jfqjMpSwHfN7JTHBn060E6r4E\nhk6RCNCEeQKBgFr+C8DSIoBApqtQq7EyhgEKYWHJFUU8sARaljtHNRZIwwINjvFZ\nbMKhqY5+Ta6BQYYH/PdMqMirbDoXiuPIG/+e89xmyiW9lxmKQD8N3uE354i8WasT\nGTM/6xxr48LMFNl4DsWNaxz6B4tVsa1NyJ5ka4XKqCxVe4oyeQ6D+ad5AoGBAMPZ\nFKGN/JX8DREFsdxTbCAskUH0OqBSN2TSiHcKjlsjZB81CGkTPcY5uVAOdZYzeBeh\nN9+l7dOut97JerwoHAt9xu6D7/avsr6NJ+U7KchQgeqHPMmSRuhJhg8MYvU2/I5m\n7JucBSQA5Cj1HJz/bk5GY9z85JmB+TYULew3aZ6pAoGAGGuUPj6u178LUShToHdJ\nklogMznXmu1AgkTKmqgdXEs2vEQMnBPAF1+ao2Ks2XStHWlVhdwVlrNqunu+haxs\n718we7iYRsQWPcvchT3PQmxohahf8zjBZWzE9MSmenz34chg5QQiHOPCwqaKAEGk\nB1zzCHDr8nOVpMg01Oft2uU=\n-----END PRIVATE KEY-----\n"
+GOOGLE_CLIENT_EMAIL="firebase-adminsdk-2afsu@tsmarts.iam.gserviceaccount.com"
+GOOGLE_PROJECT_ID="tsmarts"
+GOOGLE_PRIVATE_KEY_ID="a8b9b172b9d43d4a371a65019ca909011200976f"
+GOOGLE_CLIENT_ID="111348576404620693138"
+GOOGLE_AUTH_URI="https://accounts.google.com/o/oauth2/auth"
+GOOGLE_TOKEN_URI="https://oauth2.googleapis.com/token"
+GOOGLE_AUTH_PROVIDER_X509_CERT_URL="https://www.googleapis.com/oauth2/v1/certs"
+GOOGLE_CLIENT_X509_CERT_URL="https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-2afsu%40tsmarts.iam.gserviceaccount.com"
+
+# Cloud 
+CLOUD_NAME = "dwynjruq6"
+API_KEY_CLOUD = "256536564863578"
+API_SECRET_CLOUD = "hawfIiThV9NxsOwVzwQAK7h8yBA"
+NODE_ENV=test

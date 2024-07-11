@@ -84,6 +84,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     const name = infor.getAttribute("data-name");
                     const studyD = infor.getAttribute("data-study");
                     const phoneD = infor.getAttribute("data-phone");
+                    fullname.textContent = name;
+                    phoneC.textContent = phoneD;
+                    studyC.textContent = studyD;
+                    editCoursePopup.classList.add('show');
+                    // Loading
+                    emptyTable.innerHTML = `
+        <tr>
+        <td colspan="5" class="py-5">
+            <div class="d-flex mx-2 col-12 justify-content-center">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </td>
+        </tr>`
                     const response = await fetch(`${LOCALHOST_API_URL}getAttendanceAloneByAccount/${id}`, {
                         method: "POST",
                         headers: {
@@ -100,10 +115,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         message: `[render]:: `,
                         render: render1
                     })
-                    editCoursePopup.classList.add('show');
-                    fullname.textContent = name;
-                    phoneC.textContent = phoneD;
-                    studyC.textContent = studyD;
                     const absent = render1.filter((item) => item.attendance === false);
                     const present = render1.filter((item) => item.attendance === true);
                     // RENDER 

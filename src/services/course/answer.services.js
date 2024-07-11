@@ -10,7 +10,6 @@ class AnswerService extends BaseService {
     constructor() {
         super(AnswerModel);
     }
-
     async createAnswer(data) {
         const { question_id } = data;
         const question = await questionModel.findById(question_id);

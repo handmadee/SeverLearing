@@ -32,6 +32,13 @@
       background-color: #4a95e0;
       color: white;
     }
+    .shecheduleControle .item label {
+      text-wrap: nowrap;
+      margin-right: 10px;
+    }
+    .shecheduleControle #shift {
+      border: none;
+    }
     #fromDate,
     #toDate {
       border: none;
@@ -46,6 +53,9 @@
     .shecheduleExport table tbody tr th {
       background-color: rgba(25, 135, 84, 1);
       color: white;
+    }
+    .countStudy p {
+      margin: 0;
     }
 
     #attendanceTable tr {
@@ -66,18 +76,16 @@
   </style>
 
   <div class="containt shecheduleExport p-3">
-    <h5>THỐNG KÊ LỊCH HỌC - TSMART</h5>
+    <h5>THỐNG KÊ LỊCH GIẢNG DẠY GIÁO VIÊN - TSMART</h5>
     <div class="mt-3 mb-3"></div>
-    <div class="shecheduleControle d-flex mx-5 justify-content-around">
+    <div class="shecheduleControle d-flex justify-content-around">
       <div class="item d-flex align-items-center">
-        <label for="shift">Ca:</label>
+        <label for="shift">Giáo viên:</label>
         <select class="w-100" id="shift">
-          <option value="1">1 (8h-9h30)</option>
-          <option value="2">2 (9h30-11h)</option>
-          <option value="3">3 (14h-15h30)</option>
-          <option value="4">4 (17h-18h30)</option>
-          <option value="5">5 (18h30-20h)</option>
-          <option value="6">6 (19h30-21h)</option>
+          <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
+          <option value="<%= item._id %>"><%= item.username %></option>
+          <% }); %> <% } %>
+          <!-- <option value="1">1 (8h-9h30)</option> -->
         </select>
       </div>
       <div class="item d-flex align-items-center">
@@ -88,6 +96,11 @@
         <label for="toDate">Đến ngày:</label>
         <input type="date" id="toDate" />
       </div>
+      <div class="item countStudy d-flex flex-column align-items-center">
+        <p>Số Ca</p>
+        <p><strong id="countStudy">0</strong></p>
+      </div>
+
       <button id="export" class="btn btn-success">
         <i style="pointer-events: none" class="fa-solid fa-file-export"></i>
         <span>Export </span>
@@ -97,13 +110,14 @@
     <table class="mt-3">
       <tr>
         <th>STT</th>
-        <th>Họ và tên</th>
-        <th>Có mặt</th>
-        <th>Vắng mặt</th>
+        <th>Tài khoản</th>
+        <th>Ca dạy</th>
+        <th>Ngày dạy</th>
+        <th>Học sinh</th>
         <th>Chức năng</th>
       </tr>
       <tbody id="attendanceTable">
-        <td style="text-align: center" colspan="5">
+        <td style="text-align: center" colspan="6">
           <p style="margin-bottom: 0">
             Chưa có dữ liệu cho khung thời gian này
           </p>
@@ -133,41 +147,34 @@
         </div>
         <div class="p-4 d-flex justify-content-around align-items-center">
           <div class="item mx-1">
-            <label for="fullName"> Họ và tên </label>
-            <strong id="fullName"></strong>
+            <label for="account"> Accout: </label>
+            <strong id="account"></strong>
           </div>
           <div class="item mx-1">
-            <label for="phoneC"> SĐT Phụ Huynh </label>
-            <strong id="phoneC"></strong>
+            <label for="date">Ngày: </label>
+            <strong id="date"></strong>
           </div>
           <div class="item mx-1">
-            <label for="studyC"> Ca học </label>
-            <strong id="studyC"></strong>
+            <label for="study"> Ca học </label>
+            <strong id="study"></strong>
           </div>
         </div>
 
         <div class="modal-body">
-          <table class="pt-3">
-            <tr>
-              <th colspan="5">Danh sách các buổi vắng học</th>
-            </tr>
-            <tbody id="absentTable">
-              <td colspan="5">
-                <p>Không có dữ liệu</p>
-              </td>
-            </tbody>
+          <!-- Body -->
+          <table id="attendanceTable">
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Họ và tên</th>
+                <th>Số điện thoại phụ huynh</th>
+                <th>Trạng thái</th>
+                <th>Lý do</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody"></tbody>
           </table>
-          <!-- Đi học -->
-          <table class="mt-4">
-            <tr>
-              <th colspan="5">Danh sách các buổi đi học</th>
-            </tr>
-            <tbody id="presentTable">
-              <td colspan="5">
-                <p>Không có dữ liệu</p>
-              </td>
-            </tbody>
-          </table>
+          <!--  -->
         </div>
         <div class="modal-footer">
           <button
@@ -183,6 +190,6 @@
     </div>
   </div>
 
-  <script type="module" src="/JS/exportSchedule.js"></script>
+  <script type="module" src="/JS/exportAttendanceTeacher.js"></script>
   <%- include('./../comon/footer') %>
 </div>
