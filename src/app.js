@@ -13,8 +13,8 @@ const app = express();
 app.set("view engine", "ejs");
 
 // Middleware
-app.use(cors()); // Enable Cross-Origin Resource Sharing
-app.use(morgan('dev')); // Log HTTP requests
+app.use(cors());
+app.use(morgan('dev'));
 app.use(helmet());
 app.use(
     helmet.contentSecurityPolicy({
@@ -24,11 +24,10 @@ app.use(
         },
     })
 );
-app.use(compression()); // Compress response bodies for faster transmission
-app.use(express.json()); // Parse incoming request bodies with JSON payloads
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded data with querystring library
-app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names
-
+app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Initialize database connection
 require('./dbs/init.mongodb');

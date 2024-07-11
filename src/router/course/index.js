@@ -3,7 +3,7 @@
 const express = require('express');
 const permission = require('./../../auth/permissionApi');
 
-// chec=
+// chec
 
 const categoryController = require('../../controllers/course/category.controller');
 const courseController = require('../../controllers/course/course.controler');

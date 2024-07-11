@@ -17,11 +17,11 @@ class AccountService extends BaseService {
             pemission: { $elemMatch: { $in: ["789", "999"] } }
         }).lean();
     }
-
-
-
-
-
+    static selectTeachers() {
+        return accountModel.find({
+            pemission: { $elemMatch: { $in: ["789"] } }
+        }).lean();
+    }
 
 }
 

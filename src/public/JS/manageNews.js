@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         savePopup.querySelector('.spinner-border').classList.remove('d-none'); // Hiển thị spinner
 
         try {
+
             const response = await updateCourse(formData, currentIdNews);
 
             if (response.ok) {

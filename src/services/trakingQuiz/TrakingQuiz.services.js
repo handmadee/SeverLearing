@@ -82,7 +82,7 @@ class TrakingQuizServices extends BaseService {
             const ranking = await this.getRanking();
             const userRank = ranking?.rank.findIndex(user => user.userID == userID);
             if (userRank === -1) {
-                throw new ForbiddenError('User not found in ranking');
+                return 999;
             }
             return userRank + 1;
         } catch (error) {

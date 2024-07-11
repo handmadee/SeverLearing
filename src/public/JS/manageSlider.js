@@ -19,12 +19,24 @@ document.addEventListener('DOMContentLoaded', function () {
     cancelPopup2.addEventListener('click', function () {
         editCoursePopup.classList.remove('show');
     });
+
+    // const button = e.target;
+    // button.disabled = true;
+    // const originalText = button.innerHTML;
+    // button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleting...`;
+
+    // await delExam(id);
+
+    // button.disabled = false;
+    // button.innerHTML = originalText;
+
     // Control 
     editButtons.forEach(button => {
         button.addEventListener("click", function (e) {
             const id = e.target.value;
             currentIdPopup = id;
             renderExam(id);
+
         });
     });
 
@@ -53,12 +65,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const handlerEditSilider = async function () {
+
         const imagePost = document.getElementById('urlImage');
         const formData = new FormData();
         if (imagePost.files.length > 0) {
             formData.append('listNotificaiton', imagePost.files[0]);
         }
+        savePopup.disabled = true;
+        const originalText = savePopup.innerHTML;
+        savePopup.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> updateing...`;
         await updateCourse(formData, currentIdPopup);
+        savePopup.disabled = false;
+        savePopup.innerHTML = originalText;
     }
 
     const renderExam = async (id) => {

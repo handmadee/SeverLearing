@@ -76,5 +76,15 @@ class AttendanceController {
             data: attendances
         }).send(res);
     }
+
+    async getAttendanceAloneByTeacher(req, res) {
+        const { date, date1, idTeacher } = req.body;
+        const attendances = await attendanceService.getStudyByDateTeacher(date, date1, idTeacher);
+        return new OK({
+            data: attendances
+        }).send(res);
+    }
+
+
 }
 module.exports = new AttendanceController();

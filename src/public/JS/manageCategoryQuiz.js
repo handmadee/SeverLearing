@@ -63,7 +63,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (image.files.length > 0) {
             form.append('imageCategory', image.files[0]);
         }
+        savePopup.disabled = true;
+        const originalText = savePopup.innerHTML;
+        savePopup.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> updateing...`;
         await updateCourse(form, idCategoryQuiz);
+        savePopup.disabled = false;
+        savePopup.innerHTML = originalText;
     }
     const renderCategory = async (id, nameCategory) => {
         const cate = document.getElementById('nameCategory');

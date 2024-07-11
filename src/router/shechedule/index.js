@@ -33,7 +33,8 @@ router.post('/attendanceTeacherByDate', asnycHandler(ettendanceScheduleControlle
 router.patch('/changeAttendance/:id', asnycHandler(ettendanceScheduleController.changeAttendance));
 // Get all attendance 
 router.post('/getAttendanceAloneByAccount/:id', asnycHandler(ettendanceScheduleController.getAttendanceAloneByAccount));
-// Phân Quyền 
+// get date teacher 
+router.post('/getAttendanceAloneByTeacher', asnycHandler(ettendanceScheduleController.getAttendanceAloneByTeacher));
 
 
 

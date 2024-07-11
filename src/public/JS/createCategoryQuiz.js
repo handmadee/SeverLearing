@@ -3,9 +3,10 @@
 const forms = document.querySelectorAll('.needs-validation');
 import { LOCALHOST_API_URL } from './config.js'
 const localhost = LOCALHOST_API_URL;
-
+const createCategory = document.getElementById('createCate');
 Array.from(forms).forEach(form => {
     form.addEventListener('submit', event => {
+        const button = createCategory;
         event.preventDefault();
         if (!form.checkValidity()) {
             event.stopPropagation();
@@ -13,6 +14,9 @@ Array.from(forms).forEach(form => {
             return;
         }
         const formData = new FormData(form);
+        button.disabled = true;
+        const originalText = button.innerHTML;
+        button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Update...`;
         fetch(`${localhost}categoryQuiz`, {
             method: 'POST',
             body: formData
@@ -37,6 +41,8 @@ Array.from(forms).forEach(form => {
                 console.error('Error:', error);
             })
             .finally(() => {
+                button.disabled = false;
+                button.innerHTML = originalText;
                 form.classList.add('was-validated');
             });
     });
