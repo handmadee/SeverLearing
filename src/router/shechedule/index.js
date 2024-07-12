@@ -8,7 +8,8 @@ const StudentShecheduleController = require("./../../controllers/schedule/schedu
 const ettendanceScheduleController = require("./../../controllers/schedule/ettendance.controller");
 
 
-
+// Querry search 
+router.get('/searchStudents', asnycHandler(StudentShecheduleController.searchStudentsSchedule));
 
 // Define routes
 router.post('/importShechedule', uploadExcel.single('excelStudents'), asnycHandler(StudentShecheduleController.importShechedule));

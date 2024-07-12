@@ -6,6 +6,92 @@ import { LOCALHOST_API_URL } from './config.js';
 document.addEventListener("DOMContentLoaded", function () {
     const editButtons = document.querySelectorAll(".btn-edit");
     const deleteButtons = document.querySelectorAll(".btn-delete");
+    const inputSearch = document.getElementById('ipSearch');
+    const btnSearch = document.getElementById('handlerSearch');
+    const tableList = document.getElementById('tableList');
+
+    // Function to render data into the table
+    function renderTableData(data) {
+        const tableList = document.getElementById('tableList');
+        if (data && data.length > 0) {
+            let tableHtml = '';
+            data.forEach((user, index) => {
+                tableHtml += `
+                <tr>
+                    <td scope="row">${index + 1}</td>
+                    <td>${user.fullname}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.study}</td>
+                    <td>${user.days}</td>
+                    <td>
+                        <button value="${user._id}" class="btn btn-edit btn-primary accordion">
+                            <i style="pointer-events: none" class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button value="${user._id}" class="btn btn-delete btn-danger">
+                            <i style="pointer-events: none" class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            });
+            tableList.innerHTML = tableHtml;
+            // EVENTS
+            const editButtons = document.querySelectorAll(".btn-edit");
+            const deleteButtons = document.querySelectorAll(".btn-delete");
+            // select 
+            editButtons.forEach(button => {
+                button.addEventListener("click", function (e) {
+                    const id = e.target.value;
+                    editCoursePopup.classList.add('show');
+                    daysContainer.innerHTML = '';
+                    fetchExam(id)
+                });
+            });
+            // DELETE
+            deleteButtons.forEach(button => {
+                button.addEventListener("click", function (e) {
+                    const id = e.target.value;
+                    deleteStudent(id);
+                });
+            });
+
+        } else {
+            tableList.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center">No data</td>
+            </tr>`;
+        }
+    }
+
+
+    btnSearch.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const keyword = inputSearch.value.trim() || '';
+        try {
+            if (keyword.length > 0) {
+                tableList.innerHTML = `
+        <tr>
+        <td colspan="5" class="py-5">
+            <div class="d-flex mx-2 col-12 justify-content-center">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </td>
+        </tr>`;
+                const response = await fetch(`${LOCALHOST_API_URL}searchStudents/?qkeyword=${keyword}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const respon = await response.json();
+                const data = respon.data.data;
+                renderTableData(data)
+            } else {
+                this.location.reload();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
 
     // importStudents.js
     async function importData() {
@@ -139,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const fullnamePop = document.getElementById('fullname1');
         const tel = document.getElementById('phone1');
         const studys = document.getElementById('study1');
-        const indays = document.querySelectorAll('.days');
+        const indays = document.querySelectorAll('#daysContainer1 .days');
         const dataStudents = {
             fullname: fullnamePop.value,
             phone: tel.value,
@@ -214,8 +300,8 @@ document.addEventListener("DOMContentLoaded", function () {
     editButtons.forEach(button => {
         button.addEventListener("click", function (e) {
             const id = e.target.value;
-            editCoursePopup.classList.add('show');
             daysContainer.innerHTML = '';
+            editCoursePopup.classList.add('show');
             fetchExam(id)
 
             // fetchExam(id)

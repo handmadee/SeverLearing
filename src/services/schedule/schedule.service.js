@@ -128,6 +128,14 @@ class StudentShecheduleService extends BaseService {
         }
     }
 
+    // Querry search 
+    async searchStudents(keyword) {
+        return await ShecheduleModel.find(
+            { $text: { $search: keyword } },
+            { score: { $meta: "textScore" } }
+        ).sort({ score: { $meta: "textScore" } });
+    }
+
 
 
 

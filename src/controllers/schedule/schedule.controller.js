@@ -83,5 +83,22 @@ class StudentShecheduleController {
         }).send(res);
     }
 
+    // Query 
+    async searchStudentsSchedule(req, res) {
+        const keyword = req.query.qkeyword;
+        console.log({
+            message: `search : ${keyword}`
+        })
+        const data = await StudentShecheduleService.searchStudents(keyword);
+        console.log({
+            message: `search : ${keyword}`,
+            data
+        })
+        return new OK({
+            message: `search success`,
+            data
+        }).send(res)
+    }
+
 }
 module.exports = new StudentShecheduleController();

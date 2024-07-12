@@ -30,4 +30,7 @@ const studentShecheduleQuizSchema = new Schema({
 
 }, { timestamps: true, collection: COLLECTION_NAME });
 
+// @prams 
+studentShecheduleQuizSchema.index({ fullname: 'text' })
+
 module.exports = model(DOCUMENT_NAME, studentShecheduleQuizSchema);

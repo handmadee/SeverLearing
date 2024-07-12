@@ -323,7 +323,20 @@ adminRouter.get('/firebase/scheduleNotification', permission('999'), asnycHandle
 // Schedule students
 adminRouter.get('/schedule/importStudents', permission('999'), asnycHandler(async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
-    const data = await scheduleService.getAllShechedule(currentPage, 10);
+
+    // const data = await scheduleService.getAllShechedule(currentPage, 10);
+    let data;
+    const keyword = req.query.qkeyword;
+    console.log({
+        message: 'yes',
+        response: keyword
+    });
+
+    if (keyword) {
+        data = await scheduleService.searchStudents(keyword);
+    } else {
+        data = await scheduleService.getAllShechedule(currentPage, 10);
+    }
     console.log({
         message: `[Account] :: `,
         data: data
