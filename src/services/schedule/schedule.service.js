@@ -1,4 +1,5 @@
 'use strict'
+const { Types } = require('mongoose');
 const studentAttendance = require('../../models/shechedule/studentAttendance');
 const ShecheduleModel = require('../../models/shechedule/studentShechedule.model');
 const BaseService = require("../base.service");
@@ -20,64 +21,66 @@ class StudentShecheduleService extends BaseService {
     async importStudents(data) {
         return await ShecheduleModel.insertMany(data);
     }
+
+
     // Get days and Study
     // async getStudy(study, days) {
     //     try {
     //         const dayNow = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
+    //         const person = await ShecheduleModel.findOne({ study, days }).lean();
+    //         if (!person) {
+    //             return {
+    //                 status: true,
+    //                 data: []
+    //             };
+    //         }
     //         console.log({
-    //             message: 'Delete dayNow',
-    //             date: dayNow
-    //         });
-    //         const person = await ShecheduleModel.findOne({ study, days });
-    //         if (!person) return {
-    //             status: true,
-    //             data: []
-    //         };
-    //         console.log({
-    //             message: 'Delete isChecked',
+    //             message: 'Tìm thấy người',
     //             studentAccount: person._id,
     //             date: days
     //         });
-    //         const isChecked = await studentAttendance.findOne({
-    //             studentAccount: person._id,
-    //             date: dayNow
-    //         });
 
+    //         const isChecked = await studentAttendance.findOne({
+    //             studentAccount: new Types.ObjectId(person._id),
+    //             date: new Date(dayNow)
+    //         }).lean();
 
     //         console.log({
-    //             message: 'Delete isChecked',
-    //             dayNow: dayNow,
+    //             message: 'Kiểm tra điểm danh',
+    //             dayNow: new Date(dayNow),
     //             isChecked: isChecked
     //         });
 
     //         if (!isChecked) {
-    //             const data = await ShecheduleModel.find({ study, days });
+    //             const data = await ShecheduleModel.find({ study, days }).lean();
     //             return {
     //                 status: true,
     //                 data
-    //             }
-
+    //             };
     //         }
-    //         const data = await studentAttendance.find({ study, date: dayNow }).populate('studentAccount');
+
+    //         const data = await studentAttendance.find({ study, date: new Date(dayNow) }).populate('studentAccount').lean();
     //         return {
     //             status: false,
     //             data
     //         };
     //     } catch (error) {
-    //         console.error('Error in getStudy:', error);
-    //         return [];
+    //         console.error('Lỗi trong getStudy:', error);
+    //         return {
+    //             status: false,
+    //             error: error.message,
+    //             data: []
+    //         };
     //     }
     // }
 
-
-    // v2 
     async getStudy(study, days) {
         try {
-            const dayNow = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
-            console.log({
-                message: 'Ngày hiện tại',
-                date: dayNow
-            });
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const dayNow = `${year}-${month}-${day}`;
 
             const person = await ShecheduleModel.findOne({ study, days }).lean();
             if (!person) {
@@ -87,7 +90,6 @@ class StudentShecheduleService extends BaseService {
                 };
             }
 
-
             console.log({
                 message: 'Tìm thấy người',
                 studentAccount: person._id,
@@ -95,13 +97,14 @@ class StudentShecheduleService extends BaseService {
             });
 
             const isChecked = await studentAttendance.findOne({
-                studentAccount: person._id,
-                date: dayNow
+                studentAccount: new Types.ObjectId(person._id),
+                date: new Date(dayNow),
+                study: study
             }).lean();
 
             console.log({
                 message: 'Kiểm tra điểm danh',
-                dayNow: dayNow,
+                dayNow: new Date(dayNow),
                 isChecked: isChecked
             });
 
@@ -113,7 +116,7 @@ class StudentShecheduleService extends BaseService {
                 };
             }
 
-            const data = await studentAttendance.find({ study, date: dayNow }).populate('studentAccount').lean();
+            const data = await studentAttendance.find({ study, date: new Date(dayNow) }).populate('studentAccount').lean();
             return {
                 status: false,
                 data
@@ -127,7 +130,6 @@ class StudentShecheduleService extends BaseService {
             };
         }
     }
-
     // Querry search 
     async searchStudents(keyword) {
         return await ShecheduleModel.find(

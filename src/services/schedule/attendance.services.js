@@ -11,12 +11,9 @@ class StudentEttendanceService extends BaseService {
     async importEnttendance(data) {
         return await ettendanceModel.insertMany(data);
     }
-
-
     // Tìm kiếm theo ngày tháng và ca học
     async getStudy(study, date) {
-        return await ettendanceModel.find({ study, date }).populate('studentAccount').select('studentAccount attendance  reason');
-
+        return await ettendanceModel.find({ study: study, date: date }).populate('studentAccount').select('studentAccount attendance  reason');
     }
     // Thay đổi trạng thái điểm danh
     async changeAttendance(id, attendance) {
@@ -91,9 +88,13 @@ class StudentEttendanceService extends BaseService {
     }
     // study by date teacher 
     async getStudyByDateTeacher(dateA, dateB, idTeacher) {
+        console.log(typeof (dateA))
+        console.log({
+            message: 'Date A',
+            date: typeof (dateA),
+            dateB
+        })
         try {
-
-
             const result = await ettendanceModel.aggregate([
                 {
                     $match: {
@@ -142,9 +143,6 @@ class StudentEttendanceService extends BaseService {
             throw error;
         }
     }
-
-
-
     //
     async getAloneByAccount(studentAccount, date, date1, study) {
         console.error("Đúng ");
