@@ -13,7 +13,9 @@ class StudentEttendanceService extends BaseService {
     }
     // Tìm kiếm theo ngày tháng và ca học
     async getStudy(study, date) {
-        return await ettendanceModel.find({ study: study, date: date }).populate('studentAccount').select('studentAccount attendance  reason');
+        const data = await ettendanceModel.find({ study: study, date: new Date(date) }).populate('studentAccount').select('studentAccount attendance  reason');
+        console.log(data);
+        return data;
     }
     // Thay đổi trạng thái điểm danh
     async changeAttendance(id, attendance) {

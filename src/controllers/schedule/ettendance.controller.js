@@ -40,12 +40,9 @@ class AttendanceController {
     }
     // Get all student by schedule
     async getStudentBySchedule(req, res) {
+        // string
         const { study, date } = req.body;
-        console.log({
-            study, date
-        })
-        const dateNow = new Date(date)
-        const students = await attendanceService.getStudy(study, dateNow);
+        const students = await attendanceService.getStudy(study, date);
         return new OK({
             data: students
         }).send(res);

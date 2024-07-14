@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const localDate = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
     date.value = localDate;
 
+
+
+
     const renderLoad = async (value, days) => {
         content.innerHTML = '';
         const response = await fetch(`${LOCALHOST_API_URL}attendanceTeacher`, {
