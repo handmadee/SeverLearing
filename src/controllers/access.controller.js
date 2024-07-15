@@ -19,6 +19,7 @@ exports.login = async (req, res, next) => {
 };
 
 exports.refreshToken = async (req, res, next) => {
+    console.log("Resfesh 2-2-2")
     return new OK({
         message: 'Token refreshed successfully',
         data: await userService.refreshToken(req.body.refreshToken)

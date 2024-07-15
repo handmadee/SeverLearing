@@ -22,58 +22,6 @@ class StudentShecheduleService extends BaseService {
         return await ShecheduleModel.insertMany(data);
     }
 
-
-    // Get days and Study
-    // async getStudy(study, days) {
-    //     try {
-    //         const dayNow = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
-    //         const person = await ShecheduleModel.findOne({ study, days }).lean();
-    //         if (!person) {
-    //             return {
-    //                 status: true,
-    //                 data: []
-    //             };
-    //         }
-    //         console.log({
-    //             message: 'Tìm thấy người',
-    //             studentAccount: person._id,
-    //             date: days
-    //         });
-
-    //         const isChecked = await studentAttendance.findOne({
-    //             studentAccount: new Types.ObjectId(person._id),
-    //             date: new Date(dayNow)
-    //         }).lean();
-
-    //         console.log({
-    //             message: 'Kiểm tra điểm danh',
-    //             dayNow: new Date(dayNow),
-    //             isChecked: isChecked
-    //         });
-
-    //         if (!isChecked) {
-    //             const data = await ShecheduleModel.find({ study, days }).lean();
-    //             return {
-    //                 status: true,
-    //                 data
-    //             };
-    //         }
-
-    //         const data = await studentAttendance.find({ study, date: new Date(dayNow) }).populate('studentAccount').lean();
-    //         return {
-    //             status: false,
-    //             data
-    //         };
-    //     } catch (error) {
-    //         console.error('Lỗi trong getStudy:', error);
-    //         return {
-    //             status: false,
-    //             error: error.message,
-    //             data: []
-    //         };
-    //     }
-    // }
-
     async getStudy(study, days) {
         try {
             const today = new Date();
@@ -98,16 +46,9 @@ class StudentShecheduleService extends BaseService {
 
             const isChecked = await studentAttendance.findOne({
                 studentAccount: new Types.ObjectId(person._id),
-                date: new Date(dayNow),
+                date: '2024-07-13T17:00:00.000+00:00',
                 study: study
             }).lean();
-
-            console.log({
-                message: 'Kiểm tra điểm danh',
-                dayNow: new Date(dayNow),
-                isChecked: isChecked
-            });
-
             if (!isChecked) {
                 const data = await ShecheduleModel.find({ study, days }).lean();
                 return {

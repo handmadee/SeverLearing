@@ -10,8 +10,8 @@ const studentAttendance = require('../../models/shechedule/studentAttendance');
 
 
 const generateTokens = (user) => {
-    const accessToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '7d' });
-    const refreshToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '30d' });
+    const accessToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1m' });
+    const refreshToken = jwt.sign({ userId: user._id, role: user?.pemission }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '5m' });
     return { accessToken, refreshToken };
 };
 
@@ -144,10 +144,6 @@ exports.deleteAccount = async (_id) => {
         const delNotificatino = fcmTokenModel.deleteMany({
             accountId: _id
         });
-        // const deleteShechedule = studentAttendance.deleteMany({
-        //     teacherAccount: _id
-        // })
-        // // delete luôn thằng lịch đã diểm danh 
 
         await Promise.all([deleteUser, deleteTrackingCourses, deleteTrackingQuizzes, delNotificatino]);
 
