@@ -87,7 +87,7 @@ class StudentEttendanceService extends BaseService {
 
     }
     // study by date teacher 
-    async getStudyByDateTeacher(dateA, dateB, idTeacher) {
+    async getStudyByDateTeacher1(dateA, dateB, idTeacher) {
         console.log(typeof (dateA))
         console.log({
             message: 'Date A',
@@ -143,7 +143,67 @@ class StudentEttendanceService extends BaseService {
             throw error;
         }
     }
-    //
+    // study by date teacher 1
+    async getStudyByDateTeacher(dateA, dateB, idTeacher) {
+        console.log(typeof (dateA))
+        console.log({
+            message: 'Date A',
+            date: typeof (dateA),
+            dateB
+        })
+        try {
+            const result = await ettendanceModel.aggregate([
+                {
+                    $match: {
+                        date: { $gte: new Date(dateA), $lte: new Date(dateB) },
+                        $or: [
+                            { teacherAccount: new mongoose.Types.ObjectId(idTeacher) },
+                            { teacher_account_used: { $elemMatch: { $eq: idTeacher } } }
+                        ]
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            study: "$study",
+                            date: "$date",
+                            teacherAccount: "$teacherAccount",
+
+                        },
+                        totalCount: { $sum: 1 },
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'accounts',
+                        localField: '_id.teacherAccount',
+                        foreignField: '_id',
+                        as: 'teacherAccountInfo'
+                    }
+                },
+                {
+                    $unwind: '$teacherAccountInfo'
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        teacherAccount: '$teacherAccountInfo.username',
+                        // Nếu _id không chứa các trường study và date, bạn không thể truy cập chúng bằng $_id
+                        study: '$_id.study',
+                        date: '$_id.date',
+                        totalCount: 1,
+                    }
+                }
+            ]);
+
+            console.log(result);
+            return result;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+    // t2
     async getAloneByAccount(studentAccount, date, date1, study) {
         console.error("Đúng ");
         console.log(studentAccount, date, date1, study);
@@ -160,12 +220,33 @@ class StudentEttendanceService extends BaseService {
 
     // Update many 
     async updateStudentMany({ _id, status, reason }) {
+        // update teacher 
+        // 
+
         await ettendanceModel.updateOne({
             _id
         }, { status: status, reason: reason });
     }
 
     //  date: { $gte: date, $lte: date1 },
+
+    // update by teacher  
+    async updateStudentManyByTeacher({ _id, idTeacher, attendance, reason }) {
+        return await ettendanceModel.findOneAndUpdate(
+            { _id },
+            {
+                $set: {
+                    attendance,
+                    reason: reason
+                },
+                $addToSet: {
+                    teacher_account_used: idTeacher
+                }
+            },
+            { new: true }
+        );
+    }
+
 
 
 

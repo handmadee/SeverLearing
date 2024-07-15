@@ -7,6 +7,9 @@ const saveInfor = document.getElementById("saveInfor");
 const contentTable = document.getElementById("contentTable");
 const teacherAccount = saveInfor.getAttribute('data-id');
 
+// lấy account đang vào 
+
+
 
 document.addEventListener("DOMContentLoaded", async function () {
     const now = new Date();
@@ -147,12 +150,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     const updateData = async (data) => {
         const updatePromises = data.map(async (item) => {
             try {
-                const response = await fetch(`${LOCALHOST_API_URL}changeAttendance/${item.studentAccount}`, {
+                const response = await fetch(`${LOCALHOST_API_URL}updateSchedule/${item.studentAccount}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
+                        idTeacher: teacherAccount,
                         attendance: item.attendance,
                         reason: item.reason
                     })
@@ -163,18 +167,16 @@ document.addEventListener("DOMContentLoaded", async function () {
                 return await response.json();
             } catch (error) {
                 console.error('Error updating student:', item.studentAccount, error);
-                createToast('error', error.message);
+                createToast('error');
                 return null;
             }
         });
-        const results = await Promise.all(updatePromises);
-        results.forEach(result => {
-            if (result?.status !== 200) {
-                createToast('error');
-            }
-        });
-        createToast('success');
+        await Promise.all(updatePromises);
     };
+
+
+
+
 
     saveInfor.addEventListener("click", async function () {
         if (isSaving) return;
@@ -192,7 +194,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 study: shift.value,
                 attendance: attendance === 'present',
                 reason: note,
-                date
+                date,
+                teacher_account_used: [teacherAccount]
             };
         });
 
@@ -202,7 +205,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                 await saveData(data);
             }
         } else {
-            await updateData(data);
+            const userConfirmed = confirm("Xác nhận để cập nhật lại điểm danh");
+            if (userConfirmed) {
+                await updateData(data);
+            }
         }
         isSaving = false;
     });

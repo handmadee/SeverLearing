@@ -1,4 +1,4 @@
-const { ForbiddenError } = require('../../core/error.response');
+const { ForbiddenError, BadRequestError } = require('../../core/error.response');
 const { OK } = require('../../core/success.response');
 const attendanceService = require('../../services/schedule/attendance.services');
 
@@ -89,6 +89,22 @@ class AttendanceController {
         }).send(res);
     }
 
-
+    // update teacher -> fieds 
+    async updateStudentManyByTeacher(req, res) {
+        const _id = req.params.id;
+        const { idTeacher, attendance, reason } = req.body;
+        console.log({
+            message: 'newTest',
+            attendance
+        })
+        const newAteendance = await attendanceService.updateStudentManyByTeacher({
+            _id,
+            idTeacher,
+            reason,
+            attendance
+        });
+        if (!newAteendance) throw new BadRequestError("update Ateendace notfound !");
+        return newAteendance;
+    }
 }
 module.exports = new AttendanceController();

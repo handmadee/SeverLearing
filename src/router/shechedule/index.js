@@ -37,6 +37,7 @@ router.post('/getAttendanceAloneByAccount/:id', asnycHandler(ettendanceScheduleC
 // get date teacher 
 router.post('/getAttendanceAloneByTeacher', asnycHandler(ettendanceScheduleController.getAttendanceAloneByTeacher));
 
-
+// update antendace 
+router.patch('/updateSchedule/:id', asnycHandler(ettendanceScheduleController.updateStudentManyByTeacher));
 
 module.exports = router;

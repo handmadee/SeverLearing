@@ -1,5 +1,6 @@
 'use strict'
 
+const { type } = require('express/lib/response');
 const { model, Schema, Types } = require('mongoose');
 
 const DOCUMENT_NAME = 'studentAttendance';
@@ -29,6 +30,10 @@ const studentShecheduleQuizSchema = new Schema({
     date: {
         type: Date,
         required: true
+    },
+    teacher_account_used: {
+        type: Array,
+        default: []
     }
 
 }, { timestamps: true, collection: COLLECTION_NAME });
