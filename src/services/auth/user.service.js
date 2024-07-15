@@ -41,49 +41,79 @@ exports.login = async (loginData) => {
     return { user_id: user._id, role: user?.pemission, accessToken, refreshToken };
 };
 
-exports.verifyToken = async (token) => {
+// exports.verifyToken = async (token) => {
+//     try {
+//         const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+//         //  Payload 
+//         console.log({
+//             access: payload
+//         });
+//         const user = await User.findById(payload.userId);
+//         if (!user) {
+//             throw new BadRequestError('User not found');
+//         }
+//         return { isValid: true, userId: payload.userId, role: payload?.role };
+//     } catch (error) {
+//         throw new UnauthorizedError('Invalid token');
+//     }
+// };
+
+// exports.refreshToken = async (refreshToken) => {
+//     console.log("Resfesh token")
+//     // const token = await Token.findOne({ refresh_token: refreshToken });
+//     // if (!token) {
+//     //     throw new BadRequestError('Invalid refresh token');
+//     // }
+//     const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+//     console.log({
+//         rf: payload
+//     })
+
+//     const user = await User.findById(payload.userId);
+//     if (!user) {
+//         throw new BadRequestError('User not found');
+//     }
+//     const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
+//     console.log({
+//         access: accessToken,
+//         refesh: newRefreshToken
+//     })
+
+//     // token.access_token = accessToken;
+//     // token.refresh_token = newRefreshToken;
+//     // await token.save();
+//     return { accessToken, refreshToken: newRefreshToken };
+// };
+
+exports.refreshToken = async (refreshToken) => {
     try {
-        const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        //  Payload 
-        console.log({
-            access: payload
-        });
+        console.log("Refresh token");
+
+        const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
         const user = await User.findById(payload.userId);
         if (!user) {
             throw new BadRequestError('User not found');
         }
-        return { isValid: true, userId: payload.userId, role: payload?.role };
+
+        const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
+        console.log({
+            access: accessToken,
+            refresh: newRefreshToken
+        });
+
+        return { accessToken, refreshToken: newRefreshToken };
     } catch (error) {
-        throw new UnauthorizedError('Invalid token');
+        if (error.name === 'TokenExpiredError') {
+            console.error("Refresh token expired:", error);
+            throw new BadRequestError('Refresh token expired');
+        } else {
+            console.error("Error refreshing token:", error);
+            throw new BadRequestError('Invalid refresh token');
+        }
     }
 };
 
-exports.refreshToken = async (refreshToken) => {
-    console.log("Resfesh token")
-    // const token = await Token.findOne({ refresh_token: refreshToken });
-    // if (!token) {
-    //     throw new BadRequestError('Invalid refresh token');
-    // }
-    const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    console.log({
-        rf: payload
-    })
-
-    const user = await User.findById(payload.userId);
-    if (!user) {
-        throw new BadRequestError('User not found');
-    }
-    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
-    console.log({
-        access: accessToken,
-        refesh: newRefreshToken
-    })
-
-    // token.access_token = accessToken;
-    // token.refresh_token = newRefreshToken;
-    // await token.save();
-    return { accessToken, refreshToken: newRefreshToken };
-};
 
 
 exports.logout = async (refreshToken) => {

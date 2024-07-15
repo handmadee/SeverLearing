@@ -22,7 +22,6 @@ class StudentShecheduleService extends BaseService {
         return await ShecheduleModel.insertMany(data);
     }
 
-
     // Get days and Study
     // async getStudy(study, days) {
     //     try {
@@ -74,7 +73,7 @@ class StudentShecheduleService extends BaseService {
     //     }
     // }
 
-    async getStudy(study, days) {
+    async getStudy1(study, days) {
         try {
             const today = new Date();
             const year = today.getFullYear();
@@ -117,6 +116,62 @@ class StudentShecheduleService extends BaseService {
             }
 
             const data = await studentAttendance.find({ study, date: new Date(dayNow) }).populate('studentAccount').lean();
+            return {
+                status: false,
+                data
+            };
+        } catch (error) {
+            console.error('Lỗi trong getStudy:', error);
+            return {
+                status: false,
+                error: error.message,
+                data: []
+            };
+        }
+    }
+
+    async getStudy(study, days) {
+        try {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const dayNow = `${year}-${month}-${day}`;
+            const time = `${new Date(dayNow).getFullYear()}-${new Date(dayNow).getMonth() + 1}-${new Date(dayNow).getDate()}`
+
+            const person = await ShecheduleModel.findOne({ study, days }).lean();
+            if (!person) {
+                return {
+                    status: true,
+                    data: []
+                };
+            }
+
+            console.log({
+                message: 'Tìm thấy người',
+                studentAccount: person._id,
+                date: days
+            });
+
+            const isChecked = await studentAttendance.findOne({
+                studentAccount: new Types.ObjectId(person._id),
+                date: time,
+                study: study
+            }).lean();
+            console.log({
+                message: 'Kiểm tra điểm danh',
+                dayNow: new Date(dayNow).toISOString(),
+                isChecked: isChecked
+            });
+            if (!isChecked) {
+                const data = await ShecheduleModel.find({ study, days }).lean();
+                return {
+                    status: true,
+                    data
+                };
+            }
+
+            const data = await studentAttendance.find({ study, date: time }).populate('studentAccount').lean();
             return {
                 status: false,
                 data
