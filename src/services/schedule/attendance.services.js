@@ -1,7 +1,9 @@
 'use strict'
-const { default: mongoose } = require('mongoose');
+const { default: mongoose, Types } = require('mongoose');
 const ettendanceModel = require('../../models/shechedule/studentAttendance');
 const BaseService = require("../base.service");
+const accountModel = require('../../models/account.model');
+const { NotFoundError } = require('../../core/error.response');
 
 class StudentEttendanceService extends BaseService {
     constructor() {
@@ -144,13 +146,15 @@ class StudentEttendanceService extends BaseService {
         }
     }
     // study by date teacher 1
-    async getStudyByDateTeacher(dateA, dateB, idTeacher) {
-        console.log(typeof (dateA))
-        console.log({
-            message: 'Date A',
-            date: typeof (dateA),
-            dateB
-        })
+    async getStudyByDateTeacherV1(dateA, dateB, idTeacher) {
+        // find Id Teacher 
+        const { username } = await accountModel.findOne({
+            _id: new Types.ObjectId(idTeacher)
+        }).select({
+            username: 1
+        }).lean();
+        if (!username) NotFoundError("ID techer not exits");
+
         try {
             const result = await ettendanceModel.aggregate([
                 {
@@ -187,11 +191,15 @@ class StudentEttendanceService extends BaseService {
                 {
                     $project: {
                         _id: 0,
-                        teacherAccount: '$teacherAccountInfo.username',
-                        // Nếu _id không chứa các trường study và date, bạn không thể truy cập chúng bằng $_id
+                        teacherAccount: username == '$teacherAccountInfo.username' ? username : username + "-" + '$teacherAccountInfo.username',
                         study: '$_id.study',
                         date: '$_id.date',
                         totalCount: 1,
+                    }
+                },
+                {
+                    $sort: {
+                        date: -1
                     }
                 }
             ]);
@@ -203,6 +211,90 @@ class StudentEttendanceService extends BaseService {
             throw error;
         }
     }
+
+    // V1 
+
+    async getStudyByDateTeacher(dateA, dateB, idTeacher) {
+        try {
+            // find Id Teacher 
+            const teacher = await accountModel.findOne({
+                _id: new Types.ObjectId(idTeacher)
+            }).select({
+                username: 1
+            }).lean();
+
+            if (!teacher || !teacher.username) {
+                throw new Error("ID teacher not exists");
+            }
+
+            const username = teacher.username;
+
+            const result = await ettendanceModel.aggregate([
+                {
+                    $match: {
+                        date: { $gte: new Date(dateA), $lte: new Date(dateB) },
+                        $or: [
+                            { teacherAccount: new mongoose.Types.ObjectId(idTeacher) },
+                            { teacher_account_used: { $elemMatch: { $eq: idTeacher } } }
+                        ]
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            study: "$study",
+                            date: "$date",
+                            teacherAccount: "$teacherAccount",
+                        },
+                        totalCount: { $sum: 1 },
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'accounts',
+                        localField: '_id.teacherAccount',
+                        foreignField: '_id',
+                        as: 'teacherAccountInfo'
+                    }
+                },
+                {
+                    $unwind: '$teacherAccountInfo'
+                },
+                {
+                    $addFields: {
+                        teacherAccount: {
+                            $cond: {
+                                if: { $eq: [username, "$teacherAccountInfo.username"] },
+                                then: username,
+                                else: { $concat: [username, " -- ", "$teacherAccountInfo.username"] }
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        teacherAccount: 1,
+                        study: '$_id.study',
+                        date: '$_id.date',
+                        totalCount: 1,
+                    }
+                },
+                {
+                    $sort: {
+                        date: -1
+                    }
+                }
+            ]);
+
+            console.log(result);
+            return result;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     // t2
     async getAloneByAccount(studentAccount, date, date1, study) {
         console.error("Đúng ");

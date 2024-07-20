@@ -21,9 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     const renderLoad = async (date, date1, idTeacher) => {
-        console.log({
-            date, date1, idTeacher
-        })
+        const techerNow = shift.getAttribute("data-name");
         content.innerHTML = `
         <tr>
         <td colspan="5" class="py-5">
@@ -83,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>  <button
                     data-teacher="${item?.teacherAccount}"
                  data-date="${item?.date}"
+                 data-dateNow = "${formattedDate}"
                  data-study="${item?.study}"
               class="btn btn-success info "  >
               <i style="pointer-events: none"  class="fa-solid fa-circle-info"></i>
@@ -99,15 +98,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log("Count ++")
                     const teacher = infor.getAttribute("data-teacher");
                     const date = infor.getAttribute("data-date");
+                    const dateI = infor.getAttribute("data-dateNow");
                     const study = infor.getAttribute("data-study");
                     const st = parseInt(study);
-                    const formattedDate = new Intl.DateTimeFormat('vi-VN', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                    }).format(new Date);
                     account.textContent = teacher;
-                    date12.textContent = formattedDate;
+                    date12.textContent = dateI;
                     study1.textContent = study;
                     editCoursePopup.classList.add('show');
                     // Render 
