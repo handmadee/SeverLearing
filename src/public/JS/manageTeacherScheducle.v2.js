@@ -125,10 +125,12 @@ const renderData = (render, status = false) => {
 const fetchData = async (study, day) => {
     renderLoading();
     try {
-        const date = new Date().toISOString().split('T')[0];
-        const roze = new Date().getTimezoneOffset();
+        const vietnamTimezoneOffset = 7 * 60; // Việt Nam có
+        const date = new Date(new Date().getTime() + vietnamTimezoneOffset * 60 * 1000)
+            .toISOString()
+            .split('T')[0];
         console.log({
-            roze
+            vietnamTimezoneOffset
         })
         const attendanceFound = await fetchGetScheduleByTeacherExists(selectTeacher.value, date, study);
         if (attendanceFound && attendanceFound.length > 0) {
@@ -205,7 +207,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (isSaving) return;
         isSaving = true;
         const data = Array.from(contentTable.children).map((tr) => {
-            const date = new Date().toISOString().split('T')[0];
+            const vietnamTimezoneOffset = 7 * 60; // Việt Nam có múi giờ UTC+7
+            const date = new Date(new Date().getTime() + vietnamTimezoneOffset * 60 * 1000)
+                .toISOString()
+                .split('T')[0];
             return {
                 studentAccount: tr.getAttribute('data-id'),
                 teacherAccount,
