@@ -100,5 +100,40 @@ class StudentShecheduleController {
         }).send(res)
     }
 
+    ///getStudentsByDays
+    async getStudentsByDays(req, res) {
+        const { days } = req.query;
+        const result = await StudentShecheduleService.getStudentsByDays(days);
+        return new OK({
+            data: result
+        }).send(res);
+    }
+
+    ///getStudentsByStudy
+    async getStudentsByStudy(req, res) {
+        const { study } = req.query;
+        const result = await StudentShecheduleService.getStudentsByStudy(study);
+        return new OK({
+            data: result
+        }).send(res);
+    }
+
+    ///getStudentsByStudyByDays
+    async getStudentsByStudyByDays(req, res) {
+        const { study, days } = req.query;
+        const result = await StudentShecheduleService.getStudentsByStudyByDays(days, study);
+        return new OK({
+            data: result
+        }).send(res);
+    }
+
+    // get All 
+    async getStudentsALL(req, res) {
+        const result = await StudentShecheduleService.getAll();
+        return new OK({
+            data: result
+        }).send(res);
+    }
+
 }
 module.exports = new StudentShecheduleController();

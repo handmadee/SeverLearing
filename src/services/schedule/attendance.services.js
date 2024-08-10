@@ -15,7 +15,16 @@ class StudentEttendanceService extends BaseService {
     }
     // Tìm kiếm theo ngày tháng và ca học
     async getStudy(study, date) {
-        return await ettendanceModel.find({ study: study, date: date }).populate('studentAccount').select('studentAccount attendance  reason');
+        return await ettendanceModel.find({ study: study, date: date }).populate('studentAccount').select('studentAccount attendance  reason').lean();
+    }
+
+
+    async getStudyByTeacher(study, date, idTeacher) {
+        return await ettendanceModel.find({
+            study: +study,
+            date: new Date(date),
+            teacherAccount: new Types.ObjectId(idTeacher)
+        }).populate('studentAccount').select('studentAccount attendance  reason').lean();
     }
     // Thay đổi trạng thái điểm danh
     async changeAttendance(id, attendance) {

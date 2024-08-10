@@ -1,0 +1,72 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link rel="stylesheet" type="text/css" href="/styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="/styles/aleart.css" />
+    <!-- Style Respon -->
+    <link rel="stylesheet" type="text/css" href="/styles/parents.css" />
+
+    <link rel="icon" type="image/png" href="/image/T-smart.png" />
+    <title>TSMART</title>
+  </head>
+
+  <body>
+    <div class="container" id="container">
+      <div class="form-container sign-up">
+        <form>
+          <h1>Create Account</h1>
+          <div class="social-icons">
+            <a href="#" class="icon"
+              ><i class="fa-brands fa-google-plus-g"></i
+            ></a>
+            <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+            <a href="#" class="icon"
+              ><i class="fa-brands fa-linkedin-in"></i
+            ></a>
+          </div>
+          <span>or use your email for registeration</span>
+          <input type="text" placeholder="Name" />
+          <input type="email" placeholder="Email" />
+          <input type="password" placeholder="Password" />
+          <button>Sign Up</button>
+        </form>
+      </div>
+      <div class="form-container sign-in">
+        <form>
+          <h1>ID HỌC SINH</h1>
+          <div class="social-icons"></div>
+          <input type="text" placeholder="Id student" id="idStudents" />
+
+          <button id="searchID">Tìm kiếm</button>
+        </form>
+      </div>
+      <div class="toggle-container">
+        <div class="toggle">
+          <div class="toggle-panel toggle-left">
+            <h1>Welcome Back!</h1>
+            <p>Enter your personal details to use all of site features</p>
+            <button class="hidden" id="login">Sign In</button>
+          </div>
+          <div class="toggle-panel toggle-right">
+            <h1>TSMART LEARING</h1>
+            <p>
+              Triết lý đào tạo tại Tsmart là thực hành với khát vọng ươm mầm
+              sách tạo và góp phần phát triển năng lực CNTT dành cho trẻ em
+            </p>
+            <button class="hidden" id="Signup" disabled>PHỤ HUYNH</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="toasts"></div>
+    <!-- S2 -->
+    <script type="module" src="/JS/parents.js"></script>
+    <!--  -->
+  </body>
+</html>

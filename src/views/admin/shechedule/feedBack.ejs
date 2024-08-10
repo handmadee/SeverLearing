@@ -1,0 +1,257 @@
+<%- include('./../comon/header') %>
+<!-- Style Respon -->
+<link rel="stylesheet" type="text/css" href="/styles/parents.css" />
+<style>
+  button {
+    background-color: #5867dd;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    width: 120px;
+    margin-bottom: 10px;
+  }
+  button i {
+    pointer-events: none;
+    cursor: pointer;
+  }
+  button:hover .trash {
+    color: red;
+  }
+  button:hover .review {
+    color: greenyellow;
+  }
+  .boxFeedBack #contentTable tr td {
+    padding: 10px;
+  }
+  .boxFeedBack tbody tr th:nth-child(4),
+  .boxFeedBack tbody tr th:nth-child(1),
+  .boxFeedBack tbody tr th:nth-child(2) {
+    width: 15%;
+  }
+
+  .feedBack .row {
+    align-items: center;
+    margin: 15px 0;
+  }
+
+  .feedBack .row h5 {
+    padding: 10px;
+    background-color: #5867dd;
+    color: white;
+    border-radius: 15px;
+  }
+
+  #time {
+    border: none;
+  }
+
+  .feedBack .row .item:nth-child(3) {
+    border: 0.3px solid rgb(86, 84, 84);
+    padding: 5px;
+    border-radius: 10px;
+  }
+  .listFeedBack {
+    height: 80vh;
+    overflow-y: scroll;
+  }
+
+  .dialogReview {
+    position: absolute;
+    width: 50%;
+    height: 50vh;
+    left: 50%;
+    top: 50%;
+    background-color: white;
+    border-radius: 20px;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+      rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    display: none;
+  }
+
+  .dialogReview .container1 {
+    padding: 10px;
+  }
+  .dialogReview .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .dialogReview .header p {
+    margin: 0;
+  }
+
+  .dialogReview .header p:first-child {
+    font-weight: bold;
+  }
+  .dialogReview .container1 {
+    height: 100%;
+    width: 100%;
+  }
+  #EvaluateContent {
+    width: 100%;
+    height: 25vh;
+  }
+  .Evaluate h6 {
+    background-color: #5867dd;
+    padding: 10px;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+    margin: 30px 0;
+    width: max-content;
+  }
+  .btn1 {
+    position: absolute;
+    top: 5%;
+    padding: 5px;
+    background-color: #5867dd;
+    border-radius: 10px;
+    right: 5%;
+    cursor: pointer;
+  }
+  .btn1:hover {
+    background-color: #303136;
+    color: white;
+  }
+</style>
+<div class="main">
+  <%- include('./../comon/topBarSearch') %>
+  <!-- Main -->
+  <div class="feedBack p-5">
+    <div class="row">
+      <h5 class="col-5">Danh sách Feedback từ giáo viên</h5>
+      <div class="item col-4 flex">
+        <select class="form-select teacher" name="teacher" required="">
+          <option disabled="">Giáo viên đứng lớp</option>
+          <option value="all">Tất cả</option>
+          <!-- Data select -->
+          <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
+          <option value="<%= item._id %>"><%= item.username %></option>
+          <% }); %> <% } %>
+          <!-- The end -->
+        </select>
+      </div>
+      <div class="item col-3">
+        <label for="time" class="disabled fw-medium">Thời gian</label>
+        <select id="time" class="disabled">
+          <option value="all">Toàn Bộ</option>
+          <option value="1">Tháng 1</option>
+          <option value="2">Tháng 2</option>
+          <option value="3">Tháng 3</option>
+          <option value="4">Tháng 4</option>
+          <option value="5">Tháng 5</option>
+          <option value="6">Tháng 6</option>
+          <option value="7">Tháng 7</option>
+          <option value="8">Tháng 8</option>
+          <option value="9">Tháng 9</option>
+          <option value="10">Tháng 10</option>
+          <option value="11">Tháng 11</option>
+          <option value="12">Tháng 12</option>
+        </select>
+      </div>
+    </div>
+    <div class="listFeedBack">
+      <table style="width: 100%" class="boxFeedBack">
+        <tr>
+          <th>Học viên</th>
+          <th>Giáo viên</th>
+          <th>Nội dung đánh giá</th>
+          <th>Ngày tạo đánh giá</th>
+          <th>Chức Năng</th>
+        </tr>
+        <!--BODY -->
+        <tbody id="contentTable">
+          <tr>
+            <td>Quốc nguyễn</td>
+            <td>Quốc nguyễn</td>
+            <td>Học sinh đang còn chưa được chăm</td>
+            <td>24-10-2003</td>
+            <td class="column">
+              <button>
+                <i class="review fa-solid fa-street-view"></i>
+                Chỉnh sửa
+              </button>
+              <button>
+                <i class="trash fa-solid fa-trash"></i>
+                Xoá
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>Quốc nguyễn</td>
+            <td>Quốc nguyễn</td>
+            <td>Học sinh đang còn chưa được chăm</td>
+            <td>24-10-2003</td>
+            <td class="column">
+              <button>
+                <i class="review fa-solid fa-street-view"></i>
+                Chỉnh sửa
+              </button>
+              <button>
+                <i class="trash fa-solid fa-trash"></i>
+                Xoá
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>Quốc nguyễn</td>
+            <td>Quốc nguyễn</td>
+            <td>Học sinh đang còn chưa được chăm</td>
+            <td>24-10-2003</td>
+            <td class="column">
+              <button>
+                <i class="review fa-solid fa-street-view"></i>
+                Chỉnh sửa
+              </button>
+              <button>
+                <i class="trash fa-solid fa-trash"></i>
+                Xoá
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>Quốc nguyễn</td>
+            <td>Quốc nguyễn</td>
+            <td>Học sinh đang còn chưa được chăm</td>
+            <td>24-10-2003</td>
+            <td class="column">
+              <button>
+                <i class="review fa-solid fa-street-view"></i>
+                Chỉnh sửa
+              </button>
+              <button>
+                <i class="trash fa-solid fa-trash"></i>
+                Xoá
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="dialogReview">
+    <div class="container1">
+      <p class="nameStudents text-center fw-bold">Phạm Xuân Đạt</p>
+      <div class="Evaluate">
+        <h6>Đánh giá học sinh</h6>
+        <textarea
+          style="padding: 30px"
+          name="Evaluate"
+          id="EvaluateContent"
+        ></textarea>
+      </div>
+      <button class="editFeedBack w-100 btn btn-outline-primary">
+        Sửa đánh giá
+      </button>
+      <div class="btn1 xmark">
+        <i id="closeTab" class="fa-solid fa-xmark"></i>
+      </div>
+    </div>
+  </div>
+  <div id="toasts"></div>
+  <script type="module" src="/JS/feedBack.js"></script>
+  <%- include('./../comon/footer') %>
+</div>

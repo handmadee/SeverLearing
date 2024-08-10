@@ -1,0 +1,331 @@
+i {
+  pointer-events: none !important;
+}
+.viewClass {
+  padding: 20px;
+}
+
+.viewClass .header {
+  padding: 10px;
+  color: white;
+  background-color: #5867dd;
+  width: 100%;
+  border-radius: 10px;
+  text-align: center;
+}
+.contentClass {
+  padding: 20px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+}
+.contentClass .itemClass {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-radius: 20px;
+  display: inline-block;
+  padding: 20px;
+  transition: all 0.3s linear;
+}
+.contentClass .itemClass:hover {
+  cursor: pointer;
+  padding: 30px;
+  border: 0.5px solid #5867dd;
+}
+
+.itemClass p:first-child {
+  font-size: 20px;
+  font-weight: bold;
+}
+.itemClass span {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.dialogAllStudents {
+  position: absolute;
+  width: 90vw;
+  height: 90vh;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+}
+.dialogAllStudents .container {
+  padding: 25px;
+}
+.boxFeedBack tbody tr th:first-child {
+  width: 5%;
+}
+.boxFeedBack tbody tr th {
+  background: #5867dd;
+  color: #fff;
+  border-bottom: 0;
+  border-top: 0;
+  width: 30%;
+  padding: 10px;
+  border-right: 2px solid white;
+}
+.dialogAllStudents .container h6 {
+  padding: 10px;
+  background-color: #5867dd;
+  color: white;
+  width: 30%;
+  text-align: center;
+  border-radius: 20px;
+}
+
+/* Respone  */
+
+#contentTable .item button {
+  border: 0;
+  padding: 10px;
+  border-radius: 10px;
+  margin-right: 20px;
+  background-color: #5867dd;
+  color: white;
+  font-weight: bold;
+}
+#contentTable .item button:hover {
+  cursor: pointer;
+  background-color: #a1a8e3;
+}
+#contentTable .item button:first-child i {
+  color: gold;
+}
+#contentTable .item button:nth-child(2) i {
+  color: rgb(182, 89, 89);
+}
+#contentTable .item td {
+  padding: 5px;
+}
+#contentTable .item td:first-child {
+  text-align: center;
+}
+#contentTable .item {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 10px;
+}
+
+.xmark {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+}
+
+.xmark i {
+  color: black;
+  font-size: 26px;
+  pointer-events: none;
+}
+
+.containerStudents {
+  height: 70vh;
+  overflow-y: scroll;
+}
+
+.dialogAllStudents .dialogReview {
+  position: absolute;
+  width: 70%;
+  height: 90%;
+  left: 50%;
+  top: 50%;
+  background-color: white;
+  border-radius: 20px;
+  transform: translate(-50%, -50%);
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+}
+
+.dialogReview .container {
+  padding: 10px;
+}
+.dialogReview .header {
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.dialogReview .header p {
+  margin: 0;
+}
+
+.dialogReview .header p:first-child {
+  font-weight: bold;
+}
+.dialogReview .container {
+  height: 100%;
+  width: 100%;
+}
+.Evaluate {
+  width: 100%;
+  height: 75%;
+  margin-top: 20px;
+}
+#EvaluateContent {
+  width: 100%;
+  height: 90%;
+}
+
+.Evaluate .createEvaluate {
+  float: right;
+}
+
+.dialogReview .container .createEvaluate {
+  padding: 10px;
+  background-color: #5867dd;
+  color: white;
+  display: block;
+  width: max-content;
+  margin-left: auto;
+  margin-right: 0;
+  margin-top: 10px;
+}
+
+.dialogReview {
+  display: none;
+}
+.dialogAllStudents {
+  display: none;
+}
+.contentClass .itemClass {
+  position: relative;
+}
+
+.btnClass {
+  padding: 5px;
+  position: absolute;
+  top: 20px;
+  color: red;
+  font-size: 20px;
+  border-radius: 5px;
+  right: 10px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+.editClass {
+  top: 70px;
+  color: green;
+}
+
+.dialogEditClass {
+  display: block;
+  width: 50%;
+}
+
+#formClass .btnEdit {
+  margin-left: auto;
+  margin-right: 0;
+  width: fit-content;
+  display: block;
+}
+
+.xmark {
+  padding: 5px;
+  background-color: #5867dd;
+  border-radius: 10px;
+  transition: all 0.3s linear;
+}
+.xmark i {
+  color: white;
+}
+
+.xmark:hover {
+  cursor: pointer;
+  background-color: #a1a8e3;
+}
+
+.dialogEditClass {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+.contentClass .itemClass p {
+  pointer-events: none;
+}
+#contentTable .item {
+  transition: all 0.3s linear;
+}
+#contentTable .item:hover {
+  background-color: #bfc3e7;
+  cursor: pointer;
+}
+
+/*  */
+.header {
+  justify-content: space-around;
+}
+
+#addStudents {
+  width: 50px;
+  height: 50px;
+  border-radius: 20px;
+  background-color: #5867dd;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  margin-left: 10px;
+}
+
+#addStudents i {
+  color: white;
+  text-align: center;
+  pointer-events: none;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+.header h6 {
+  margin: 0;
+}
+
+#addStudents:hover {
+  background-color: #69d0a5;
+  cursor: pointer;
+}
+
+#showAllStudents .dialogAddStudents {
+  position: absolute;
+  width: 50%;
+  height: 90%;
+  background-color: white;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#IdStudentsAdd {
+  border: none;
+  box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px,
+    rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
+    rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.plusClass {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #5867dd;
+  color: white;
+  margin: 0 20px;
+  display: block;
+  margin-left: auto;
+  transition: all 0.5s linear;
+}
+
+.plusClass:hover {
+  background-color: #69d0a5;
+  cursor: pointer;
+}

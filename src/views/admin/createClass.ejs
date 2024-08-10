@@ -1,0 +1,208 @@
+<%- include('comon/header') %>
+
+<link rel="stylesheet" type="text/css" href="/styles/parents.css" />
+<!-- Main -->
+<div class="main">
+  <%- include('comon/topBarSearch') %>
+  <!--Main-->
+  <style>
+    .container {
+      padding: 30px;
+    }
+    h5 {
+      background-color: #5867dd;
+      color: white;
+      border-radius: 5px;
+      padding: 15px 0;
+      text-align: center;
+    }
+    /* TR 1 */
+    .recentOrders .table tr td:first-child {
+      text-align: left;
+      padding-left: 30px;
+    }
+    .boxFeedBack tbody tr th:first-child {
+      width: 5%;
+    }
+    .boxFeedBack #contentTable tr td:nth-child(2) {
+      color: #5867dd;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .boxFeedBack #contentTable tr td {
+      padding: 10px;
+    }
+    #createClass {
+      padding: 30px;
+    }
+    .boxFeedBack {
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      height: 500px !important;
+      overflow-y: scroll !important;
+    }
+    .containerStudents {
+      margin-top: 20px;
+      height: 500px;
+      overflow-y: scroll;
+    }
+    #addDayButton1 {
+      background-color: #5867dd;
+    }
+    #createClass12 {
+      width: 30%;
+      right: 0;
+      margin-left: 65%;
+    }
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
+  </style>
+  <div id="createClass">
+    <!-- Create account -->
+    <div class="createChapter col-11 mx-auto mt-2">
+      <form
+        id="formChapter"
+        class="row col-12 mx-auto g-3 needs-validation123"
+        novalidate
+      >
+        <h5>
+          Tạo lớp học
+          <i class="fa-solid fa-landmark"></i>
+        </h5>
+        <div class="col-12">
+          <label for="nameClass" class="form-label">Mã Lớp học</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nameClass"
+            name="nameClass"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập IDclass</div>
+        </div>
+        <div class="col-12">
+          <label for="teacher" class="form-label">Giáo viên đứng lớp</label>
+          <div id="teacher">
+            <select class="form-select teacher" name="teacher" required="">
+              <option disabled="">Giáo viên đứng lớp</option>
+              <!-- Data select -->
+              <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
+              <option value="<%= item._id %>"><%= item.username %></option>
+              <% }); %> <% } %>
+              <!-- The end -->
+            </select>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <label for="study1" class="form-label">Ca Học</label>
+          <select class="form-select" id="study1">
+            <option value="1">1 (8h-9h30)</option>
+            <option value="2">2 (9h30-11h)</option>
+            <option value="3">3 (14h-15h30)</option>
+            <option value="4">4 (17h-18h30)</option>
+            <option value="5">5 (18h30-20h)</option>
+            <option value="6">6 (19h30-21h)</option>
+          </select>
+        </div>
+
+        <div class="col-12">
+          <div id="daysContainer1">
+            <select class="form-select days" name="days" required="">
+              <option disabled="">Ngày học học sinh trong tuần</option>
+              <option value="2">Thứ 2</option>
+              <option value="3">Thứ 3</option>
+              <option value="4">Thứ 4</option>
+              <option value="5">Thứ 5</option>
+              <option value="6">Thứ 6</option>
+              <option value="7">Thứ 7</option>
+              <option value="8">Chủ nhật</option>
+            </select>
+          </div>
+          <button
+            type="button"
+            id="addDayButton1"
+            class="btn btn-secondary mt-4"
+          >
+            Thêm ngày học
+          </button>
+        </div>
+        <!-- DS học sinh -->
+        <div class="FilterMem row justify-content-end">
+          <!-- <div class="col-5">
+            <input type="text" placeholder="searchStudents" />
+          </div> -->
+          <div class="col-3">
+            <label for="filterStudy">Ca Học</label>
+            <select class="form-select" id="filterStudy">
+              <option value="all">Tất cả</option>
+              <option value="1">1 (8h-9h30)</option>
+              <option value="2">2 (9h30-11h)</option>
+              <option value="3">3 (14h-15h30)</option>
+              <option value="4">4 (17h-18h30)</option>
+              <option value="5">5 (18h30-20h)</option>
+              <option value="6">6 (19h30-21h)</option>
+            </select>
+          </div>
+          <div class="col-3">
+            <label for="daysFiler">Ngày học</label>
+            <select class="form-select daysFiler" name="daysFiler" required="">
+              <option disabled="">Ngày học học sinh trong tuần</option>
+              <option value="all">Tất cả</option>
+              <option value="2">Thứ 2</option>
+              <option value="3">Thứ 3</option>
+              <option value="4">Thứ 4</option>
+              <option value="5">Thứ 5</option>
+              <option value="6">Thứ 6</option>
+              <option value="7">Thứ 7</option>
+              <option value="8">Chủ nhật</option>
+            </select>
+          </div>
+        </div>
+        <div class="containerStudents row">
+          <table class="boxFeedBack col-12">
+            <tbody style="height: 45px">
+              <tr>
+                <th></th>
+                <th>Tên Học Sinh</th>
+                <th>Số điện thoại phụ huynh</th>
+              </tr>
+            </tbody>
+            <!--BODY -->
+            <tbody id="contentTable">
+              <% if (listStudent && listStudent.length > 0) { %> <%
+              listStudent.forEach((item) => { %>
+              <tr style="height: 50px">
+                <td>
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      value="<%= item._id %>"
+                      id="flexCheckChecked-<%= item._id %>"
+                    />
+                  </div>
+                </td>
+                <td><%= item.fullname %></td>
+                <td><%= item.phone %></td>
+              </tr>
+              <% }) %> <% } %>
+            </tbody>
+          </table>
+        </div>
+        <!-- Submit form -->
+        <div class="col-12">
+          <button id="createClass12" class="btn btn-primary">Tạo lớp</button>
+        </div>
+        <!--  -->
+      </form>
+    </div>
+    <!-- Select Table account -->
+    <div class="recentOrders col-7"></div>
+  </div>
+  <!--  -->
+
+  <script type="module" src="/JS/createClass.js"></script>
+  <%- include('comon/footer') %>
+</div>

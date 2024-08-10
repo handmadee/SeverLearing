@@ -8,6 +8,9 @@ class StudentShecheduleService extends BaseService {
     constructor() {
         super(ShecheduleModel);
     }
+    async getAllStudents() {
+        return await ShecheduleModel.find().select("fullname phone ").lean();
+    }
     async getAllShechedule(page = 1, limit = 10) {
         const total = await ShecheduleModel.countDocuments();
         const totalPages = Math.ceil(total / limit);
@@ -185,6 +188,24 @@ class StudentShecheduleService extends BaseService {
             };
         }
     }
+    //
+    async getStudentsByDays(days) {
+        return await ShecheduleModel.find({
+            days: { $in: +days }
+        }).lean();
+    }
+    async getStudentsByStudy(study) {
+        return await ShecheduleModel.find({
+            study: +study
+        }).lean();
+    }
+    async getStudentsByStudyByDays(days, study) {
+        return await ShecheduleModel.find({
+            days: { $in: +days },
+            study: +study
+        }).lean();
+    }
+
     // Querry search 
     async searchStudents(keyword) {
         return await ShecheduleModel.find(

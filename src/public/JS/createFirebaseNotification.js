@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = document.getElementById('title').value;
         const includeImage = document.getElementById('include-image').files[0];
         const message = document.getElementById('message').value;
-
         let selectedUsers = Array.from(document.querySelectorAll(selectUsers === 'selected' ? '.user-checkbox:checked' : '.user-checkbox')).map(checkbox => checkbox.value);
 
         const formData = new FormData();

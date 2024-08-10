@@ -18,6 +18,11 @@ const fireBaseNotification = require('./../../services/firebase/notification.fir
 const fcmTokenService = require('../../services/firebase/fcmToken.firebase.services');
 const scheduleService = require('../../services/schedule/schedule.service');
 const AccountService = require('../../services/account/account.service');
+const ClassService = require('../../services/schedule/class.services');
+
+
+
+
 
 const CourseService12 = new CourseService();
 const QuizService12 = new QuizService();
@@ -185,7 +190,6 @@ adminRouter.get('/course', permission('999'), asnycHandler(async (req, res) => {
     if (!data) throw new Error('No data found');
     res.render('admin/course', { title: "Quản lý khoá học", data: data?.courses, totalPages, currentPage: page, totalItems });
 }));
-
 // view lesson course 
 adminRouter.get('/course/lesson/find/:id', asnycHandler(async (req, res) => {
     const courseid = req.params.id;
@@ -209,7 +213,6 @@ adminRouter.get('/course/category', permission('999'), asnycHandler(async (req, 
     if (!data) throw new Error('No data found');
     res.render('admin/categoryCourse', { title: "Tạo danh mục khoá học", data });
 }));
-
 // Create Exam 
 adminRouter.get('/course/exam/create', permission('999'), asnycHandler(async (req, res) => {
     const course = await CourseService12.getCourseByChapter();
@@ -323,7 +326,6 @@ adminRouter.get('/firebase/scheduleNotification', permission('999'), asnycHandle
 // Schedule students
 adminRouter.get('/schedule/importStudents', permission('999'), asnycHandler(async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
-
     // const data = await scheduleService.getAllShechedule(currentPage, 10);
     let data;
     const keyword = req.query.qkeyword;
@@ -357,7 +359,7 @@ adminRouter.get('/schedule/exportShechedule', permission('999'), asnycHandler(as
     res.render('./admin/shechedule/exportShechedule', { title: "Xuất thời khoá biểu" });
 }));
 
-adminRouter.get('/schedule/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
+adminRouter.get('/schedule/teacherSheduleV1', permission('789 999'), asnycHandler(async (req, res) => {
     const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
     const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
     const { userId } = req.payload;
@@ -368,22 +370,99 @@ adminRouter.get('/schedule/teacherShedule', permission('789 999'), asnycHandler(
     res.render('./admin/shechedule/teacherShedule', { title: "Điểm danh", date, days, userId });
 }));
 
+adminRouter.get('/schedule/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
+    const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
+    const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
+    const data = await AccountService.accountSupper();
+    const { userId, role } = req.payload;
+    console.log({
+        message: 'user:: id',
+        userId
+    })
+    res.render('./admin/shechedule/teacherSheduleV2', { title: "Điểm danh", date, days, userId, data, role });
+}));
+
 // @Role Teacher    
 adminRouter.get('/teacher/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
     const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
     const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
-    const { userId } = req.payload;
-    res.render('./admin/teacher/teacherShedule', { title: "Điểm danh", date, days, userId });
+    const data = await AccountService.accountSupper();
+    const { userId, role } = req.payload;
+    res.render('./admin/shechedule/teacherSheduleV2', { title: "Điểm danh", date, days, userId, data, role });
 }));
+
+
 
 adminRouter.get('/teacher/changeSub', permission('789 999'), asnycHandler(async (req, res) => {
     res.render('./admin/teacher/changeSub', { title: "Tìm kiếm thời khoá biểu " });
 }));
 
 
+// Parents
+adminRouter.get('/parents', asnycHandler(async (req, res) => {
+    res.render('./admin/Parents', { title: "Phu huynh " });
+}));
+
+adminRouter.get('/parents/students/:id', asnycHandler(async (req, res) => {
+    const idStudents = req.params.id;
+    const students = await scheduleService.getById(idStudents);
+    /*
+
+_id: "66936327a1c8c5dd16110d36",
+fullname: "Nguyễn Tiến Minh 2",
+phone: "0387611812",
+study: 1,
+days: [
+2,
+8
+],
+    */
+    const ClassInStudesnt = await ClassService.findStudentsByClass(idStudents)
+    /*
+    [
+{
+_id: "66b28892dd6cedafafe5ad33",
+nameClass: "MD183009",
+teacherAccount: {
+_id: "669362fda1c8c5dd16110d2e",
+username: "admin@gmail.com"
+},
+study: 1,
+days: [
+2
+]
+}
+]
+   */
+    // res.send(students)
+
+    // id 
+    res.render('./admin/studentsParents', { title: "Phu huynh ", idStudents, students, ClassInStudesnt });
+}));
 
 
+// Class
+adminRouter.get('/class', asnycHandler(async (req, res) => {
+    const data = await AccountService.accountSupper();
+    const listStudent = await scheduleService.getAllStudents();
+    console.log(listStudent)
+    res.render('./admin/createClass', { title: "Tạo lớp học", data, listStudent });
+}));
 
+// Select Class 
+adminRouter.get('/viewClass', permission('789 999'), asnycHandler(async (req, res) => {
+    const data = await AccountService.accountSupper();
+    const { userId, role } = req.payload;
+    res.render('./admin/class/viewClass', { title: "Phu huynh ", data, userId, role });
+}));
+
+
+// Select Class 
+adminRouter.get('/feedBack', permission(' 999'), asnycHandler(async (req, res) => {
+    const data = await AccountService.accountSupper();
+    const { userId } = req.payload;
+    res.render('./admin/shechedule/feedBack', { title: "Danh sách feedback từ giáo viên ", data, userId });
+}));
 
 
 // Errors

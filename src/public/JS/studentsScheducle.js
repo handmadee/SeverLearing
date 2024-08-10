@@ -303,8 +303,6 @@ document.addEventListener("DOMContentLoaded", function () {
             daysContainer.innerHTML = '';
             editCoursePopup.classList.add('show');
             fetchExam(id)
-
-            // fetchExam(id)
         });
     });
 
@@ -361,6 +359,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         savePopup.removeEventListener('click', handlerUpdateStudents);
         savePopup.addEventListener('click', handlerUpdateStudents);
+
+
+        // 
 
     }
 

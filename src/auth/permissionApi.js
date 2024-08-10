@@ -16,10 +16,11 @@ module.exports = (roles) => {
                 throw new ForbiddenError('Token is required');
             }
             const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+            console.log(payload)
             console.log({
                 roles: roles,
                 role: payload.role,
-                payload: roles.includes(payload.role)
+                payload: roles.includes(payload.role[0])
             })
             if (!roles.includes(payload.role[0])) {
                 throw new ForbiddenError('You do not have access to this resource');

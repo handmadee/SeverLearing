@@ -51,6 +51,21 @@ class AttendanceController {
         }).send(res);
     }
 
+    // Get all student by schedule of teacher
+    async getStudentByScheduleOfTeacher(req, res) {
+        const { study, date } = req.query;
+        const idTeacher = req.params.id;
+        console.log({
+            study, date,
+            idTeacher
+        })
+        // const dateNow = new Date(date)
+        const students = await attendanceService.getStudyByTeacher(study, date, idTeacher);
+        return new OK({
+            data: students
+        }).send(res);
+    }
+
     // Get all student by schedule and date
     async findStudentsByDate(req, res) {
         const { study, date, date1 } = req.body;
@@ -60,6 +75,10 @@ class AttendanceController {
             data: students
         }).send(res);
     }
+
+
+
+
 
     // Change attendance
     async changeAttendance(req, res) {

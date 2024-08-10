@@ -1,0 +1,245 @@
+  <% if (role.includes('999')) { %>
+       <%- include('./../comon/header') %>
+  <% } else { %>
+<%- include('./../comon/headerTeacher') %>
+  <% } %>
+
+<link rel="stylesheet" type="text/css" href="/styles/viewClass.css" />
+
+<style>
+  <% if (!role.includes('999')) { %>
+    .control .btnClass {
+      display: none;
+    }
+    #contentTable .item .Trash1 {
+         display: none;
+    }
+    #addStudents {
+      display: none;
+    }
+  <% } %>
+</style>
+
+
+<!--Main -->
+<div class="main">
+  <%- include('./../comon/topBarSearch') %>
+  <!--Main-->
+  <div class="viewClass">
+    <div class="header">
+      <h5>Danh sách tất cả các lớp</h5>
+      <!-- Admin  -->
+   <div data-id="<%= userId %>" id="teacher">
+  <% if (role.includes('999')) { %>
+        <select class="form-select teacher" name="teacher" required="">
+            <option disabled="">Giáo viên đứng lớp</option>
+             <option  value="all">Tất cả </option>
+            <!-- Data select -->
+            <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
+            <option value="<%= item._id %>"><%= item.username %></option>
+            <% }); %> <% } %>
+            <!-- The end -->
+          </select>
+  <% } else { %>
+    <select disabled class="form-select teacher" name="teacher" required="">
+      <option disabled="">Giáo viên đứng lớp</option>
+      <!-- Data select -->
+      <% if (data && data.length > 0) { %>
+        <% data.forEach(item => { %>
+          <option value="<%= item._id %>" <%= item._id == userId ? 'selected' : '' %>><%= item.username %></option>
+        <% }); %>
+      <% } %>
+      <!-- The end -->
+    </select>
+  <% } %>
+</div>
+
+
+      </div>
+      <!--  -->
+    </div>
+<% if (role.includes('999')) { %>
+  <a href="/admin/class">
+    <button class="plusClass">
+      <i class="fa-solid fa-plus"></i>
+      Tạo lớp
+    </button>
+  </a>
+<% } %>
+    <div id="contentClass" class="contentClass">
+      <div class="itemClass">
+        <p>MD18302</p>
+        <p><span>Số lượng học sinh: </span>43</p>
+        <p><span>Ca dạy: </span>43</p>
+        <p><span>Ngày dạy: </span>2, 5</p>
+        <!-- Admin -->
+        <div class="control">
+          <div class="btnClass" id="delClass">
+            <i class="fa-solid fa-trash"></i>
+          </div>
+          <div class="btnClass" id="editClass">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin -->
+    <div id="dialogEditClass" class="dialogEditClass dialogAllStudents">
+      <div class="container">
+        <h6>Chỉnh sửa lớp</h6>
+      </div>
+      <form
+        id="formClass"
+        class="row col-12 mx-auto g-3 needs-validation123"
+        novalidate
+      >
+        <div class="col-12">
+          <label for="nameClass" class="form-label">Tên lớp</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nameClass"
+            name="nameClass"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+          <div class="invalid-feedback">Vui lòng nhập nameClass</div>
+        </div>
+
+        <div class="col-12">
+          <label for="pemission" class="form-label">Giáo viên</label>
+          <select class="form-select" id="pemission" name="pemission" required>
+            <option selected disabled value="">Giáo viên dạy lớp</option>
+             <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
+            <option value="<%= item._id %>"><%= item.username %></option>
+            <% }); %> <% } %>
+          </select>
+          <div class="invalid-feedback">Vui lòng chọn đúng loại tài khoản</div>
+        </div>
+
+        <div class="col-12">
+          <label for="study1" class="form-label">Ca Học</label>
+          <select class="form-select" id="study1">
+            <option value="1">1 (8h-9h30)</option>
+            <option value="2">2 (9h30-11h)</option>
+            <option value="3">3 (14h-15h30)</option>
+            <option value="4">4 (17h-18h30)</option>
+            <option value="5">5 (18h30-20h)</option>
+            <option value="6">6 (19h30-21h)</option>
+          </select>
+          <div class="invalid-feedback">Vui lòng nhập ca học.</div>
+        </div>
+        <div class="col-12">
+          <label for="daysContainer1" class="form-label">Ngày học</label>
+          <div id="daysContainer1">
+           
+          </div>
+          <button
+            type="button"
+            id="addDayButton1"
+            class="btn btn-secondary mt-4"
+          >
+            Thêm ngày học
+          </button>
+        </div>
+
+        <!-- Submit form -->
+        <div class="col-12">
+            
+          <button 
+          id="saveClass"
+          class="btn btnEdit  btn-primary" type="submit">Lưu</button>
+        </div>
+        <!--  -->
+      </form>
+      <div class="btn1 xmark">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+    </div>
+
+    <!-- View All Students -->
+    <div id="showAllStudents" class="dialogAllStudents">
+      <div class="container">
+      <div class="header row algin">
+          <h6 id="nameClassD">MD18302</h6>
+        <!-- ADD -->
+        <div class="col-6 row">
+
+           <input class="col-7" id="IdStudentsAdd" type="text" placeholder="ID Học Sinh">
+         <div id="addStudents">
+          <i class="fa-solid fa-plus"></i>
+         </div>
+        </div>
+      </div>
+        <div class="containerStudents row">
+          <table class="boxFeedBack col-12">
+          <tbody style="height: 50px;">
+              <tr >
+              <th>STT</th>
+              <th>Tên Học Sinh</th>
+              <th>Số điện thoại phụ huynh</th>
+              <th>Chức Năng</th>
+            </tr>
+          </tbody>
+            <!--BODY -->
+            <tbody id="contentTable">
+              <tr class="item">
+                <td>
+                  <strong>1</strong>
+                </td>
+                <td>Phạm Xuân Đạt</td>
+                <td>0377723422</td>
+                <td>
+                  <button>
+                    <i class="fa-solid fa-street-view"></i>
+                    Đánh giá
+                  </button>
+                  <button>
+                    <i class="fa-solid fa-trash"></i>
+                    Xoá
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="btn1 xmark">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+
+      <!-- Dialog đánh giá -->
+      <div class="dialogReview">
+        <div class="container">
+          <div class="header">
+            <p class="nameStudents" >Phạm Xuân Đạt</p>
+            <p class="phoneStudents"></p>
+          </div>
+          <div class="Evaluate">
+            <h6>Đánh giá học sinh</h6>
+            <textarea 
+            style="padding: 30px;"
+            name="Evaluate" id="EvaluateContent"></textarea>
+          </div>
+          <btn class="btn createEvaluate"> Tạo đánh giá </btn>
+          <div class="btn1 xmark">
+            <i id="closeTab" class="fa-solid fa-xmark"></i>
+          </div>
+        </div>
+      </div>
+      <!-- The end -->
+
+      <!-- Add Students -->
+       <!-- <div class="dialogAddStudents">
+                <div class="container">
+                  
+                </div>
+       </div> -->
+    </div>
+  </div>
+
+  <!--  -->
+  <script type="module" src="/JS/viewClass.js"></script>
+  <%- include('./../comon/footer') %>
+</div>

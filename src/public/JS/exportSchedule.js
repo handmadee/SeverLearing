@@ -36,13 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </td>
         </tr>`
 
-        const response = await fetch(`${LOCALHOST_API_URL}attendanceTeacherByDate`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ study, date, date1 }),
-        });
+
         content.innerHTML = ''
         if (!response.ok) {
             return createToast("error");
