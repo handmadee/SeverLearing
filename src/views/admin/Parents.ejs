@@ -13,6 +13,12 @@
 
     <link rel="icon" type="image/png" href="/image/T-smart.png" />
     <title>TSMART</title>
+
+    <style>
+      .container p {
+        margin: 10px 0;
+      }
+    </style>
   </head>
 
   <body>
@@ -39,11 +45,15 @@
       </div>
       <div class="form-container sign-in">
         <form>
-          <h1>ID HỌC SINH</h1>
+          <h1>MÃ SỐ HỌC SINH</h1>
           <div class="social-icons"></div>
-          <input type="text" placeholder="Id student" id="idStudents" />
+          <input
+            type="text"
+            placeholder="Nhập mã số học sinh ở đây"
+            id="idStudents"
+          />
 
-          <button id="searchID">Tìm kiếm</button>
+          <button id="searchID">Xem nhận xét</button>
         </form>
       </div>
       <div class="toggle-container">
@@ -54,12 +64,12 @@
             <button class="hidden" id="login">Sign In</button>
           </div>
           <div class="toggle-panel toggle-right">
-            <h1>TSMART LEARING</h1>
-            <p>
-              Triết lý đào tạo tại Tsmart là thực hành với khát vọng ươm mầm
-              sách tạo và góp phần phát triển năng lực CNTT dành cho trẻ em
-            </p>
-            <button class="hidden" id="Signup" disabled>PHỤ HUYNH</button>
+            <h1>TSMART</h1>
+            <p>ƯỚM MẦM SÁNG TẠO</p>
+            <p>34 Lê Khánh Thiện - Hoà Minh - Liên Chiểu</p>
+            <a href="tel:0868552445">
+              <button class="hidden" id="Signup">0868552445</button>
+            </a>
           </div>
         </div>
       </div>

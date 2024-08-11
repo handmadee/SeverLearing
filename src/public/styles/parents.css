@@ -25,7 +25,7 @@
   width: 20%;
 }
 .boxFeedBack tbody tr th {
-  background: #5867dd;
+  background: rgba(25, 135, 84, 1);
   color: #fff;
   border-bottom: 0;
   border-top: 0;
@@ -33,7 +33,7 @@
   padding: 10px;
 }
 .boxFeedBack #contentTable tr td:first-child {
-  color: #5867dd;
+  color: rgba(25, 135, 84, 1);
   font-weight: bold;
   text-align: center;
 }
