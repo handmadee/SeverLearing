@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 tableHtml += `
                 <tr>
                     <td scope="row">${index + 1}</td>
+                     <td>${user._id}</td>
                     <td>${user.fullname}</td>
                     <td>${user.phone}</td>
                     <td>${user.study}</td>
