@@ -17,7 +17,19 @@
     #addStudents {
       display: none;
     }
+      #showAllStudents .boxFeedBack tr th:nth-child(4) {
+              display: none;
+      }
+            #contentTable tr td:nth-child(4) {
+              display: none;
+            }
   <% } %>
+
+
+  /* Style */
+  #showAllStudents .boxFeedBack tr th:nth-child(3),   #showAllStudents .boxFeedBack tr th:nth-child(2){
+    width: 22%;
+  }
 </style>
 
 
@@ -107,16 +119,28 @@
           <div class="invalid-feedback">Vui lòng nhập nameClass</div>
         </div>
 
+        
+
         <div class="col-12">
           <label for="pemission" class="form-label">Giáo viên</label>
+       <div id="containerTeacher">
           <select class="form-select" id="pemission" name="pemission" required>
             <option selected disabled value="">Giáo viên dạy lớp</option>
              <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
             <option value="<%= item._id %>"><%= item.username %></option>
             <% }); %> <% } %>
           </select>
+       </div>
           <div class="invalid-feedback">Vui lòng chọn đúng loại tài khoản</div>
         </div>
+
+
+          <div class="col-12">
+          <label for="pemission" class="form-label">Giáo viên</label>
+          <div id="teacherContainer">
+
+          </div>
+          </div>
 
         <div class="col-12">
           <label for="study1" class="form-label">Ca Học</label>
@@ -177,6 +201,7 @@
           <tbody style="height: 50px;">
               <tr >
               <th>STT</th>
+                     <th>ID</th>
               <th>Tên Học Sinh</th>
               <th>Số điện thoại phụ huynh</th>
               <th>Chức Năng</th>
@@ -220,7 +245,7 @@
             <h6>Đánh giá học sinh</h6>
             <textarea 
             style="padding: 30px;"
-            name="Evaluate" id="EvaluateContent"></textarea>
+            name="content" id="EvaluateContent"></textarea>
           </div>
           <btn class="btn createEvaluate"> Tạo đánh giá </btn>
           <div class="btn1 xmark">
@@ -240,6 +265,8 @@
   </div>
 
   <!--  -->
+   <script type="module" src="/tinymce/tinymce.min.js"></script>
   <script type="module" src="/JS/viewClass.js"></script>
+  <!--  -->
   <%- include('./../comon/footer') %>
 </div>

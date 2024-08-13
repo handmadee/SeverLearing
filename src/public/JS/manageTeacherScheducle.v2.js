@@ -31,6 +31,24 @@ const fetchGetScheduleByTeacherExists = async (idTeacher, date, study) => {
     }
 };
 
+
+const fetchGetTeacherAll = async (idTeacher, date, study) => {
+    try {
+        const response = await fetch(`${LOCALHOST_API_URL}/attendanceTeacherV2/${idTeacher}?date=${date}&study=${study}`);
+        const data = await response.json();
+        return data?.data?.data;
+    } catch (error) {
+        createToast('error', 'Thông báo lỗi khi kiểm tra lịch trình đã tồn tại!');
+    }
+};
+
+
+
+
+
+
+
+
 // Thiết lập giá trị ngày và ca học hiện tại
 const setInitialDateTime = () => {
     const now = new Date();
@@ -133,6 +151,7 @@ const fetchData = async (study, day) => {
             vietnamTimezoneOffset
         })
         const attendanceFound = await fetchGetScheduleByTeacherExists(selectTeacher.value, date, study);
+        // Điểm danh 
         if (attendanceFound && attendanceFound.length > 0) {
             saveInfor.textContent = 'Update';
             return renderData(attendanceFound, true);

@@ -74,7 +74,7 @@
       </div>
       <div class="feedBackBox col-lg-9 col-md-12">
         <div class="row">
-          <h3 class="col-9">Danh sách Feedback từ giáo viên</h3>
+          <h3 class="col-9">Nhận xét từ giáo viên</h3>
           <div class="item col-3">
             <label for="time" class="disabled fw-medium">Thời gian</label>
             <select id="time" class="disabled">
@@ -94,87 +94,65 @@
             </select>
           </div>
         </div>
-        <table style="width: 100%" class="boxFeedBack">
+        <!-- <table style="width: 100%" class="boxFeedBack">
           <tr>
             <th>Học viên</th>
             <th>Nội dung đánh giá</th>
             <th>Ngày tạo đánh giá</th>
           </tr>
-          <!--BODY -->
           <tbody id="contentTable">
             <tr>
               <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
-              <td>24-10-2003</td>
-            </tr>
-            <tr>
-              <td>Quốc nguyễn</td>
-              <td>Học sinh đang còn chưa được chăm</td>
+              <td>
+                - Sự nỗ lực và cố gắng trong học tập: Tốt - Mức độ hoàn thành
+                bài tập: Cần nỗ lực thêm nữa - Tuấn Anh có tư duy lập trình ở
+                mức khá, khả năng giải quyết vấn đề/ bài toán nhanh nhẹn tuy
+                nhiên cần rèn luyện thêm tính cẩn thận và sự tỉ mỉ khi lập
+                trình.
+              </td>
               <td>24-10-2003</td>
             </tr>
           </tbody>
-        </table>
+        </table> -->
+
+        <!-- V2 -->
+        <div
+          data-name="<%=students.fullname%>"
+          class="listFeedBack col-12"
+          id="contentTable"
+        >
+          <div class="itemFeedBack">
+            <div class="bgrFeedBack">
+              <div class="contentFeedback">
+                <p><strong>Dear Phụ Huynh: </strong><%=students.fullname%></p>
+                <p class="content">
+                  - Sự nỗ lực và cố gắng trong học tập: Tốt - Mức độ hoàn thành
+                  bài tập: Cần nỗ lực thêm nữa - Tuấn Anh có tư duy lập trình ở
+                  mức khá, khả năng giải quyết vấn đề/ bài toán nhanh nhẹn tuy
+                  nhiên cần rèn luyện thêm tính cẩn thận và sự tỉ mỉ khi lập
+                  trình. - Sự nỗ lực và cố gắng trong học tập: Tốt - Mức độ hoàn
+                  thành bài tập: Cần nỗ lực thêm nữa - Tuấn Anh có tư duy lập
+                  trình ở mức khá, khả năng giải quyết vấn đề/ bài toán nhanh
+                  nhẹn tuy nhiên cần rèn luyện thêm tính cẩn thận và sự tỉ mỉ
+                  khi lập trình. - Sự nỗ lực và cố gắng trong học tập: Tốt - Mức
+                  độ hoàn thành bài tập: Cần nỗ lực thêm nữa - Tuấn Anh có tư
+                  duy lập trình ở mức khá, khả năng giải quyết vấn đề/ bài toán
+                  nhanh nhẹn tuy nhiên cần rèn luyện thêm tính cẩn thận và sự tỉ
+                  mỉ khi lập trình. - Sự nỗ lực và cố gắng trong học tập: Tốt -
+                  Mức độ hoàn thành bài tập: Cần nỗ lực thêm nữa - Tuấn Anh có
+                  tư duy lập trình ở mức khá, khả năng giải quyết vấn đề/ bài
+                  toán nhanh nhẹn tuy nhiên cần rèn luyện thêm tính cẩn thận và
+                  sự tỉ mỉ khi lập trình.
+                </p>
+                <!-- Date -- Feed Back -->
+                <div class="dateFeedback">
+                  <strong>Ngày đánh giá</strong>
+                  <p class="dateFeed">22 - 10 - 2003</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div id="toasts"></div>

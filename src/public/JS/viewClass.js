@@ -1,3 +1,4 @@
+
 import { LOCALHOST_API_URL } from "./config.js"
 
 const getEL = (id) => document.getElementById(id);
@@ -51,6 +52,7 @@ const renderItemStudent = (content, data = []) => {
             // Set the inner HTML of the table row
             tr.innerHTML = `
                 <td><strong>${index + 1}</strong></td>
+               <td>${item?._id}</td>
                 <td>${item?.fullname}</td>
                 <td>${item?.phone}</td>
                 <td>
@@ -116,6 +118,15 @@ const getClassID = async (id) => {
 }
 const getAllStudentInClass = async (id) => {
     return await fetch(`${LOCALHOST_API_URL}allStudentInClass/${id}`)
+}
+const getFeedBackByIdForMonth = async (id, month) => {
+    try {
+        const response = await fetch(`${LOCALHOST_API_URL}feedback/students/${id}?month=${month}`);
+        const data = await response.json();
+        return data.data.data;
+    } catch (error) {
+        alert("Đã xảy ra lỗi get FeedBack !")
+    }
 }
 const editClassV = async (id, body) => {
     return await fetch(`${LOCALHOST_API_URL}class/${id}`, {
@@ -189,6 +200,10 @@ async function fetchAndRenderClasses(teacherId, contentClass) {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const monthNow = new Date().getMonth() + 1;
+    tinymce.init({
+        selector: '#EvaluateContent'
+    });
     const contentClass = getEL("contentClass");
     const selectTeacher = getCL(".teacher");
     const idTeacher = getEL("teacher");
@@ -199,6 +214,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const nameClassD = getEL("nameClassD");
     const dialogReview = getCL(".dialogReview");
     const EvaluateContent = getEL("EvaluateContent");
+
     const nameStudents = dialogReview.querySelector('.nameStudents');
     const phoneStudents = dialogReview.querySelector('.phoneStudents')
     const createEvaluate = dialogReview.querySelector('.createEvaluate')
@@ -255,6 +271,58 @@ document.addEventListener('DOMContentLoaded', async () => {
             daysContainer1.removeChild(dayEntry);
         });
     }
+    // teacher 
+    function createSelect(accountTeacherSupper = []) {
+        const dayEntry = document.createElement('div');
+        dayEntry.className = 'input-group mb-2 day-entry';
+
+        // Tạo phần tử select
+        const select = document.createElement('select');
+        select.className = 'form-select teacher';
+        select.name = 'teacher';
+        select.required = true;
+
+        // Tạo phần tử option mặc định
+        const defaultOption = document.createElement('option');
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.textContent = 'Giáo viên đứng lớp';
+        defaultOption.value = 1;
+        select.appendChild(defaultOption);
+
+        // Duyệt qua mảng data và thêm các option vào select
+        if (accountTeacherSupper && accountTeacherSupper.length > 0) {
+            accountTeacherSupper.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item._id;
+                option.textContent = item.username;
+                select.appendChild(option);
+            });
+        }
+
+        // Thêm select vào dayEntry
+        dayEntry.appendChild(select);
+
+        // Tạo nút xóa
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-danger remove-day mt-2';
+        removeButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+
+        // Thêm sự kiện xóa khi nhấn nút
+        removeButton.addEventListener('click', () => {
+            dayEntry.remove(); // Xóa phần tử dayEntry khỏi DOM
+        });
+        // Thêm nút xóa vào dayEntry
+        dayEntry.appendChild(removeButton);
+        // Thêm dayEntry vào container
+        teacher1.appendChild(dayEntry);
+    }
+
+
+
+
+
 
     //  save edit class
     saveClass.addEventListener("click", async (e) => {
@@ -342,6 +410,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const id = target.dataset.id;
                     const name = target.dataset.name;
                     const phone = target.dataset.phone;
+                    // Tìm kiếm trong tháng
+                    console.log(monthNow)
+                    const foundFeddBack = await getFeedBackByIdForMonth(id, +monthNow);
+                    console.log(foundFeddBack)
+                    if (foundFeddBack[0]) {
+                        tinymce.get('EvaluateContent').setContent(foundFeddBack[0]?.contentFeedBack);
+                    } else {
+                        tinymce.get('EvaluateContent').setContent("");
+                    }
                     nameStudents.innerText = name;
                     phoneStudents.innerHTML = `<span >SĐT Phụ Huynh: </span >${phone}`;
                     dialogReview.style.display = "block";
@@ -365,6 +442,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
 
+
         }
         else if (target.classList.contains("delClass")) {
             const id = e.target.dataset.id;
@@ -375,15 +453,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await getClassID(id);
             const listData = await data.json();
             const render = listData?.data?.data;
+
+
+
             daysContainer1.innerHTML = "";
             if (render.days.length > 0) {
                 render.days.forEach(() => {
                     addDayField();
                 });
             }
+
+
             const indays = document.querySelectorAll('#daysContainer1 .days');
             nameClass.value = render.nameClass;
-            teacher.value = render.teacherAccount._id;
+            teacher.value = render.teacherAccount[0]._id;
             study1.value = render.study;
             saveClass.dataset.id = render._id
             indays.forEach((day, index) => {
@@ -397,9 +480,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
     });
-    createEvaluate.addEventListener("click", async () => await createFeedBack({
-        ...payload123, content: EvaluateContent.value
-    }));
+    createEvaluate.addEventListener("click", async () => {
+        const content = tinymce.get('EvaluateContent').getContent();
+        return await createFeedBack({
+            ...payload123, content
+        })
+    });
     // add students 
 
     addStudents.addEventListener("click", async (e) => {

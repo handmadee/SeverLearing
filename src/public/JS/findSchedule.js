@@ -109,7 +109,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Vietnam timezone offset adjustment
     const vietnamTimezoneOffset = 7 * 60; // Vietnam timezone offset in minutes
-    const localDate = new Date(new Date().getTime() + vietnamTimezoneOffset * 60 * 1000).toLocaleDateString('en-CA');
+    const now = new Date();
+    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const vietnamTime = new Date(utcTime + (vietnamTimezoneOffset * 60000));
+    const localDate = vietnamTime.toLocaleDateString('en-CA');
     date.value = localDate;
 
     const dateNow12 = new Date().getDay() === 0 ? 8 : new Date().getDay() + 1;

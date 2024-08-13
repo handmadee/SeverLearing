@@ -3,7 +3,8 @@ const { default: mongoose, Types } = require('mongoose');
 const ettendanceModel = require('../../models/shechedule/studentAttendance');
 const BaseService = require("../base.service");
 const accountModel = require('../../models/account.model');
-const { NotFoundError } = require('../../core/error.response');
+const { NotFoundError, BadRequestError } = require('../../core/error.response');
+const ClassService = require('./class.services');
 
 class StudentEttendanceService extends BaseService {
     constructor() {
@@ -18,13 +19,23 @@ class StudentEttendanceService extends BaseService {
         return await ettendanceModel.find({ study: study, date: date }).populate('studentAccount').select('studentAccount attendance  reason').lean();
     }
 
-
     async getStudyByTeacher(study, date, idTeacher) {
-        return await ettendanceModel.find({
+        // Lấy thông tin class hiện tại
+        const classNow = await ClassService.getTeachetClass({
+            study,
+            idTeacher
+        });
+        if (!classNow) return [];
+        const teacherAccounts = classNow.teacherAccount.map(acc => acc.toString());
+        const attendanceRecords = await ettendanceModel.find({
             study: +study,
             date: new Date(date),
-            teacherAccount: new Types.ObjectId(idTeacher)
-        }).populate('studentAccount').select('studentAccount attendance  reason').lean();
+            teacher_account_used: { $in: teacherAccounts }
+        })
+            .populate('studentAccount')
+            .select('studentAccount attendance reason')
+            .lean();
+        return attendanceRecords.length > 0 ? attendanceRecords : [];
     }
     // Thay đổi trạng thái điểm danh
     async changeAttendance(id, attendance) {

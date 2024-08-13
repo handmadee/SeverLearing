@@ -55,15 +55,15 @@ class ClassService {
     static async createClass({
         nameClass, teacherAccount, study, days, studentsAccount = []
     }) {
-        const foundteacherAccount = await accountModel.findById(teacherAccount).lean();
-        if (!foundteacherAccount) throw new BadRequestError('teacherAccount NOT FOUND');
+        // const foundteacherAccount = await accountModel.findById(teacherAccount).lean();
+        // if (!foundteacherAccount) throw new BadRequestError('teacherAccount NOT FOUND');
         const foundClass = await classStudents.findOne({
             nameClass: nameClass
         }).lean();
         if (foundClass) throw new BadRequestError('nameClass Exits !!!!!');
         return await classStudents.create({
             nameClass,
-            teacherAccount: new Types.ObjectId(teacherAccount),
+            teacherAccount: teacherAccount,
             days,
             study,
             studentsAccount: studentsAccount
@@ -117,7 +117,7 @@ class ClassService {
         if (!foundTeacher) throw new BadRequestError('foundTeacher NOT FOUND');
         const foundClass = await classStudents.find({
             study,
-            teacherAccount: new Types.ObjectId(idTeacher),
+            teacherAccount: { $in: new Types.ObjectId(idTeacher) },
             days: { $in: [day] }
         }).populate({
             path: 'studentsAccount',
@@ -132,13 +132,26 @@ class ClassService {
         return foundClass
     }
 
+
+    static async getTeachetClass({ study, idTeacher }) {
+        const foundTeacher = await accountModel.findById(idTeacher).lean();
+        if (!foundTeacher) throw new BadRequestError('foundTeacher NOT FOUND');
+        // 
+        const foundClass = await classStudents.findOne({
+            study,
+            teacherAccount: { $in: idTeacher }
+        }).lean();
+        return foundClass;
+
+    }
+
     static async getScheducleClassByTeacherAll({
         idTeacher
     }) {
         const foundTeacher = await accountModel.findById(idTeacher).lean();
         if (!foundTeacher) throw new BadRequestError('foundTeacher NOT FOUND');
         const foundClass = await classStudents.find({
-            teacherAccount: new Types.ObjectId(idTeacher),
+            teacherAccount: { $in: new Types.ObjectId(idTeacher) },
         }).populate({
             path: 'studentsAccount',
             select: '_id fullname study days phone'

@@ -15,6 +15,10 @@ router.get('/auth/user/:id', asnycHandler(userController.getUser));
 router.put('/auth/changePassword', asnycHandler(userController.changePassword));
 router.get('/findUserName/:username', asnycHandler(userController.findUserByUsername));
 router.put('/authChangeUser', asnycHandler(userController.changePasswordByUsername));
+router.get('/allSupper', asnycHandler(userController.accountSupper));
+
+// 
+
 // Delete user
 router.delete('/deleteAccount/:id', asnycHandler(userController.deleteAccount));
 // Select role 

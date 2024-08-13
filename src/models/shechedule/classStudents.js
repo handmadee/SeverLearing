@@ -13,8 +13,9 @@ const ClassModel = new Schema({
         trim: true
     },
     teacherAccount: {
-        type: Types.ObjectId, ref: 'account'
-        , required: true
+        type: [Types.ObjectId], ref: 'account', required: true
+        // type: Types.ObjectId, ref: 'account'
+        // , required: true
     },
     study: {
         type: Number,

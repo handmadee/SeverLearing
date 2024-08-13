@@ -55,6 +55,8 @@ class AttendanceController {
     async getStudentByScheduleOfTeacher(req, res) {
         const { study, date } = req.query;
         const idTeacher = req.params.id;
+        // Nếu lớp đó có 2 giáo viên dạy cung 1 lớp thì sao
+
         console.log({
             study, date,
             idTeacher

@@ -370,14 +370,16 @@ adminRouter.get('/schedule/teacherSheduleV1', permission('789 999'), asnycHandle
     res.render('./admin/shechedule/teacherShedule', { title: "Điểm danh", date, days, userId });
 }));
 adminRouter.get('/schedule/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
-    const now = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
-    const date = `${new Date(now).getDate()}-${new Date(now).getMonth() + 1}-${new Date(now).getFullYear()}`;
+    const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
     const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
     const data = await AccountService.accountSupper();
     const { userId, role } = req.payload;
     console.log({
         message: 'user:: id',
         userId
+    })
+    console.log({
+        date: date
     })
     res.render('./admin/shechedule/teacherSheduleV2', { title: "Điểm danh", date, days, userId, data, role });
 }));
@@ -393,7 +395,8 @@ adminRouter.get('/teacher/teacherShedule', permission('789 999'), asnycHandler(a
 
 
 adminRouter.get('/teacher/changeSub', permission('789 999'), asnycHandler(async (req, res) => {
-    res.render('./admin/teacher/changeSub', { title: "Tìm kiếm thời khoá biểu " });
+    const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
+    res.render('./admin/teacher/changeSub', { title: "Tìm kiếm thời khoá biểu ", date });
 }));
 
 

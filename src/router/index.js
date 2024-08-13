@@ -22,7 +22,6 @@ const studentsShecheduleRoutes = require('./shechedule/index');
 
 // Initialize router
 const router = express.Router();
-
 // Use routes
 router.use(UPLOADS_PATH, express.static(path.join(__dirname, '../public/uploads')));
 router.use(API_V1_PATH, accessRoutes);

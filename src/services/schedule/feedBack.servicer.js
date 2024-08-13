@@ -8,7 +8,7 @@ const { BadRequestError } = require("../../core/error.response");
 
 
 class feedBackStudentService {
-    static async createFeedBack({
+    static async createFeedBackv3({
         idTeacher, idStudent, content
     }) {
         return await feedBackStudent.create({
@@ -17,6 +17,38 @@ class feedBackStudentService {
             contentFeedBack: content
         })
     }
+
+    // V2 
+    static async createFeedBack({
+        idTeacher, idStudent, content
+    }) {
+        const currentYear = moment().year();
+        const currentMonth = moment().month() + 1; // Lấy tháng hiện tại (cộng 1 vì tháng trong moment bắt đầu từ 0)
+        const startDate = moment(`${currentYear}-${currentMonth}`, 'YYYY-M').startOf('month').toDate();
+        const endDate = moment(`${currentYear}-${currentMonth}`, 'YYYY-M').endOf('month').toDate();
+
+        const query = {
+            teacherAccount: new Types.ObjectId(idTeacher),
+            studentsAccount: new Types.ObjectId(idStudent),
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        };
+
+        return await feedBackStudent.findOneAndUpdate(
+            query,
+            {
+                contentFeedBack: content
+            },
+            {
+                new: true,
+                upsert: true
+            }
+        );
+    }
+
+    //
     static async getFeedBackByStudents({ idStudent }) {
         const listFeedBack = await feedBackStudent.findOne({
             studentsAccount: new Types.ObjectId(idStudent),

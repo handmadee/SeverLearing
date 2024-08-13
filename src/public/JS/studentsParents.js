@@ -39,35 +39,39 @@ function formatDate(dateString) {
     return `${day}-${month}-${year}`;
 }
 
-const renderItemStudent = (content, data = []) => {
+const renderItemStudent = (content, name, data = []) => {
     if (data && data.length > 0) {
-
-        // Create a DocumentFragment to accumulate HTML elements
         const fragment = document.createDocumentFragment();
-        // Iterate over each item in the data array
-        data.forEach((item, index) => {
-            const tr = document.createElement('tr');
-            // tr.classList.add('item');
-            // Set the inner HTML of the table row
-            tr.innerHTML = `
-                  <td>${item.studentsAccount.fullname}</td>
-                  <td>${item.contentFeedBack}</td>
-                  <td>${formatDate(item.createdAt)}</td>
+
+        data.forEach((item) => {
+            const divItemFeedback = document.createElement('div');
+            divItemFeedback.classList.add('itemFeedBack');
+
+            divItemFeedback.innerHTML = `
+                <div class="bgrFeedBack">
+                    <div class="contentFeedback">
+                        <p><strong>Dear Phụ Huynh: </strong>${name}</p>
+                        <p class="content">
+                            ${item.contentFeedBack}
+                        </p>
+                        <div class="dateFeedback">
+                            <strong>Ngày đánh giá</strong>
+                            <p class="dateFeed">${formatDate(item.createdAt)}</p>
+                        </div>
+                    </div>
+                </div>
             `;
-            // Append the new row to the DocumentFragment
-            fragment.appendChild(tr);
+
+            fragment.appendChild(divItemFeedback);
         });
 
-        // Append the DocumentFragment to the content element
-        content.innerHTML = ''; // Clear previous content
-        content.appendChild(fragment);
+        content.innerHTML = ''; // Xóa nội dung cũ
+        content.appendChild(fragment); // Thêm nội dung mới
     } else {
         content.innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align: center;">
-                    Chưa có đánh giá từ giáo viên
-                </td>
-            </tr>
+            <div class="noFeedback" style="text-align: center;">
+                Chưa có đánh giá từ giáo viên
+            </div>
         `;
     }
 };
@@ -76,13 +80,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const idStudents = document.getElementById('IdStudent');
     const time = document.getElementById('time');
     const contentTable = document.getElementById('contentTable');
+    let name = contentTable.dataset.name;
     const id = idStudents.dataset.id;
     const Month = new Date().getMonth() + 1;
     // 
     time.value = Month;
     loading(contentTable);
     const data = await getFeedBackByIdForMonth(id, Month);
-    renderItemStudent(contentTable, data)
+    renderItemStudent(contentTable, name, data)
     // Change 
     time.addEventListener('change', async (event) => {
         console.log(event.target.value)
@@ -98,12 +103,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         loading(contentTable);
         renderItemStudent(contentTable, data)
     })
-
-
-
-
-
-
-
 
 })

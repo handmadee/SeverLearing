@@ -44,6 +44,13 @@ body {
   padding: 15px;
   border-radius: 30px;
   transition: all 0.3s;
+  overflow-y: scroll;
+  /* overflow-x: ; */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 .sidebar .head {
   display: flex;

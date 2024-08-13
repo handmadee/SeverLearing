@@ -1,4 +1,5 @@
 'use strict';
+
 import { LOCALHOST_API_URL } from './config.js'
 
 const loading = (contentClass) => {
@@ -54,7 +55,6 @@ const renderItemStudent = (content, data = []) => {
     }
 };
 
-
 const queryStudents = async (query) => {
     try {
         const response = await fetch(`${LOCALHOST_API_URL}${query}`);
@@ -68,9 +68,16 @@ const queryStudents = async (query) => {
 
 
 
+
+
+
+
 document.addEventListener('DOMContentLoaded', async () => {
+    const accountTeacherSupper = await queryStudents('allSupper');
     const createClass = document.getElementById('createClass12');
     const addDayButton1 = document.getElementById('addDayButton1');
+    const addTeacher = document.getElementById('addTeacher');
+    const teacher1 = document.getElementById('teacher');
     const daysContainer1 = document.getElementById('daysContainer1');
     const nameClasss = document.getElementById('nameClass');
     const filterStudy = document.getElementById('filterStudy');
@@ -123,17 +130,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         return Array.from(document.querySelectorAll(selector)).map(el => parseInt(el.value));
     }
 
+
+    function getIdTeacher(selector) {
+        return Array.from(teacher1.querySelectorAll('.teacher')).filter(el => el.value !== '1').map(el => el.value);;
+    }
+
+
     createClass.addEventListener('click', async (e) => {
         e.preventDefault();
         console.log({
             data: {
                 nameClass: nameClasss.value,
-                teacherAccount: nameTeacher.value,
+                teacherAccount: getIdTeacher(),
                 study: parseInt(study.value),
                 days: getValues('.days'),
                 studentsAccount: getCheckedStudents()
             }
         });
+
+
+
+
+
+
 
         // Created class\   const renderLoad = async (date, date1, study) => {
         // content.innerHTML = `
@@ -146,6 +165,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         //     </div>
         // </td>
         // </tr>`
+
+
         try {
             const response = await fetch(`${LOCALHOST_API_URL}class`, {
                 method: "POST",
@@ -154,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
                 body: JSON.stringify({
                     nameClass: nameClasss.value,
-                    teacherAccount: nameTeacher.value,
+                    teacherAccount: getIdTeacher(),
                     study: parseInt(study.value),
                     days: getValues('.days'),
                     studentsAccount: getCheckedStudents()
@@ -208,6 +229,55 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
+    function createSelect() {
+        const dayEntry = document.createElement('div');
+        dayEntry.className = 'input-group mb-2 day-entry';
+
+        // Tạo phần tử select
+        const select = document.createElement('select');
+        select.className = 'form-select teacher';
+        select.name = 'teacher';
+        select.required = true;
+
+        // Tạo phần tử option mặc định
+        const defaultOption = document.createElement('option');
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.textContent = 'Giáo viên đứng lớp';
+        defaultOption.value = 1;
+        select.appendChild(defaultOption);
+
+        // Duyệt qua mảng data và thêm các option vào select
+        if (accountTeacherSupper && accountTeacherSupper.length > 0) {
+            accountTeacherSupper.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item._id;
+                option.textContent = item.username;
+                select.appendChild(option);
+            });
+        }
+
+        // Thêm select vào dayEntry
+        dayEntry.appendChild(select);
+
+        // Tạo nút xóa
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-danger remove-day mt-2';
+        removeButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+
+        // Thêm sự kiện xóa khi nhấn nút
+        removeButton.addEventListener('click', () => {
+            dayEntry.remove(); // Xóa phần tử dayEntry khỏi DOM
+        });
+        // Thêm nút xóa vào dayEntry
+        dayEntry.appendChild(removeButton);
+        // Thêm dayEntry vào container
+        teacher1.appendChild(dayEntry);
+    }
+
+
     // Function to add a new day field
     addDayButton1.addEventListener('click', addDayField1);
+    addTeacher.addEventListener('click', createSelect);
 });

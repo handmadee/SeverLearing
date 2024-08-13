@@ -1,4 +1,5 @@
 const { OK, Created } = require('../core/success.response');
+const { accountSupper } = require('../services/account/account.service');
 const userService = require('./../services/auth/user.service');
 
 
@@ -89,3 +90,11 @@ exports.editRole = async (req, res) => {
         data: await userService.editRole(id, pemission)
     }).send(res);
 }
+
+exports.accountSupper = async (req, res) => {
+    return new OK({
+        message: 'Edit role successfully',
+        data: await accountSupper()
+    }).send(res);
+}
+
