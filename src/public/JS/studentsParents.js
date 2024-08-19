@@ -42,11 +42,9 @@ function formatDate(dateString) {
 const renderItemStudent = (content, name, data = []) => {
     if (data && data.length > 0) {
         const fragment = document.createDocumentFragment();
-
         data.forEach((item) => {
             const divItemFeedback = document.createElement('div');
             divItemFeedback.classList.add('itemFeedBack');
-
             divItemFeedback.innerHTML = `
                 <div class="bgrFeedBack">
                     <div class="contentFeedback">
