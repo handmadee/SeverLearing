@@ -50,13 +50,14 @@ const renderItemStudent = (content, name, data = []) => {
             divItemFeedback.innerHTML = `
                 <div class="bgrFeedBack">
                     <div class="contentFeedback">
-                        <p><strong>Dear Phụ Huynh: </strong>${name}</p>
+                        <p><strong>Kính gửi Phụ Huynh: </strong>${name}</p>
                         <p class="content">
                             ${item.contentFeedBack}
                         </p>
                         <div class="dateFeedback">
                             <strong>Ngày đánh giá</strong>
                             <p class="dateFeed">${formatDate(item.createdAt)}</p>
+                              <p>TSMART</p>
                         </div>
                     </div>
                 </div>

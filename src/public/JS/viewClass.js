@@ -1,9 +1,14 @@
 
 import { LOCALHOST_API_URL } from "./config.js"
 
+
 const getEL = (id) => document.getElementById(id);
 const getCL = (id) => document.querySelector(id);
-const getAllCL = (id) => document.querySelectorAll(id);
+
+
+
+
+
 
 const renderItem = (content, data = []) => {
     console.log(data);
@@ -168,7 +173,6 @@ const removeStudents = async (idClass, idStudents) => {
         })
     })
 }
-
 const addStudentsV1 = async (idClass, idStudents) => {
     return await fetch(`${LOCALHOST_API_URL}classAddStudent`, {
         method: "PATCH",
@@ -182,6 +186,9 @@ const addStudentsV1 = async (idClass, idStudents) => {
     })
 
 }
+
+
+
 
 async function fetchAndRenderClasses(teacherId, contentClass) {
     let listData;
@@ -199,6 +206,10 @@ async function fetchAndRenderClasses(teacherId, contentClass) {
 
 
 
+
+
+
+
 document.addEventListener('DOMContentLoaded', async () => {
     const monthNow = new Date().getMonth() + 1;
     tinymce.init({
@@ -213,6 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const addStudents = getEL("addStudents")
     const nameClassD = getEL("nameClassD");
     const dialogReview = getCL(".dialogReview");
+    const containerTeacher = getEL("containerTeacher");
     const EvaluateContent = getEL("EvaluateContent");
 
     const nameStudents = dialogReview.querySelector('.nameStudents');
@@ -235,6 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     dialogEditClass.querySelector(".xmark").addEventListener('click', () => dialogEditClass.classList.remove("show"))
     const nameClass = getEL("nameClass");
     const teacher = getEL("pemission");
+    const teacher1 = getEL("pemission1");
     const study1 = getEL("study1");
     const daysContainer1 = getEL("daysContainer1");
     const addDayButton1 = getEL("addDayButton1");
@@ -329,11 +342,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         const id = e.target.dataset.id;
         const indays = document.querySelectorAll('#daysContainer1 .days');
+        const inTechers = containerTeacher.querySelectorAll(".selectTeacher");
         console.log(indays)
         const days = Array.from(indays).map(item => +item.value);
+        // teacher
+        const teachers = Array.from(inTechers).filter(item => item.style.display != 'none').map(item => item.value);
+        console.log(teachers)
+
+
+
+
+
+
+
+
         const body = {
             nameClass: nameClass.value,
-            teacherAccount: teacher.value,
+            teacherAccount: teachers,
             study: +study1.value,
             days: days
         }
@@ -364,12 +389,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const render = listData?.data?.data;
         await renderItem(contentClass, render);
     } else {
-        // const data = await getClassByTeacherI(selectTeacher.value);
-        // const listData = await data.json();
-        // console.log(listData)
-        // const render = listData?.data?.data;
-        // await renderItem(contentClass, render);
-
         fetchAndRenderClasses(selectTeacher.value, contentClass);
     }
     selectTeacher.addEventListener('change', async (e) => {
@@ -377,13 +396,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             location.reload();
         };
         loading(contentClass);
-        // const data = await getClassByTeacherI(e.target.value);
-        // const listData = await data.json();
-        // console.log(listData)
-        // const render = listData?.data?.data;
-        // await renderItem(contentClass, render);
         fetchAndRenderClasses(e.target.value, contentClass);
     });
+
 
 
 
@@ -453,20 +468,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await getClassID(id);
             const listData = await data.json();
             const render = listData?.data?.data;
-
-
-
             daysContainer1.innerHTML = "";
             if (render.days.length > 0) {
                 render.days.forEach(() => {
                     addDayField();
                 });
-            }
-
-
+            };
             const indays = document.querySelectorAll('#daysContainer1 .days');
             nameClass.value = render.nameClass;
             teacher.value = render.teacherAccount[0]._id;
+            if (render.teacherAccount[1]) {
+                teacher1.value = render.teacherAccount[1]._id;
+                teacher1.style.display = '';
+            } else {
+                teacher1.style.display = 'none';
+            }
             study1.value = render.study;
             saveClass.dataset.id = render._id
             indays.forEach((day, index) => {

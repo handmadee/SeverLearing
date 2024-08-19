@@ -1,4 +1,4 @@
-import { LOCALHOST_API_URL } from "./config";
+import { LOCALHOST_API_URL } from "./config.js";
 export class authApi {
     constructor() {
         this.api = LOCALHOST_API_URL;
@@ -49,3 +49,15 @@ export class authApi {
     }
 
 }
+
+
+export const queryStudents = async (query) => {
+    try {
+        const response = await fetch(`${LOCALHOST_API_URL}${query}`);
+        const data = await response.json();
+        return data?.data?.data
+    } catch (err) {
+        console.log(err)
+        alert("Đã có lỗi xảy ra !")
+    }
+};

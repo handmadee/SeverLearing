@@ -124,7 +124,14 @@
         <div class="col-12">
           <label for="pemission" class="form-label">Giáo viên</label>
        <div id="containerTeacher">
-          <select class="form-select" id="pemission" name="pemission" required>
+          <select class="form-select selectTeacher" id="pemission" name="pemission" required>
+            <option selected disabled value="">Giáo viên dạy lớp</option>
+             <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
+            <option value="<%= item._id %>"><%= item.username %></option>
+            <% }); %> <% } %>
+          </select>
+          <!--  -->
+            <select class="form-select selectTeacher mt-2" id="pemission1" name="pemission" required>
             <option selected disabled value="">Giáo viên dạy lớp</option>
              <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
             <option value="<%= item._id %>"><%= item.username %></option>
@@ -133,14 +140,6 @@
        </div>
           <div class="invalid-feedback">Vui lòng chọn đúng loại tài khoản</div>
         </div>
-
-
-          <div class="col-12">
-          <label for="pemission" class="form-label">Giáo viên</label>
-          <div id="teacherContainer">
-
-          </div>
-          </div>
 
         <div class="col-12">
           <label for="study1" class="form-label">Ca Học</label>

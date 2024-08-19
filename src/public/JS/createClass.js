@@ -1,5 +1,6 @@
 'use strict';
 
+import { queryStudents } from './authApi.js';
 import { LOCALHOST_API_URL } from './config.js'
 
 const loading = (contentClass) => {
@@ -54,19 +55,6 @@ const renderItemStudent = (content, data = []) => {
         `;
     }
 };
-
-const queryStudents = async (query) => {
-    try {
-        const response = await fetch(`${LOCALHOST_API_URL}${query}`);
-        const data = await response.json();
-        return data?.data?.data
-    } catch (err) {
-        console.log(err)
-        alert("Đã có lỗi xảy ra !")
-    }
-};
-
-
 
 
 

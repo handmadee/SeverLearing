@@ -82,11 +82,11 @@ class ClassService {
     }
     // update Class
     static async updateClass({ idClass, payload }) {
-        const { nameClass } = payload;
-        const respon = await classStudents.findOne({
-            nameClass
-        }).lean();
-        if (respon) throw new BadRequestError("Name class is Exits")
+        // const { nameClass } = payload;
+        // const respon = await classStudents.findOne({
+        //     nameClass
+        // }).lean();
+        // if (respon) throw new BadRequestError("Name class is Exits")
         return await classStudents.findByIdAndUpdate(idClass, payload, { new: true })
     }
 

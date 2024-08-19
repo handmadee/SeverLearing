@@ -11,7 +11,6 @@ const dialogReview = document.querySelector(".dialogReview");
 const nameStu = dialogReview.querySelector(".nameStudents");
 const xmark = dialogReview.querySelector(".xmark");
 const btnEdit = dialogReview.querySelector(".editFeedBack");
-
 // Close the dialog
 xmark.addEventListener('click', () => {
     dialogReview.style.display = "none";
@@ -81,7 +80,7 @@ const renderItems = (data = []) => {
         tr.innerHTML = `
         <td>${item?.studentsAccount?.fullname}</td>
             <td>${item?.teacherAccount?.username}</td>
-            <td>${item?.contentFeedBack}</td>
+            <td id="contentV">${item?.contentFeedBack}</td>
             <td>${formatDate(item?.createdAt)}</td>
             <td class="column">
                 <button  class="edit"  data-name="${item?.studentsAccount?.fullname}" data-id="${item._id}">
@@ -101,11 +100,9 @@ const renderItems = (data = []) => {
 // Main Render Function
 const renderFeedback = async () => {
     renderLoading();
-
     let data = [];
     const teacherId = selectTeacher.value;
     const month = selectTime.value;
-
     if (teacherId === 'all' && month === 'all') {
         data = await getFeedbackByMonth(new Date().getMonth() + 1);
     } else if (teacherId === 'all') {
@@ -153,7 +150,8 @@ const editFeedBack = async (id, body) => {
 
 // Event Handlers
 const handlerEditFeedBack = async (id) => {
-    const value = EvaluateContent.value;
+    const value = tinymce.get('EvaluateContent').getContent();;
+    console.log(value);
     return await editFeedBack(id, value);
 };
 
@@ -161,13 +159,19 @@ const handlerEditFeedBack = async (id) => {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', async () => {
+    tinymce.init({
+        selector: '#EvaluateContent'
+    });
     selectTime.value = new Date().getMonth() + 1;
     await renderFeedback();
     selectTeacher.addEventListener("change", renderFeedback);
     selectTime.addEventListener("change", renderFeedback);
     let id = null;
+
     contentTable.addEventListener('click', async (e) => {
         if (e.target.classList.contains("edit")) {
+            const contentV = document.getElementById("contentV");
+            tinymce.get('EvaluateContent').setContent(contentV.innerHTML);
             id = e.target.dataset.id;
             const name = e.target.dataset.name;
             dialogReview.style.display = "block";
