@@ -19,6 +19,7 @@ const fcmTokenService = require('../../services/firebase/fcmToken.firebase.servi
 const scheduleService = require('../../services/schedule/schedule.service');
 const AccountService = require('../../services/account/account.service');
 const ClassService = require('../../services/schedule/class.services');
+const feedBackStudentService = require('../../services/schedule/feedBack.servicer');
 
 
 
@@ -408,38 +409,11 @@ adminRouter.get('/parents', asnycHandler(async (req, res) => {
 adminRouter.get('/parents/students/:id', asnycHandler(async (req, res) => {
     const idStudents = req.params.id;
     const students = await scheduleService.getById(idStudents);
-    /*
+    const getAllMonth = await feedBackStudentService.getAlwaysFeedbackByStudents(idStudents);
 
-_id: "66936327a1c8c5dd16110d36",
-fullname: "Nguyễn Tiến Minh 2",
-phone: "0387611812",
-study: 1,
-days: [
-2,
-8
-],
-    */
+    console.log(getAllMonth)
     const ClassInStudesnt = await ClassService.findStudentsByClass(idStudents)
-    /*
-    [
-{
-_id: "66b28892dd6cedafafe5ad33",
-nameClass: "MD183009",
-teacherAccount: {
-_id: "669362fda1c8c5dd16110d2e",
-username: "admin@gmail.com"
-},
-study: 1,
-days: [
-2
-]
-}
-]
-   */
-    // res.send(students)
-
-    // id 
-    res.render('./admin/studentsParents', { title: "Phu huynh ", idStudents, students, ClassInStudesnt });
+    res.render('./admin/studentsParents', { title: "Phu huynh ", idStudents, students, ClassInStudesnt, getAllMonth });
 }));
 
 

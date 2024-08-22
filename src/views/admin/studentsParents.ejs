@@ -79,18 +79,12 @@
             <label for="time" class="disabled fw-medium">Thời gian</label>
             <select id="time" class="disabled">
               <option value="all">Toàn Bộ</option>
-              <option value="1">Tháng 1</option>
-              <option value="2">Tháng 2</option>
-              <option value="3">Tháng 3</option>
-              <option value="4">Tháng 4</option>
-              <option value="5">Tháng 5</option>
-              <option value="6">Tháng 6</option>
-              <option value="7">Tháng 7</option>
-              <option value="8">Tháng 8</option>
-              <option value="9">Tháng 9</option>
-              <option value="10">Tháng 10</option>
-              <option value="11">Tháng 11</option>
-              <option value="12">Tháng 12</option>
+              <% if (getAllMonth && getAllMonth.length > 0) { %> <%
+              getAllMonth.forEach(item => { %>
+              <option value="<%= item?.month %>">
+                Tháng <%= item?.month %>
+              </option>
+              <% }) %> <% } %>
             </select>
           </div>
         </div>
@@ -154,26 +148,6 @@
                 </div>
               </div>
               <!-- Icon  -->
-              <div class="footerIcons row">
-                <p class="itemIcon">
-                  <a href="tel:0868552445 ">
-                    <i class="fa-solid fa-phone"></i>
-                    <span> 0868 552 445 </span>
-                  </a>
-                </p>
-                <p class="itemIcon">
-                  <a href="https://linktr.ee/tsmart_edu">
-                    <i class="fa-solid fa-globe"></i>
-                    <span>linktr.ee/tsmart_edu</span>
-                  </a>
-                </p>
-                <p class="itemIcon">
-                  <a href="https://linktr.ee/tsmart_edu">
-                    <i class="fa-solid fa-location-dot"></i>
-                    <span>34 Lương Khánh Thiện - Liên Chiểu - TP Đà Nẵng</span>
-                  </a>
-                </p>
-              </div>
             </div>
           </div>
         </div>

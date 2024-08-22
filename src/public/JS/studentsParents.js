@@ -58,6 +58,26 @@ const renderItemStudent = (content, name, data = []) => {
                               <p>TSMART</p>
                         </div>
                     </div>
+                      <div class="footerIcons row">
+                <p class="itemIcon">
+                  <a href="tel:0868552445 ">
+                    <i class="fa-solid fa-phone"></i>
+                    <span> 0868 552 445 </span>
+                  </a>
+                </p>
+                <p class="itemIcon">
+                  <a href="https://linktr.ee/tsmart_edu">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>linktr.ee/tsmart_edu</span>
+                  </a>
+                </p>
+                <p class="itemIcon">
+                  <a href="https://linktr.ee/tsmart_edu">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>34 Lương Khánh Thiện - Liên Chiểu - TP Đà Nẵng</span>
+                  </a>
+                </p>
+              </div>
                 </div>
             `;
 
@@ -95,12 +115,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             loading(contentTable);
             data = await getAllFeedBack(id);
             console.log(data)
-            renderItemStudent(contentTable, data)
+            renderItemStudent(contentTable, name, data)
         } else {
             data = await getFeedBackByIdForMonth(id, event.target.value);
         }
         loading(contentTable);
-        renderItemStudent(contentTable, data)
+        renderItemStudent(contentTable, name, data)
     })
 
 })

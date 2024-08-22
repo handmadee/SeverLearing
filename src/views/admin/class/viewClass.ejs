@@ -238,7 +238,10 @@
         <div class="container">
           <div class="header">
             <p class="nameStudents" >Phạm Xuân Đạt</p>
-            <p class="phoneStudents"></p>
+         <% if (role.includes('999')) { %>
+    <p class="phoneStudents"></p>
+<% } %>
+
           </div>
           <div class="Evaluate">
             <h6>Đánh giá học sinh</h6>

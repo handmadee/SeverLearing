@@ -56,6 +56,33 @@ class feedBackStudentService {
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }
+
+    //
+    static async getAlwaysFeedbackByStudents(idStudent) {
+        const currentYear = moment().year();
+        const startDate = moment(`${currentYear}`, 'YYYY').startOf('year').toDate();
+        const endDate = moment(`${currentYear}`, 'YYYY').endOf('year').toDate();
+        const listFeedBack = await feedBackStudent.find({
+            studentsAccount: new Types.ObjectId(idStudent),
+            createdAt: {
+                $gte: startDate,
+                $lte: endDate
+            }
+        }, {
+            createdAt: 1,
+            _id: 0
+        });
+        if (listFeedBack && listFeedBack.length > 0) {
+            return listFeedBack.map(feedback => ({
+                createdAt: feedback.createdAt,
+                month: moment(feedback.createdAt).month() + 1
+            }));
+        } else {
+            return [];
+        }
+    }
+
+
     // Select for date
     static async getFeedBackByStudentsForMonth({ idStudent, month }) {
         const currentYear = moment().year();
@@ -77,8 +104,6 @@ class feedBackStudentService {
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }
-
-
 
     static async getFeedBackByTeacherForMonth({ idTeacher, month }) {
         const currentYear = moment().year();

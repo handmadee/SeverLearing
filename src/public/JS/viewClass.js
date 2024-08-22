@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         tinymce.get('EvaluateContent').setContent("");
                     }
                     nameStudents.innerText = name;
-                    phoneStudents.innerHTML = `<span >SĐT Phụ Huynh: </span >${phone}`;
+                    phoneStudents && (phoneStudents.innerHTML = `<span >SĐT Phụ Huynh: </span >${phone}`);
                     dialogReview.style.display = "block";
                     payload123 = {
                         idTeacher: idTeacher.dataset.id,
