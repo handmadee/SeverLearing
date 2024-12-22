@@ -1,7 +1,8 @@
 'use strict'
 
 const { Created, OK } = require("../../core/success.response");
-const feedBackStudentService = require("../../services/schedule/feedBack.servicer");
+const feedBackStudentService = require("../services/feedBack.servicer");
+
 
 
 

@@ -1,14 +1,10 @@
 
+import { createToast } from "./Aleart.js";
 import { LOCALHOST_API_URL } from "./config.js"
 
 
 const getEL = (id) => document.getElementById(id);
 const getCL = (id) => document.querySelector(id);
-
-
-
-
-
 
 const renderItem = (content, data = []) => {
     console.log(data);
@@ -55,9 +51,10 @@ const renderItemStudent = (content, data = []) => {
             const tr = document.createElement('tr');
             tr.classList.add('item');
             // Set the inner HTML of the table row
+            // let id = String(item?._id).substring(0, 6);
             tr.innerHTML = `
-                <td><strong>${index + 1}</strong></td>
-               <td>${item?._id}</td>
+                <td  ><strong>${index + 1}</strong></td>
+               <td  >${item?._id}</td>
                 <td>${item?.fullname}</td>
                 <td>${item?.phone}</td>
                 <td>
@@ -154,7 +151,7 @@ const createFeedBack = async (body) => {
         const data = response.json();
         if (data) {
             alert("Tạo thông đánh giá thành công")
-            location.reload();
+            // location.reload();
         };
     } catch (error) {
         console.log(error)
@@ -186,10 +183,6 @@ const addStudentsV1 = async (idClass, idStudents) => {
     })
 
 }
-
-
-
-
 async function fetchAndRenderClasses(teacherId, contentClass) {
     let listData;
     if (teacherId === 'all') {
@@ -203,12 +196,6 @@ async function fetchAndRenderClasses(teacherId, contentClass) {
     const render = listData?.data?.data;
     await renderItem(contentClass, render);
 }
-
-
-
-
-
-
 
 document.addEventListener('DOMContentLoaded', async () => {
     const monthNow = new Date().getMonth() + 1;
@@ -226,10 +213,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dialogReview = getCL(".dialogReview");
     const containerTeacher = getEL("containerTeacher");
     const EvaluateContent = getEL("EvaluateContent");
-
+    const Ts1 = document.querySelectorAll('.language');
     const nameStudents = dialogReview.querySelector('.nameStudents');
     const phoneStudents = dialogReview.querySelector('.phoneStudents')
     const createEvaluate = dialogReview.querySelector('.createEvaluate')
+
+
     dialogReview.querySelector('.xmark').addEventListener("click", () => dialogReview.style.display = "none")
 
     showAllStudents.querySelector(".xmark").addEventListener("click", () => {
@@ -237,13 +226,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         dialogReview.style.display = "none"
     })
 
-    // Edit 
-
-    // Select delete and editS
-
     const dialogEditClass = getEL("dialogEditClass");
     const saveClass = getEL("saveClass");
-
     dialogEditClass.querySelector(".xmark").addEventListener('click', () => dialogEditClass.classList.remove("show"))
     const nameClass = getEL("nameClass");
     const teacher = getEL("pemission");
@@ -331,11 +315,61 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Thêm dayEntry vào container
         teacher1.appendChild(dayEntry);
     }
+    // Copy ID
+    contentTableShowAllStudents.addEventListener('click', function (e) {
+        const target = e.target;
+        const row = target.closest('tr');
+        if (target.classList.contains('Evaluate1') || target.classList.contains('Trash1')) {
+            return;
+        }
+        if (row) {
+            const idCell = row.children[1];
+            if (idCell) {
+                const id = idCell.textContent;
+                navigator.clipboard.writeText(id)
+                    .then(() => {
+                        // Tạo thông báo
+                        const notification = document.createElement('div');
+                        notification.textContent = 'Đã sao chép ID!';
+                        notification.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            background: #4CAF50;
+                            color: white;
+                            padding: 10px 20px;
+                            border-radius: 4px;
+                            animation: fadeOut 2s forwards;
+                            z-index: 1000;
+                        `;
 
+                        // Thêm keyframes animation
+                        const style = document.createElement('style');
+                        style.textContent = `
+                            @keyframes fadeOut {
+                                0% { opacity: 1; }
+                                70% { opacity: 1; }
+                                100% { opacity: 0; }
+                            }
+                        `;
+                        document.head.appendChild(style);
 
+                        // Thêm thông báo vào body
+                        document.body.appendChild(notification);
 
-
-
+                        // Xóa thông báo sau khi animation kết thúc
+                        setTimeout(() => {
+                            notification.remove();
+                            style.remove();
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Không thể sao chép:', err);
+                        alert('Không thể sao chép ID!');
+                    });
+            }
+        }
+    });
 
     //  save edit class
     saveClass.addEventListener("click", async (e) => {
@@ -348,14 +382,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         // teacher
         const teachers = Array.from(inTechers).filter(item => item.style.display != 'none').map(item => item.value);
         console.log(teachers)
-
-
-
-
-
-
-
-
         const body = {
             nameClass: nameClass.value,
             teacherAccount: teachers,
@@ -377,6 +403,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
     });
+
     addDayButton1.addEventListener('click', addDayField);
     loading(contentClass);
 
@@ -401,12 +428,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 
-
-
-
     let payload123 = null;
     contentClass.addEventListener("click", async (e) => {
         const target = e.target;
+        console.log(target);
         if (target.classList.contains("itemClass")) {
             const id = e.target.dataset.id;
             addStudents.dataset.id = id;
@@ -415,31 +440,100 @@ document.addEventListener('DOMContentLoaded', async () => {
             loading(contentTableShowAllStudents);
             const data = await getAllStudentInClass(id);
             const listData = await data.json();
-            console.log(listData)
+            console.log(listData);
             nameClassD.innerText = listData?.data?.data.nameClass;
             const render = listData?.data?.data?.studentsAccount;
             renderItemStudent(contentTableShowAllStudents, render);
-            contentTableShowAllStudents.addEventListener('click', async (e) => {
+            //! thiếu 
+
+
+            showAllStudents.removeAttribute('click')
+            showAllStudents.addEventListener('click', async (e) => {
                 const target = e.target;
+                console.log(target)
+                //! Đánh giá
                 if (target.classList.contains("Evaluate1")) {
                     const id = target.dataset.id;
                     const name = target.dataset.name;
                     const phone = target.dataset.phone;
-                    // Tìm kiếm trong tháng
-                    console.log(monthNow)
-                    const foundFeddBack = await getFeedBackByIdForMonth(id, +monthNow);
-                    console.log(foundFeddBack)
-                    if (foundFeddBack[0]) {
-                        tinymce.get('EvaluateContent').setContent(foundFeddBack[0]?.contentFeedBack);
-                    } else {
-                        tinymce.get('EvaluateContent').setContent("");
-                    }
-                    nameStudents.innerText = name;
-                    phoneStudents && (phoneStudents.innerHTML = `<span >SĐT Phụ Huynh: </span >${phone}`);
-                    dialogReview.style.display = "block";
-                    payload123 = {
-                        idTeacher: idTeacher.dataset.id,
-                        idStudent: id,
+
+                    try {
+                        console.log(monthNow);
+                        const foundFeedBack = await getFeedBackByIdForMonth(id, +monthNow);
+                        const dataV = foundFeedBack[0] || {};
+                        const content = dataV?.contentFeedBack || "";
+                        tinymce.get('EvaluateContent').setContent(content);
+                        // Hiển thị thông tin học sinh
+                        nameStudents.innerText = name || "";
+                        if (phoneStudents) {
+                            phoneStudents.innerHTML = `<span>SĐT Phụ Huynh: </span>${phone || ""}`;
+                        }
+                        // Xoá nội dung cũ trong các trường nếu không có dữ liệu
+                        const Ts1Array = Array.from(Ts1);
+                        Ts1Array.forEach((item) => {
+                            const selectElement = item.querySelector('select');
+                            if (selectElement) {
+                                selectElement.value = ""; // Đặt lại giá trị rỗng
+                            }
+                            const inputElement = item.querySelector('input');
+                            if (inputElement) {
+                                inputElement.value = ""; // Đặt lại giá trị rỗng
+                            }
+                        });
+
+                        // Cập nhật điểm số môn học nếu có
+                        if (dataV?.subjectScores?.length > 0) {
+                            dataV.subjectScores.forEach((LG) => {
+                                const matchedElement = Ts1Array.find((item) => item.dataset.id === LG.languageIt._id);
+                                if (matchedElement) {
+                                    const selectElement = matchedElement.querySelector('select');
+                                    if (selectElement) {
+                                        selectElement.value = LG.level;
+                                    }
+
+                                    const inputElement = matchedElement.querySelector('input');
+                                    if (inputElement) {
+                                        inputElement.value = LG.score;
+                                    }
+                                }
+                            });
+                        }
+
+                        // Xoá trạng thái radio buttons nếu không có dữ liệu
+                        document.querySelectorAll('input[name="programming-skill"]').forEach((radio) => {
+                            radio.checked = false; // Bỏ chọn tất cả trước
+                        });
+                        document.querySelectorAll('input[name="thinking-skill"]').forEach((radio) => {
+                            radio.checked = false; // Bỏ chọn tất cả trước
+                        });
+
+                        // Cập nhật giá trị radio buttons nếu có
+                        if (dataV?.skill) {
+                            document.querySelectorAll('input[name="programming-skill"]').forEach((radio) => {
+                                if (radio.value === dataV.skill) {
+                                    radio.checked = true;
+                                }
+                            });
+                        }
+                        if (dataV?.thinking) {
+                            document.querySelectorAll('input[name="thinking-skill"]').forEach((radio) => {
+                                if (radio.value === dataV.thinking) {
+                                    radio.checked = true;
+                                }
+                            });
+                        }
+
+                        // Hiển thị dialog review
+                        dialogReview.style.display = "block";
+
+                        // Thiết lập payload cho các tác vụ sau
+                        payload123 = {
+                            idTeacher: idTeacher.dataset.id,
+                            idStudent: id,
+                        };
+                    } catch (error) {
+                        console.error("Error while evaluating feedback:", error);
+                        alert("Có lỗi xảy ra khi tải dữ liệu đánh giá. Vui lòng thử lại sau!");
                     }
                 } else if (target.classList.contains("Trash1")) {
                     const idStudents = target.dataset.id;
@@ -453,13 +547,64 @@ document.addEventListener('DOMContentLoaded', async () => {
                     } catch (error) {
                         alert("Xoá sinh viên thất bại !")
                     }
+                } else if (target.classList.contains("addStudentsv")) {
+                    e.preventDefault();
+                    if (IdStudentsAdd.value.trim() == "") {
+                        alert("Không dược để trống id sinh viên");
+                        return;
+                    }
+                    try {
+                        const data = await addStudentsV1(e.target.dataset.id, IdStudentsAdd.value);
+                        const response = await data.json();
+                        if (response) {
+                            alert("Thêm sinh viên thành công");
+                            location.reload();
+                        }
+                    } catch (error) {
+                        alert("Đã có lỗi xảy ra với sinh viên ");
+                    }
                 }
             });
+            const handleCreateEvaluate = async () => {
+                const subjectScores = [];
+                const content = tinymce.get('EvaluateContent').getContent();
+                const skill = getCL('input[name="programming-skill"]:checked')?.value;
+                const thinking = getCL('input[name="thinking-skill"]:checked')?.value;
+                if (!skill || skill == '' && !thinking || thinking == '') {
+                    return alert('Không được để trống các Kĩ Năng ')
+                }
+                Ts1.forEach((item) => {
+                    let level = item.querySelector('select')?.value
+                    let score = +item.querySelector('input')?.value;
+                    if (level && score) {
+                        subjectScores.push({
+                            languageIt: item.dataset.id,
+                            level,
+                            score
+                        })
+                    }
+                });
+                await createFeedBack({
+                    ...payload123,
+                    subjectScores,
+                    content,
+                    skill,
+                    thinking
+                });
+                dialogReview.style.display = "none"
+            }
+            // const handleCreateStudents = async (e) => {
 
 
-
-        }
-        else if (target.classList.contains("delClass")) {
+            // };
+            dialogReview.addEventListener('click', async (e) => {
+                if (e.target.classList.contains('createEvaluate')) {
+                    return await handleCreateEvaluate();
+                }
+            });
+            // addStudents.removeEventListener('click', handleCreateStudents);
+            // addStudents.addEventListener('click', handleCreateStudents);
+        } else if (target.classList.contains("delClass")) {
             const id = e.target.dataset.id;
             await deleteClass(id)
 
@@ -496,53 +641,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
     });
-    createEvaluate.addEventListener("click", async () => {
-        const content = tinymce.get('EvaluateContent').getContent();
-        return await createFeedBack({
-            ...payload123, content
-        })
-    });
-    // add students 
-
-    addStudents.addEventListener("click", async (e) => {
-        if (IdStudentsAdd.value.trim() == "") {
-            alert("Không dược để trống id sinh viên");
-            return;
-        }
-        try {
-            const data = await addStudentsV1(e.target.dataset.id, IdStudentsAdd.value);
-            const response = await data.json();
-            if (response) {
-                alert("Thêm sinh viên thành công");
-                location.reload();
-            }
-        } catch (error) {
-            alert("Đã có lỗi xảy ra với sinh viên ");
-        }
-
-    })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 });
-
 
 

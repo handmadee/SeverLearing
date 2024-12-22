@@ -7,7 +7,8 @@ const router = express.Router();
 const StudentShecheduleController = require("./../../controllers/schedule/schedule.controller");
 const ettendanceScheduleController = require("./../../controllers/schedule/ettendance.controller");
 const classController = require("../../controllers/schedule/class.controller");
-const feedBackControler = require("../../controllers/schedule/feedBackControler");
+const feedBackControler = require("../../feeback/controllers/feedBackControler");
+
 
 
 // Querry search 

@@ -4,7 +4,6 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
-const { checkOverloadConnect } = require('./helpers/check.connect');
 const cors = require('cors');
 const router = require('./router');
 const adminRouter = require('./router/layouts/admin');
@@ -31,7 +30,6 @@ app.use(cookieParser());
 
 // Initialize database connection
 require('./dbs/init.mongodb');
-checkOverloadConnect();
 // Set up static files directory
 configViewEngine(app)
 // Initialize router
