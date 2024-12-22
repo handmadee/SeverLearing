@@ -132,10 +132,8 @@ class feedBackStudentService {
     }
 
     // Edits for Feedback
-    static async editFeedBack({ idFeedBack, content = "" }) {
-        const feedBack = await feedBackStudent.findByIdAndUpdate(idFeedBack, {
-            contentFeedBack: content
-        }, { new: true }).lean();
+    static async editFeedBack({ idFeedBack, content }) {
+        const feedBack = await feedBackStudent.findByIdAndUpdate(idFeedBack, content, { new: true }).lean();
         if (!feedBack) throw new BadRequestError("listFeedBack not exits !!!");
         return feedBack;
     }
@@ -276,6 +274,13 @@ class feedBackStudentService {
         }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores ").sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
+    }
+
+    static async getFeedById(id) {
+        return await feedBackStudent.findById(id).populate({
+            path: "studentsAccount",
+            select: "fullname phone"
+        }).populate('subjectScores.languageIt').lean();
     }
 
 

@@ -85,7 +85,7 @@ class feedBackController {
     // Edit 
     async modifreFeedBack(req, res) {
         const id = req.params.id;
-        const body = req.body.content;
+        const body = req.body;
         return new OK(
             {
                 message: `Modifre feedback success by ${id}`,
@@ -114,6 +114,17 @@ class feedBackController {
         ).send(res);
     }
 
+
+    async getFeedBackById(req, res) {
+        const id = req.params.id;
+        console.log(id);
+        return new OK(
+            {
+                message: `getAllFeedBack  success `,
+                data: await feedBackStudentService.getFeedById(id)
+            }
+        ).send(res);
+    }
 
 
 
