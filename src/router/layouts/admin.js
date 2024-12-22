@@ -444,8 +444,9 @@ adminRouter.get('/viewClass', permission('789 999'), asnycHandler(async (req, re
 // Select Class 
 adminRouter.get('/feedBack', permission(' 999'), asnycHandler(async (req, res) => {
     const data = await AccountService.accountSupper();
+    const language = await languageService.getAll();
     const { userId } = req.payload;
-    res.render('./admin/shechedule/feedBack', { title: "Danh sách feedback từ giáo viên ", data, userId });
+    res.render('./admin/shechedule/feedBack', { title: "Danh sách feedback từ giáo viên ", data, userId, language });
 }));
 
 

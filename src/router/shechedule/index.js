@@ -97,6 +97,8 @@ router.get('/feedbackByMonth', asnycHandler(feedBackControler.getFeedBackForMont
 
 
 
+router.get('/feedback/find-id/:id', asnycHandler(feedBackControler.getFeedBackById));
+
 router.post('/feedback', asnycHandler(feedBackControler.createdFeedBack));
 router.patch('/feedback/:id', asnycHandler(feedBackControler.modifreFeedBack));
 router.delete('/feedback/:id', asnycHandler(feedBackControler.removeFeedBack));
