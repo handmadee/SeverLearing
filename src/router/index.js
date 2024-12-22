@@ -18,6 +18,7 @@ const popupRouter = require('./popup/popup');
 const firebaseRoutes = require('./firebase/notification.firebase');
 const fcmRouter = require('./firebase/fcmToken.firebase');
 const studentsShecheduleRoutes = require('./shechedule/index');
+const langugeRouter = require('./../feeback/routers/language.router');
 
 
 // Initialize router
@@ -34,6 +35,7 @@ router.use(API_V1_PATH, popupRouter);
 router.use(API_V1_PATH, firebaseRoutes);
 router.use(API_V1_PATH, fcmRouter);
 router.use(API_V1_PATH, studentsShecheduleRoutes);
+router.use(`${API_V1_PATH}/language`, langugeRouter);
 
 
 

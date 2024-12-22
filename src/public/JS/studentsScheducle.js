@@ -63,6 +63,61 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    tableList.addEventListener('click', function (e) {
+        const target = e.target;
+        const row = target.closest('tr');
+        if (target.classList.contains('btn-delete') || target.classList.contains('btn-edit')) {
+            return;
+        }
+        if (row) {
+            const idCell = row.children[1];
+            if (idCell) {
+                const id = idCell.textContent;
+                navigator.clipboard.writeText(id)
+                    .then(() => {
+                        // Tạo thông báo
+                        const notification = document.createElement('div');
+                        notification.textContent = 'Đã sao chép ID!';
+                        notification.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            background: #4CAF50;
+                            color: white;
+                            padding: 10px 20px;
+                            border-radius: 4px;
+                            animation: fadeOut 2s forwards;
+                            z-index: 1000;
+                        `;
+
+                        // Thêm keyframes animation
+                        const style = document.createElement('style');
+                        style.textContent = `
+                            @keyframes fadeOut {
+                                0% { opacity: 1; }
+                                70% { opacity: 1; }
+                                100% { opacity: 0; }
+                            }
+                        `;
+                        document.head.appendChild(style);
+
+                        // Thêm thông báo vào body
+                        document.body.appendChild(notification);
+
+                        // Xóa thông báo sau khi animation kết thúc
+                        setTimeout(() => {
+                            notification.remove();
+                            style.remove();
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Không thể sao chép:', err);
+                        alert('Không thể sao chép ID!');
+                    });
+            }
+        }
+    });
+
 
     btnSearch.addEventListener('click', async (e) => {
         e.preventDefault();

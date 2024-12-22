@@ -19,7 +19,9 @@ const fcmTokenService = require('../../services/firebase/fcmToken.firebase.servi
 const scheduleService = require('../../services/schedule/schedule.service');
 const AccountService = require('../../services/account/account.service');
 const ClassService = require('../../services/schedule/class.services');
-const feedBackStudentService = require('../../services/schedule/feedBack.servicer');
+const feedBackStudentService = require('../../feeback/services/feedBack.servicer');
+const languageService = require('../../feeback/services/language.service');
+
 
 
 
@@ -410,11 +412,16 @@ adminRouter.get('/parents/students/:id', asnycHandler(async (req, res) => {
     const idStudents = req.params.id;
     const students = await scheduleService.getById(idStudents);
     const getAllMonth = await feedBackStudentService.getAlwaysFeedbackByStudents(idStudents);
-
-    console.log(getAllMonth)
+    const VCC = await feedBackStudentService.getFeedBackByStudentsForMonth({
+        idStudent: idStudents,
+        month: 12
+    });
+    console.log({ VCC });
     const ClassInStudesnt = await ClassService.findStudentsByClass(idStudents)
-    res.render('./admin/studentsParents', { title: "Phu huynh ", idStudents, students, ClassInStudesnt, getAllMonth });
+    res.render('./admin/studentsParents', { title: "Phu huynh ", idStudents, students, ClassInStudesnt, getAllMonth, VCC });
 }));
+
+
 
 
 // Class
@@ -428,8 +435,9 @@ adminRouter.get('/class', asnycHandler(async (req, res) => {
 // Select Class 
 adminRouter.get('/viewClass', permission('789 999'), asnycHandler(async (req, res) => {
     const data = await AccountService.accountSupper();
+    const language = await languageService.getAll();
     const { userId, role } = req.payload;
-    res.render('./admin/class/viewClass', { title: "Phu huynh ", data, userId, role });
+    res.render('./admin/class/viewClass', { title: "Phu huynh ", data, userId, role, language });
 }));
 
 
@@ -439,6 +447,16 @@ adminRouter.get('/feedBack', permission(' 999'), asnycHandler(async (req, res) =
     const { userId } = req.payload;
     res.render('./admin/shechedule/feedBack', { title: "Danh sách feedback từ giáo viên ", data, userId });
 }));
+
+
+adminRouter.get('/subject', asnycHandler(async (req, res) => {
+    const ListSubject = await languageService.getAll();
+    res.render('admin/shechedule/subjectV2', { title: "Danh sách môn học ", ListSubject });
+}));
+
+
+
+
 
 
 // Errors

@@ -127,14 +127,14 @@ i {
 
 .dialogAllStudents .dialogReview {
   position: absolute;
-  width: 70%;
-  height: 90%;
+  width: 85%;
   left: 50%;
   top: 50%;
   background-color: white;
   border-radius: 20px;
   transform: translate(-50%, -50%);
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+  box-shadow:
+    rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
     rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 
@@ -142,7 +142,7 @@ i {
   padding: 10px;
 }
 .dialogReview .header {
-  width: 60%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -156,21 +156,11 @@ i {
   font-weight: bold;
 }
 .dialogReview .container {
-  height: 100%;
   width: 100%;
-}
-.Evaluate {
-  width: 100%;
-  height: 75%;
-  margin-top: 20px;
-}
-#EvaluateContent {
-  width: 100%;
-  height: 90%;
 }
 
 .Evaluate .createEvaluate {
-  float: right;
+  float: left;
 }
 
 .dialogReview .container .createEvaluate {
@@ -180,7 +170,7 @@ i {
   display: block;
   width: max-content;
   margin-left: auto;
-  margin-right: 0;
+  margin-left: 0;
   margin-top: 10px;
 }
 
@@ -202,7 +192,8 @@ i {
   font-size: 20px;
   border-radius: 5px;
   right: 10px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+  box-shadow:
+    rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
     rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
@@ -298,7 +289,8 @@ i {
   width: 50%;
   height: 90%;
   background-color: white;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+  box-shadow:
+    rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
     rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
   left: 50%;
   top: 50%;
@@ -307,7 +299,8 @@ i {
 
 #IdStudentsAdd {
   border: none;
-  box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px,
+  box-shadow:
+    rgba(6, 24, 44, 0.4) 0px 0px 0px 2px,
     rgba(6, 24, 44, 0.65) 0px 4px 6px -1px,
     rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
   padding: 10px;
@@ -328,4 +321,199 @@ i {
 .plusClass:hover {
   background-color: #69d0a5;
   cursor: pointer;
+}
+
+.evaluation-table {
+  width: 90%;
+}
+
+/* Dialog Review Styling */
+.dialogReview {
+  padding: 2rem;
+  border-radius: 25px;
+  background-color: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  border: 2px solid #198754;
+}
+
+/* Container Styling */
+.dialogReview .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Header Styling */
+.dialogReview .container .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #198754;
+}
+
+.dialogReview .container .header .nameStudents,
+.dialogReview .container .header .phoneStudents {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #198754;
+}
+
+/* Table Styling */
+.dialogReview .container .evaluation-table {
+  width: 100%;
+  margin: 1rem 0;
+  border-collapse: collapse;
+}
+
+.dialogReview .container .evaluation-table th {
+  background-color: #198754;
+  color: #fff;
+  padding: 0.5rem;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.dialogReview .container .evaluation-table td {
+  border: 1px solid #198754;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.dialogReview .container .evaluation-table td input {
+  padding: 5px;
+  width: 90%;
+  border-radius: 5px;
+}
+
+.dialogReview .container .evaluation-table select {
+  width: 100%;
+  padding: 0.3rem;
+  border: 1px solid #198754;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  background-color: #e9f7ec;
+  transition: background-color 0.3s ease;
+}
+
+.dialogReview .container .evaluation-table select option[value="1"] {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.dialogReview .container .evaluation-table select option[value="2"] {
+  background-color: #ffeeba;
+  color: #856404;
+}
+
+.dialogReview .container .evaluation-table select option[value="3"] {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Evaluation Metrics Styling */
+.dialogReview .container .evaluation-metrics {
+  margin-top: 1rem;
+}
+
+.dialogReview .container .evaluation-metrics p {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #198754;
+  margin-bottom: 0.5rem;
+}
+
+.dialogReview .container .evaluation-metrics .radio-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.dialogReview .container .evaluation-metrics .radio-group label {
+  font-size: 0.9rem;
+  padding: 0.3rem 1rem;
+  border-radius: 15px;
+  border: 1px solid #198754;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.dialogReview .container .evaluation-metrics .radio-group input[type="radio"] {
+  display: none;
+}
+
+.dialogReview
+  .container
+  .evaluation-metrics
+  .radio-group
+  input[type="radio"]:checked
+  + label {
+  background-color: #198754;
+  color: #fff;
+}
+
+.dialogReview .container .Evaluate {
+  height: 200px;
+}
+
+/* Evaluate Textarea Styling */
+.dialogReview .container .Evaluate textarea {
+  border: 2px solid #198754;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  resize: none;
+  color: #495057;
+}
+
+/* Button Styling */
+.dialogReview .btn {
+  background-color: #198754;
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dialogReview .btn:hover {
+  background-color: #145c3b;
+}
+
+.dialogReview .btn1 {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+}
+
+.dialogReview .btn1 i {
+  font-size: 1.5rem;
+  color: #198754;
+  transition: color 0.3s ease;
+}
+
+.dialogReview .btn1 i:hover {
+  color: #145c3b;
+}
+
+.evaluation-table th,
+.evaluation-table td {
+  width: calc(100% / 3);
+}
+
+.Evaluate .tox-tinymce {
+  height: 250px !important;
+}
+
+.control {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row;
+  margin: 10px 0;
 }

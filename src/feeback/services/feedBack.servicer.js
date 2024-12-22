@@ -2,9 +2,9 @@
 
 const { Types } = require("mongoose")
 const moment = require('moment');
-const feedBackStudent = require("../../models/shechedule/feedBackStudent")
 const studentAttendance = require("../../models/shechedule/studentAttendance");
 const { BadRequestError } = require("../../core/error.response");
+const feedBackStudent = require("../models/feedBackStudent");
 
 
 class feedBackStudentService {
@@ -19,11 +19,12 @@ class feedBackStudentService {
     }
 
     // V2 
-    static async createFeedBack({
-        idTeacher, idStudent, content
-    }) {
+    static async createFeedBack(payload) {
+        const {
+            idTeacher, idStudent, content,
+        } = payload;
         const currentYear = moment().year();
-        const currentMonth = moment().month() + 1; // Lấy tháng hiện tại (cộng 1 vì tháng trong moment bắt đầu từ 0)
+        const currentMonth = moment().month() + 1;
         const startDate = moment(`${currentYear}-${currentMonth}`, 'YYYY-M').startOf('month').toDate();
         const endDate = moment(`${currentYear}-${currentMonth}`, 'YYYY-M').endOf('month').toDate();
 
@@ -39,6 +40,7 @@ class feedBackStudentService {
         return await feedBackStudent.findOneAndUpdate(
             query,
             {
+                ...payload,
                 contentFeedBack: content
             },
             {
@@ -52,7 +54,7 @@ class feedBackStudentService {
     static async getFeedBackByStudents({ idStudent }) {
         const listFeedBack = await feedBackStudent.findOne({
             studentsAccount: new Types.ObjectId(idStudent),
-        }).lean();
+        }).populate('subjectScores.languageIt').lean();
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }
@@ -100,7 +102,7 @@ class feedBackStudentService {
         }).populate({
             path: "studentsAccount",
             select: "fullname"
-        }).select("studentsAccount contentFeedBack createdAt").sort({ createdAt: -1 }).lean();
+        }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores   ").sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }
@@ -124,7 +126,7 @@ class feedBackStudentService {
         }).populate({
             path: "teacherAccount",
             select: "username"
-        }).select("studentsAccount teacherAccount contentFeedBack createdAt").sort({ createdAt: -1 }).lean();
+        }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores ").sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }
@@ -150,9 +152,93 @@ class feedBackStudentService {
         }).populate({
             path: "studentsAccount",
             select: "fullname"
-        }).select("studentsAccount contentFeedBack createdAt").sort({ createdAt: -1 }).lean();
+        }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores ").sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
+
+        console.log(listFeedBack);
+
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
+    }
+
+
+    static async getAllFeedBackByIDV2({ idStudent }) {
+        try {
+            const listFeedBack = await feedBackStudent.find({
+                studentsAccount: new Types.ObjectId(idStudent),
+            })
+                .populate({
+                    path: "studentsAccount",
+                    select: "fullname"
+                })
+                .select("studentsAccount contentFeedBack createdAt skill thinking subjectScores")
+                .sort({ createdAt: -1 })
+                .populate({
+                    path: 'subjectScores.languageIt',
+                    select: "nameCode describe"
+                })
+                .lean();
+
+            if (!listFeedBack || listFeedBack.length === 0) {
+                throw new BadRequestError("listFeedBack not found !!!");
+            }
+
+            // Aggregation logic
+            const summary = {
+                scoresByLevelAndLanguage: [],
+                skillCount: {},
+                thinkingCount: {},
+                feedbackContent: []
+            };
+
+            const scoresMap = new Map();
+
+            listFeedBack.forEach(feedback => {
+                // Aggregate scores by level and language
+                if (feedback.subjectScores && Array.isArray(feedback.subjectScores)) {
+                    feedback.subjectScores.forEach(score => {
+                        const level = score.level;
+                        const language = score.languageIt?.nameCode || 'Unknown';
+                        const scoreValue = score.score || 0;
+
+                        const key = `${level}-${language}`;
+                        if (!scoresMap.has(key)) {
+                            scoresMap.set(key, {
+                                level,
+                                language,
+                                totalScore: 0
+                            });
+                        }
+                        scoresMap.get(key).totalScore += scoreValue;
+                    });
+                }
+                // Count skill occurrences
+                const skill = feedback.skill || 'Unknown';
+                if (!summary.skillCount[skill]) {
+                    summary.skillCount[skill] = 0;
+                }
+                summary.skillCount[skill]++;
+
+                // Count thinking occurrences
+                const thinking = feedback.thinking || 'Unknown';
+                if (!summary.thinkingCount[thinking]) {
+                    summary.thinkingCount[thinking] = 0;
+                }
+                summary.thinkingCount[thinking]++;
+
+                // Collect feedback content
+                if (feedback.contentFeedBack) {
+                    summary.feedbackContent.push(feedback.contentFeedBack);
+                }
+            });
+
+            // Convert scoresMap to array format
+            summary.scoresByLevelAndLanguage = Array.from(scoresMap.values());
+            mary.skillCount['']
+            return summary;
+        } catch (error) {
+            console.error("Error fetching feedback:", error);
+            throw new Error("An error occurred while fetching feedback");
+        }
     }
 
     static async getFeedBackForMonth({ month }) {
@@ -173,7 +259,7 @@ class feedBackStudentService {
         }).populate({
             path: "teacherAccount",
             select: "username"
-        }).select("studentsAccount teacherAccount contentFeedBack createdAt").sort({ createdAt: -1 }).lean();
+        }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores ").sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }
@@ -187,7 +273,7 @@ class feedBackStudentService {
         }).populate({
             path: "teacherAccount",
             select: "username"
-        }).select("studentsAccount teacherAccount contentFeedBack createdAt").sort({ createdAt: -1 }).lean();
+        }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores ").sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }

@@ -92,6 +92,7 @@
       padding-left: 20px;
     }
 
+
     #countSudents {
       text-align: center;
       display: flex;
@@ -105,6 +106,11 @@
     }
     #countSudents span {
       margin: 0 10px;
+    }
+
+    #tableList tr:hover {
+      background-color: #96e3be;
+      cursor: pointer;
     }
     h5 {
       background-color: rgba(25, 135, 84, 1);
@@ -178,6 +184,11 @@
         font-size: 14px;
         padding: 8px 18px;
       }
+
+       #contentTable .item td {
+        height: 35px !important;
+      }
+
     }
     /*  */
   </style>
@@ -467,5 +478,5 @@
 
   <div id="toasts"></div>
   <script type="module" src="/JS/studentsScheducle.js"></script>
-  <%- include('./../comon/footer') %>
+<%- include('./../comon/footer') %>
 </div>
