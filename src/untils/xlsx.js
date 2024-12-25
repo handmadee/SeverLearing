@@ -65,8 +65,6 @@ function convertExcelToFeedbackJson(filePath) {
 
             data.push(feedback);
         });
-
-
         console.log('====================================');
         console.log("HELLO - WORD SHEET TO JSON");
         console.log('====================================');
