@@ -1,7 +1,7 @@
 const SubjectUID = {
-    PYTHON: '676509b9409ddf1f40f01e8e',
-    SCRATCH: '6765a012d60c98dbc0ad7eb7',
-    C: '6765a01fd60c98dbc0ad7eba',
+    PYTHON: '6767ff3d4ba9e6b3d58a8aec',
+    SCRATCH: '6767ff304ba9e6b3d58a8ae8',
+    C: '6767ff474ba9e6b3d58a8af0',
 }
 
 module.exports = { SubjectUID }
