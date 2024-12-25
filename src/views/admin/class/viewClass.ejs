@@ -8,11 +8,10 @@
 
           <style>
                   /* Style */
-            #showAllStudents .boxFeedBack tr th:nth-child(3),
-            #showAllStudents .boxFeedBack tr th:nth-child(2) {
-              width: 22%; 
-            }
 
+                        #showAllStudents .boxFeedBack tr th:nth-child(2){
+              width: 5%;
+                        }
             #contentTable {
     table-layout: fixed;
     width: 100%; /* Đảm bảo bảng không bị co lại */
@@ -106,9 +105,20 @@
                     Danh sách môn dạy
                   </button>
                 </a>
-                </div>
+                 <div class="fileInput">
+          <label for="fileInput" class="btn btn-success">
+            Select
+            <i style="pointer-events: none" class="fa-solid fa-file-excel"></i>
+          </label>
+          <input id="fileInput" style="display: none" type="file" />
+        </div>
 
-                
+        <!-- <input type="file" id="fileInput" /> -->
+        <button class="btn btn-success" id="importButton">
+          Import
+          <!-- <i style="pointer-events: none" class="fa-solid fa-file-excel"></i> -->
+        </button>
+                </div>
                 <% } %>
                   <div id="contentClass" class="contentClass">
                     <div class="itemClass">
@@ -204,19 +214,29 @@
                   <!-- View All Students -->
                   <div id="showAllStudents" class="dialogAllStudents">
                     <div class="container">
-                      <div class="header row algin">
-                        <h6 id="nameClassD">MD18302</h6>
+                      <div class="header col-12 row algin items-center">
+                        <h6 class="col-3" id="nameClassD">MD18302</h6>
                         <div class="col-6 row">
                           <input class="col-7" id="IdStudentsAdd" type="text" placeholder="ID Học Sinh">
                           <div id="addStudents" class="addStudentsv">
                             <i class="fa-solid fa-plus"></i>
                           </div>
                         </div>
+                        <div class="col-2">
+                          <button id="btnFeedBackBulk" class="btnFeedBackBulk btn btn-primary" disabled>
+                            <i class="fa-solid fa-comment"></i>
+                            Đánh giá nhóm
+                          </button>
+                      </div>
                       </div>
                       <div class="containerStudents row">
                         <table class="boxFeedBack col-12">
                           <tbody style="height: 50px;">
                             <tr>
+                              <th>
+                              <input type="checkbox" id="selectAll">  
+                              <label for="selectAll">Chọn tất cả</label>
+                              </th>
                               <th>STT</th>
                               <th>ID</th>
                               <th>Tên Học Sinh</th>
@@ -273,9 +293,22 @@
         </div>
       </div> -->
                     <!-- The end -->
-                    <div class="dialogReview">
+                    <div class="dialogReview ">
                       <div class="container">
-                        <div class="header">
+                        <div class="headerBulkFeed">
+                          <p class="text-center fw-bold ">Số học sinh đánh giá </p>  
+                          <div class="list-students">
+                            <div class="item row algin-center items-center">
+                              <p class="col-7">Phạm Xuân Đạt</p>
+                            <button class="btn btn-outline-warning red col-3"> 
+                          <i class="fa-solid fa-trash"></i>
+                              Xoá
+                           </button>
+                              </div>
+                          
+                           </div>
+                        </div>
+                        <div class="header ">
                           <p class="nameStudents">Phạm Xuân Đạt</p>
                           <p class="phoneStudents">0377723422</p>
                         </div>

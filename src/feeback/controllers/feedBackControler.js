@@ -1,7 +1,8 @@
 'use strict'
-
 const { Created, OK } = require("../../core/success.response");
 const feedBackStudentService = require("../services/feedBack.servicer");
+const { delFile } = require('../../untils/file.untils');
+const convertExcelToFeedbackJson = require('../../untils/xlsx');
 
 
 
@@ -13,6 +14,21 @@ class feedBackController {
         return new Created(
             "created feedBack Success",
             await feedBackStudentService.createFeedBack(req.body)
+        ).send(res);
+    }
+    async createBulkFileFeedback(req, res) {
+        const file = req.file;
+        const payload = await convertExcelToFeedbackJson(file.path);
+        delFile(file.path);
+        return new Created(
+            "created feedBack Success",
+            await feedBackStudentService.createBulkFeedback(payload)
+        ).send(res);
+    }
+    async createBulkFeedback(req, res) {
+        return new Created(
+            "created feedBack Success",
+            await feedBackStudentService.createBulkFeedback(req.body)
         ).send(res);
     }
 
