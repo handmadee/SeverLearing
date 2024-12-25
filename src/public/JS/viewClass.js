@@ -5,6 +5,7 @@
 import { createToast } from "./Aleart.js";
 import { LOCALHOST_API_URL } from "./config.js";
 
+
 // Selector rút gọn
 const getEL = (id) => document.getElementById(id);
 const getCL = (id) => document.querySelector(id);
@@ -82,6 +83,47 @@ const createFeedBack = async (body) => {
         alert("Tạo thông đánh giá thất bại");
     }
 };
+const createFileFeedBack = async (body) => {
+    try {
+        const response = await fetch(`${LOCALHOST_API_URL}create-file/feedback`, {
+            method: "POST",
+            body: body,
+        });
+        const data = await response.json();
+
+        if (data) {
+            console.log(data);
+            alert(`Số đánh giá đã hoàn tất ${data.data.modifiedCount}`);
+            location.reload();
+        }
+    } catch (error) {
+        console.log(error);
+        alert("Tạo thông đánh giá thất bại");
+    }
+};
+
+const createFeedBackBulk = async (body) => {
+    try {
+        console.log(body);
+        const response = await fetch(`${LOCALHOST_API_URL}create-bulk/feedback`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+        });
+        const data = response.json();
+        if (data) {
+            alert("Tạo thông đánh giá thành công");
+            location.reload();
+        }
+    } catch (error) {
+        console.log(error);
+        alert("Tạo thông đánh giá thất bại");
+    }
+};
+
+
 
 const removeStudents = async (idClass, idStudents) => {
     return await fetch(`${LOCALHOST_API_URL}classStudents/removeStudent`, {
@@ -95,6 +137,11 @@ const removeStudents = async (idClass, idStudents) => {
         }),
     });
 };
+
+
+
+
+
 
 const addStudentsV1 = async (idClass, idStudents) => {
     return await fetch(`${LOCALHOST_API_URL}classAddStudent`, {
@@ -148,6 +195,107 @@ const renderItem = (content, data = []) => {
     }
 };
 
+async function showBulkFeedbackDialog() {
+    const selectFeedback = document.querySelectorAll(".select-feedback");
+    const selectedStudents = Array.from(selectFeedback)
+        .filter(item => item.checked)
+        .map(item => {
+            const row = item.closest('tr');
+            return {
+                id: item.dataset.id,
+                name: row.querySelector('td:nth-child(4)').textContent,
+                phone: row.querySelector('td:nth-child(5)').textContent
+            };
+        });
+
+    // Show dialog review with bulk feedback mode
+    dialogReview.style.display = "block";
+    dialogReview.querySelector('.headerBulkFeed').classList.remove('d-none');
+    dialogReview.querySelector('.header').classList.add('d-none');
+
+    // Render selected students list
+    const listStudentsEl = dialogReview.querySelector('.list-students');
+    listStudentsEl.innerHTML = selectedStudents.map(student => `
+        <div class="item row align-items-center">
+            <p class="col-7">${student.name}</p>
+            <button class="btn btn-outline-warning red col-3" data-id="${student.id}"> 
+                <i class="fa-solid fa-trash"></i>
+                Xoá
+            </button>
+        </div>
+    `).join('');
+
+    // Reset form
+    tinymce.get("EvaluateContent").setContent('');
+    document.querySelectorAll('input[name="programming-skill"]').forEach(radio => radio.checked = false);
+    document.querySelectorAll('input[name="thinking-skill"]').forEach(radio => radio.checked = false);
+
+    // Reset language scores
+    Ts1.forEach(item => {
+        const select = item.querySelector('select');
+        const input = item.querySelector('input');
+        if (select) select.value = "";
+        if (input) input.value = "";
+    });
+
+    // Store selected students IDs for submission
+    dialogReview.dataset.selectedStudents = JSON.stringify(selectedStudents.map(s => s.id));
+}
+
+async function handleBulkFeedbackSubmit() {
+    const selectedStudentIds = JSON.parse(dialogReview.dataset.selectedStudents || '[]');
+    if (selectedStudentIds.length === 0) {
+        alert('Không có học sinh nào được chọn!');
+        return;
+    }
+    // Get form data
+    const content = tinymce.get("EvaluateContent").getContent();
+    const skill = document.querySelector('input[name="programming-skill"]:checked')?.value;
+    const thinking = document.querySelector('input[name="thinking-skill"]:checked')?.value;
+    if (!skill || !thinking) {
+        alert("Không được để trống các Kĩ Năng");
+        return;
+    }
+    // Get subject scores
+    const subjectScores = [];
+    Ts1.forEach(item => {
+        const level = item.querySelector("select")?.value;
+        const score = +item.querySelector("input")?.value;
+        if (level && score) {
+            subjectScores.push({
+                languageIt: item.dataset.id,
+                level,
+                score
+            });
+        }
+    });
+
+    const object = {
+        idTeacher: idTeacher.dataset.id,
+        subjectScores,
+        content,
+        skill,
+        thinking
+    };
+    const payload = await selectedStudentIds.map(id => ({ ...object, idStudent: id }));
+    try {
+        const data = await createFeedBackBulk(payload);
+        console.log(data);
+        dialogReview.style.display = "none";
+        // Reset UI
+        selectAllCheckBox.checked = false;
+        document.querySelectorAll('.select-feedback').forEach(cb => cb.checked = false);
+        createBulkFeedBack.disabled = true;
+    } catch (error) {
+        alert('Có lỗi xảy ra khi lưu đánh giá!');
+        console.error(error);
+    }
+}
+
+
+
+
+
 const renderItemStudent = (content, data = []) => {
     console.log(data);
     if (data && data.length > 0) {
@@ -156,6 +304,7 @@ const renderItemStudent = (content, data = []) => {
             const tr = document.createElement("tr");
             tr.classList.add("item");
             tr.innerHTML = `
+            <td><input type="checkbox" class="select-feedback" data-id=${item?._id} /></td>
           <td><strong>${index + 1}</strong></td>
           <td>${item?._id}</td>
           <td>${item?.fullname}</td>
@@ -234,8 +383,11 @@ let monthNow, payload123;
 let dialogEditClass, saveClass;
 let nameClass, teacher, teacher1, study1, daysContainer1;
 let addDayButton1, IdStudentsAdd, addStudents;
-let selectTeacher;
-
+let selectTeacher, selectFile, importFile;
+let selectAllCheckBox, createBulkFeedBack;
+let listStudents, headerBulkFeed;
+selectAllCheckBox = getEL("selectAll");
+createBulkFeedBack = getEL("btnFeedBackBulk");
 /*************************************************
  *  Hàm xử lý click cho popup showAllStudents
  *************************************************/
@@ -248,7 +400,7 @@ async function handleShowAllStudentsClick(e) {
     if (!target.classList.contains("Evaluate1") && !target.classList.contains("Trash1")) {
         const row = target.closest("tr");
         if (row) {
-            const idCell = row.children[1];
+            const idCell = row.children[2];
             if (idCell) {
                 const id = idCell.textContent;
                 try {
@@ -289,10 +441,17 @@ async function handleShowAllStudentsClick(e) {
         }
     }
 
+    if (target.classList.contains("select-feedback")) {
+        onCheckBox();
+    }
+
     /*****************************************
      * 2. Xử lý Evaluate1 (mở dialog đánh giá)
      *****************************************/
     if (target.classList.contains("Evaluate1")) {
+        console.log('Evaluate1');
+        dialogReview.querySelector('.header').classList.remove('d-none');
+        document.querySelector('.headerBulkFeed').classList.add('d-none');
         const studentId = target.dataset.id;
         const studentName = target.dataset.name;
         const phone = target.dataset.phone;
@@ -623,6 +782,38 @@ async function handleSaveClass(e) {
     }
 }
 
+async function selectAllCheckBoxV() {
+    const selectFeedback = document.querySelectorAll(".select-feedback");
+    selectFeedback.forEach((item) => {
+        item.checked = selectAllCheckBox.checked;
+    });
+    createBulkFeedBack.disabled = !selectAllCheckBox.checked;
+}
+
+async function onCheckBox() {
+    const selectFeedback = document.querySelectorAll(".select-feedback");
+    const selected = Array.from(selectFeedback).filter((item) => item.checked);
+    if (selected.length > 1) {
+        createBulkFeedBack.disabled = false;
+    } else {
+        createBulkFeedBack.disabled = true;
+    }
+}
+
+async function createBulkFeedBackDB() {
+    const selectFeedback = document.querySelectorAll(".select-feedback");
+    const selected = Array.from(selectFeedback).filter((item) => item.checked);
+    const selectedId = selected.map((item) => item.dataset.id);
+    const body = {
+        idTeacher: idTeacher.dataset.id,
+        idStudents: selectedId,
+    };
+    // show ra popup và xác nhận
+
+
+    // await createFeedBackBulk(body);
+    // location.reload();
+}
 /*************************************************
  *  DOMContentLoaded - nơi gắn event 1 lần
  *************************************************/
@@ -652,7 +843,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     nameStudents = dialogReview.querySelector(".nameStudents");
     phoneStudents = dialogReview.querySelector(".phoneStudents");
     createEvaluate = dialogReview.querySelector(".createEvaluate");
+    selectFile = getEL("fileInput");
+    importFile = getEL("importButton");
     idTeacher = getEL("teacher");
+    let selectFeedback = document.querySelectorAll(".select-feedback");
 
     // Dialog EditClass
     dialogEditClass = getEL("dialogEditClass");
@@ -664,13 +858,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     daysContainer1 = getEL("daysContainer1");
     addDayButton1 = getEL("addDayButton1");
 
+
+
+
     /*****************************************
      * 3. Gắn event listener *một lần*
      *****************************************/
+    // select file 
+    if (importFile) {
+        importFile.addEventListener("click", async () => {
+            console.log(selectFile.files[0]);
+            const formData = new FormData();
+            if (!selectFile.files[0]) {
+                return alert("Vui lòng chọn file");
+            }
+            formData.append("excel", selectFile.files[0]);
+            const data = await createFileFeedBack(formData);
+            console.log(data);
+        });
+    }
+
+    // import button 
+    selectAllCheckBox.addEventListener("click", selectAllCheckBoxV);
     // a) Đóng dialogReview
     dialogReview.querySelector(".xmark").addEventListener("click", () => {
         dialogReview.style.display = "none";
     });
+
+    createBulkFeedBack.addEventListener("click", showBulkFeedbackDialog);
+
 
     // b) Đóng popup showAllStudents
     showAllStudents.querySelector(".xmark").addEventListener("click", () => {
@@ -690,8 +906,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     showAllStudents.addEventListener("click", handleShowAllStudentsClick);
 
     // f) dialogReview - popup đánh giá
-    dialogReview.addEventListener("click", handleDialogReviewClick);
+    // dialogReview.addEventListener("click", handleDialogReviewClick);
+    createEvaluate.addEventListener("click", async () => {
+        if (dialogReview.querySelector('.headerBulkFeed').classList.contains('d-none')) {
+            // Single feedback
+            await handleDialogReviewClick({ target: createEvaluate });
+        } else {
+            // Bulk feedback
+            console.log("Đã vào  ======");
+            await handleBulkFeedbackSubmit();
+        }
+    });
 
+
+    dialogReview.querySelector('.list-students').addEventListener('click', e => {
+        if (e.target.classList.contains('red')) {
+            const studentId = e.target.dataset.id;
+            const selectedStudents = JSON.parse(dialogReview.dataset.selectedStudents || '[]');
+            dialogReview.dataset.selectedStudents = JSON.stringify(
+                selectedStudents.filter(id => id !== studentId)
+            );
+            e.target.closest('.item').remove();
+
+            // Close dialog if no students left
+            if (selectedStudents.length <= 1) {
+                dialogReview.style.display = "none";
+                selectAllCheckBox.checked = false;
+                document.querySelectorAll('.select-feedback').forEach(cb => cb.checked = false);
+                createBulkFeedBack.disabled = true;
+            }
+        }
+    });
     // g) Lưu editClass
     saveClass.addEventListener("click", handleSaveClass);
 

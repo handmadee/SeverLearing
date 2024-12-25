@@ -100,6 +100,8 @@ router.get('/feedbackByMonth', asnycHandler(feedBackControler.getFeedBackForMont
 router.get('/feedback/find-id/:id', asnycHandler(feedBackControler.getFeedBackById));
 
 router.post('/feedback', asnycHandler(feedBackControler.createdFeedBack));
+router.post('/create-file/feedback', uploadExcel.single('excel'), asnycHandler(feedBackControler.createBulkFileFeedback));
+router.post('/create-bulk/feedback', asnycHandler(feedBackControler.createBulkFeedback));
 router.patch('/feedback/:id', asnycHandler(feedBackControler.modifreFeedBack));
 router.delete('/feedback/:id', asnycHandler(feedBackControler.removeFeedBack));
 

@@ -67,7 +67,8 @@ i {
   padding: 10px;
   border-right: 2px solid white;
 }
-.dialogAllStudents .container h6 {
+.dialogAllStudents .container h6,
+.dialogAllStudents .container .btnFeedBackBulk {
   padding: 10px;
   background-color: rgba(25, 135, 84, 1);
   color: white;
@@ -75,7 +76,35 @@ i {
   text-align: center;
   border-radius: 20px;
 }
+.dialogAllStudents .container .btnFeedBackBulk {
+  cursor: pointer;
+  width: 100%;
+}
 
+.dialogAllStudents .container .btnFeedBackBulk:hover {
+  background-color: #69d0a5;
+}
+
+#contentTable .item input {
+  border: 0;
+  padding: 10px;
+  border-radius: 10px;
+  margin-right: 20px;
+  background-color: rgba(25, 135, 84, 1);
+  color: white;
+  font-weight: bold;
+  width: 15px;
+  height: 15px;
+}
+
+#contentTable .item input:hover {
+  cursor: pointer;
+  background-color: #a1a8e3;
+}
+
+#showAllStudents .boxFeedBack tr th:nth-child(1) label {
+  cursor: pointer;
+}
 /* Respone  */
 
 #contentTable .item button {
@@ -515,5 +544,56 @@ i {
   display: flex;
   justify-content: flex-end;
   flex-direction: row;
-  margin: 10px 0;
+  margin: 10px;
+}
+
+.control label {
+  height: 100%;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.control #importButton {
+  margin-right: 20px;
+}
+
+#showAllStudents .boxFeedBack tr th:nth-child(1) {
+  width: 15%;
+}
+
+#showAllStudents .boxFeedBack tr th:nth-child(4),
+#showAllStudents .boxFeedBack tr th:nth-child(3) {
+  width: 15%;
+}
+
+.list-students {
+  max-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+}
+
+.list-students .item {
+  align-items: center;
+  border: 0.5px solid #198754;
+  border-radius: 10px;
+  padding: 5px;
+  width: 90%;
+}
+.list-students .item p {
+  margin: 0;
+}
+.list-students .item .btn {
+  background-color: red;
+  color: white;
+  padding: 0;
+}
+
+.list-students .item .btn:hover {
+  background-color: #ac5e5e;
+}
+
+.d-none {
+  display: none !important;
 }

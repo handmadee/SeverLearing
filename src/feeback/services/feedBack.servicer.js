@@ -50,6 +50,56 @@ class feedBackStudentService {
         );
     }
 
+    static async createBulkFeedback(payloads) {
+        if (!Array.isArray(payloads) || payloads.length === 0) {
+            throw new Error('Payloads phải là một mảng không rỗng.');
+        }
+        const currentYear = moment().year();
+        const currentMonth = moment().month() + 1;
+        const startDate = moment(`${currentYear}-${currentMonth}`, 'YYYY-M').startOf('month').toDate();
+        const endDate = moment(`${currentYear}-${currentMonth}`, 'YYYY-M').endOf('month').toDate();
+
+        // Chuẩn bị các thao tác bulk
+        const bulkOps = payloads.map(payload => {
+            const { idTeacher, idStudent, content, ...otherFields } = payload;
+
+            // Kiểm tra các trường bắt buộc
+            if (!idTeacher || !idStudent || !content) {
+                throw new Error('Mỗi payload phải bao gồm idTeacher, idStudent, và content.');
+            }
+            return {
+                updateOne: {
+                    filter: {
+                        teacherAccount: new Types.ObjectId(idTeacher),
+                        studentsAccount: new Types.ObjectId(idStudent),
+                        createdAt: {
+                            $gte: startDate,
+                            $lte: endDate
+                        }
+                    },
+                    update: {
+                        $set: {
+                            ...otherFields,
+                            contentFeedBack: content,
+                            teacherAccount: new Types.ObjectId(idTeacher),
+                            studentsAccount: new Types.ObjectId(idStudent),
+                            createdAt: new Date()
+                        }
+                    },
+                    upsert: true
+                }
+            };
+        });
+
+        try {
+            const bulkWriteResult = await feedBackStudent.bulkWrite(bulkOps, { ordered: false });
+            return bulkWriteResult;
+        } catch (error) {
+            console.error('Lỗi khi thực hiện bulkWrite:', error);
+            throw error;
+        }
+    }
+
     //
     static async getFeedBackByStudents({ idStudent }) {
         const listFeedBack = await feedBackStudent.findOne({

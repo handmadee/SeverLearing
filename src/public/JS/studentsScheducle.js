@@ -156,7 +156,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (file) {
             const formData = new FormData();
             formData.append('excelStudents', file);
-
             try {
                 const response = await fetch(`${LOCALHOST_API_URL}importShechedule`, {
                     method: 'POST',
