@@ -14,62 +14,58 @@ function convertExcelToFeedbackJson(filePath) {
         // Đọc file Excel
         const file = reader.readFile(filePath);
         const sheets = file.SheetNames;
-
         // Lặp qua từng sheet
-        for (let i = 0; i < sheets.length; i++) {
-            const sheetName = sheets[i];
-            const sheet = file.Sheets[sheetName];
+        const sheetName = sheets[0];
+        const sheet = file.Sheets[sheetName];
+        // Chuyển sheet thành JSON với cấu hình cụ thể
+        const temp = reader.utils.sheet_to_json(sheet, {
+            range: 2, // Bắt đầu từ hàng 3 (0-indexed)
+            header: [
+                "idStudent", // A: Mã số học sinh
+                null,             // B: cột trống
+                "idTeacher", // C: Mã số giáo viên
+                null,             // D: cột trống
+                "A1",             // E: C++
+                null,             // F: cột trống
+                "A2",             // G: Python
+                null,             // H: cột trống
+                "A3",             // I: Scratch
+                null,             // J: cột trống
+                "skill",          // K: Kĩ năng lập trình
+                null,             // L: cột trống
+                "thinking",       // M: Tư duy môn học
+                null,             // N: cột trống
+                "content" // O: Nhận xét
+            ],
+            defval: null,       // Giá trị mặc định nếu ô trống
+            blankrows: false,   // Bỏ qua hàng trống
+            skipHidden: true    // Bỏ qua hàng ẩn
+        });
+        // Xử lý từng hàng trong sheet
+        temp.forEach((res) => {
+            let feedback = {};
+            feedback.idStudent = res.idStudent;
+            feedback.idTeacher = res.idTeacher;
 
-            // Chuyển sheet thành JSON với cấu hình cụ thể
-            const temp = reader.utils.sheet_to_json(sheet, {
-                range: 2, // Bắt đầu từ hàng 3 (0-indexed)
-                header: [
-                    "idStudent", // A: Mã số học sinh
-                    null,             // B: cột trống
-                    "idTeacher", // C: Mã số giáo viên
-                    null,             // D: cột trống
-                    "A1",             // E: C++
-                    null,             // F: cột trống
-                    "A2",             // G: Python
-                    null,             // H: cột trống
-                    "A3",             // I: Scratch
-                    null,             // J: cột trống
-                    "skill",          // K: Kĩ năng lập trình
-                    null,             // L: cột trống
-                    "thinking",       // M: Tư duy môn học
-                    null,             // N: cột trống
-                    "content" // O: Nhận xét
-                ],
-                defval: null,       // Giá trị mặc định nếu ô trống
-                blankrows: false,   // Bỏ qua hàng trống
-                skipHidden: true    // Bỏ qua hàng ẩn
-            });
+            // Parse các môn học
+            let a1 = parseSubject(res.A1, SubjectUID.C);       // C++
+            let a2 = parseSubject(res.A2, SubjectUID.PYTHON);  // Python
+            let a3 = parseSubject(res.A3, SubjectUID.SCRATCH); // Scratch
 
-            // Xử lý từng hàng trong sheet
-            temp.forEach((res) => {
-                let feedback = {};
-                feedback.idStudent = res.idStudent;
-                feedback.idTeacher = res.idTeacher;
+            // Thêm các subjectScores
+            feedback.subjectScores = [];
+            if (a1) feedback.subjectScores.push(a1);
+            if (a2) feedback.subjectScores.push(a2);
+            if (a3) feedback.subjectScores.push(a3);
 
-                // Parse các môn học
-                let a1 = parseSubject(res.A1, SubjectUID.C);       // C++
-                let a2 = parseSubject(res.A2, SubjectUID.PYTHON);  // Python
-                let a3 = parseSubject(res.A3, SubjectUID.SCRATCH); // Scratch
+            // Các thuộc tính khác
+            feedback.skill = res.skill;
+            feedback.thinking = res.thinking;
+            feedback.content = res.content;
 
-                // Thêm các subjectScores
-                feedback.subjectScores = [];
-                if (a1) feedback.subjectScores.push(a1);
-                if (a2) feedback.subjectScores.push(a2);
-                if (a3) feedback.subjectScores.push(a3);
+            data.push(feedback);
+        });
 
-                // Các thuộc tính khác
-                feedback.skill = res.skill;
-                feedback.thinking = res.thinking;
-                feedback.content = res.content;
-
-                data.push(feedback);
-            });
-        }
 
         console.log('====================================');
         console.log("HELLO - WORD SHEET TO JSON");
