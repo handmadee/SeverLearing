@@ -2,6 +2,7 @@ const reader = require('xlsx');
 const { parseSubject } = require('./../untils/string.untils');
 const { SubjectUID } = require('../enums/feeback.enum');
 
+
 /**
  * Chuyển đổi file Excel thành mảng JSON chứa thông tin feedback.
  * @param {string} filePath - Đường dẫn tới file Excel.
@@ -19,28 +20,26 @@ function convertExcelToFeedbackJson(filePath) {
         const sheet = file.Sheets[sheetName];
         // Chuyển sheet thành JSON với cấu hình cụ thể
         const temp = reader.utils.sheet_to_json(sheet, {
-            range: 2, // Bắt đầu từ hàng 3 (0-indexed)
+            range: 2,
             header: [
-                "idStudent", // A: Mã số học sinh
-                null,             // B: cột trống
-                "idTeacher", // C: Mã số giáo viên
-                null,             // D: cột trống
+                null,
+                "idStudent",
+                "nameStudents",
+                "idTeacher",
                 "A1",             // E: C++
-                null,             // F: cột trống
-                "A2",             // G: Python
-                null,             // H: cột trống
-                "A3",             // I: Scratch
-                null,             // J: cột trống
-                "skill",          // K: Kĩ năng lập trình
-                null,             // L: cột trống
-                "thinking",       // M: Tư duy môn học
-                null,             // N: cột trống
-                "content" // O: Nhận xét
+                "A2",             // F: Python
+                "A3",             // G: Scratch
+                "skill",          // H: Kĩ năng lập trình
+                "thinking",       // I: Tư duy môn học
+                "content",        // j: Nhận xét
+                null,             // k: cột trống
             ],
             defval: null,       // Giá trị mặc định nếu ô trống
             blankrows: false,   // Bỏ qua hàng trống
             skipHidden: true    // Bỏ qua hàng ẩn
         });
+        console.log(temp);
+
         // Xử lý từng hàng trong sheet
         temp.forEach((res) => {
             let feedback = {};
@@ -76,7 +75,5 @@ function convertExcelToFeedbackJson(filePath) {
         return [];
     }
 }
-
-
 
 module.exports = convertExcelToFeedbackJson;
