@@ -93,7 +93,10 @@ const createFileFeedBack = async (body) => {
 
         if (data) {
             console.log(data);
-            alert(`Số đánh giá đã hoàn tất ${data.data.modifiedCount}`);
+            alert(`
+                Tạo đánh giá thành công\n
+                Số đánh giá đã tạo mới ${data.data.insertedCount} \n 
+                Số đánh giá được sửa đổi ${data.data.modifiedCount}`);
             location.reload();
         }
     } catch (error) {
