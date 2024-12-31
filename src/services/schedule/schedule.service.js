@@ -3,6 +3,7 @@ const { Types } = require('mongoose');
 const studentAttendance = require('../../models/shechedule/studentAttendance');
 const ShecheduleModel = require('../../models/shechedule/studentShechedule.model');
 const BaseService = require("../base.service");
+const { NotFoundError } = require('../../core/error.response');
 
 class StudentShecheduleService extends BaseService {
     constructor() {
@@ -25,57 +26,20 @@ class StudentShecheduleService extends BaseService {
         return await ShecheduleModel.insertMany(data);
     }
 
-    // Get days and Study
-    // async getStudy(study, days) {
-    //     try {
-    //         const dayNow = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`;
-    //         const person = await ShecheduleModel.findOne({ study, days }).lean();
-    //         if (!person) {
-    //             return {
-    //                 status: true,
-    //                 data: []
-    //             };
-    //         }
-    //         console.log({
-    //             message: 'Tìm thấy người',
-    //             studentAccount: person._id,
-    //             date: days
-    //         });
+    async getStudentById(id, select) {
+        return await ShecheduleModel.findById(id).select(select);
+    }
 
-    //         const isChecked = await studentAttendance.findOne({
-    //             studentAccount: new Types.ObjectId(person._id),
-    //             date: new Date(dayNow)
-    //         }).lean();
-
-    //         console.log({
-    //             message: 'Kiểm tra điểm danh',
-    //             dayNow: new Date(dayNow),
-    //             isChecked: isChecked
-    //         });
-
-    //         if (!isChecked) {
-    //             const data = await ShecheduleModel.find({ study, days }).lean();
-    //             return {
-    //                 status: true,
-    //                 data
-    //             };
-    //         }
-
-    //         const data = await studentAttendance.find({ study, date: new Date(dayNow) }).populate('studentAccount').lean();
-    //         return {
-    //             status: false,
-    //             data
-    //         };
-    //     } catch (error) {
-    //         console.error('Lỗi trong getStudy:', error);
-    //         return {
-    //             status: false,
-    //             error: error.message,
-    //             data: []
-    //         };
-    //     }
-    // }
-
+    async checkStudentExistenceById(id) {
+        if (!Types.ObjectId.isValid(id)) {
+            throw new Error('[400] Invalid ID format');
+        }
+        const foundStudent = await this.model.exists({ _id: id });
+        if (!foundStudent) {
+            throw new NotFoundError('[404] Student not found!');
+        }
+        return true;
+    }
     async getStudy1(study, days) {
         try {
             const today = new Date();

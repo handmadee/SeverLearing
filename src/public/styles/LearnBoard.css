@@ -44,8 +44,9 @@ body {
   padding: 15px;
   border-radius: 30px;
   transition: all 0.3s;
+}
+.sidebar .nav {
   overflow-y: scroll;
-  /* overflow-x: ; */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }

@@ -1,0 +1,371 @@
+/* Modern Professional Exam Interface CSS */
+
+/* Base Styles */
+:root {
+  --primary: #2563eb;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --warning: #eab308;
+  --background: #f8fafc;
+  --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --hover-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+body {
+  background: var(--background);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* Alert Banner */
+.alert-marquee {
+  background: #fef2f2;
+  border-left: 4px solid var(--danger);
+  color: #991b1b;
+  padding: 1rem;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--card-shadow);
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Exam Container */
+.container-fluid {
+  max-width: 1600px;
+  padding: 1.5rem;
+}
+
+/* PDF Viewer */
+.border.rounded {
+  background: white;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.75rem;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.3s ease;
+}
+
+.border.rounded:hover {
+  box-shadow: var(--hover-shadow);
+}
+
+.pdf-container {
+  height: calc(100vh - 180px);
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+}
+
+.pdf-container iframe {
+  border: none;
+  height: 100%;
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+/* Student Info Card */
+.card {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--hover-shadow);
+}
+
+.card-header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem;
+  border-radius: 0.75rem 0.75rem 0 0 !important;
+}
+
+.text-danger {
+  color: white !important;
+  font-size: 1.175rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.card .mb-0 {
+  color: white;
+  font-weight: bold;
+}
+/* Questions Section */
+.card-body {
+  padding: 1.25rem;
+}
+.card-body.text-center {
+  background-color: rgba(25, 135, 84, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+}
+.card-body strong {
+  font-weight: bold;
+}
+
+.form-check {
+  margin: 0.75rem 0;
+  padding: 0.875rem 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.form-check:hover {
+  background: #a4d3c0;
+  border-color: #e5e7eb;
+}
+
+.form-check-label:hover {
+  cursor: pointer;
+}
+.form-check-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.25rem;
+  border: 2px solid #94a3b8;
+  transition: all 0.2s ease;
+}
+
+.form-check-input:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgb(37 99 235 / 0.2);
+}
+
+.form-check-label {
+  width: 100%;
+  padding-left: 0.75rem;
+  font-size: 0.9375rem;
+  color: #1e293b;
+}
+
+/* Submit Button */
+.btn-success {
+  background: var(--success);
+  border: none;
+  padding: 1rem 2rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  letter-spacing: 0.025em;
+  box-shadow: 0 2px 4px rgb(22 163 74 / 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgb(22 163 74 / 0.3);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 3px;
+}
+.container-fluid {
+  padding: 0;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-dialog {
+  background: white;
+  border-radius: 5px;
+  overflow: hidden;
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal-header,
+.modal-footer {
+  padding: 10px 15px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-body {
+  padding: 15px;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 1rem;
+  }
+
+  .pdf-container {
+    height: 60vh;
+  }
+
+  .card {
+    margin-bottom: 1rem;
+  }
+}
+
+.result-popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.result-popup.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.result-header {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-header h5 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.25rem;
+}
+
+.result-body {
+  padding: 20px;
+}
+
+.result-info {
+  margin-bottom: 20px;
+}
+
+.result-info p {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  border-radius: 6px;
+  background: #f8f9fa;
+}
+
+.result-score {
+  text-align: center;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.score-label {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+.score-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.result-footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.btn-back {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-back:hover {
+  background: #218838;
+}
+
+.result-status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+}
+
+.status-pass {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-fail {
+  background: #f8d7da;
+  color: #721c24;
+}

@@ -3,6 +3,7 @@
 const forms = document.querySelectorAll('.needs-validation');
 import { LOCALHOST_API_URL } from './config.js'
 const localhost = LOCALHOST_API_URL;
+
 const createCategory = document.getElementById('createCate');
 Array.from(forms).forEach(form => {
     form.addEventListener('submit', event => {

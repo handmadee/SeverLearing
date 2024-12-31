@@ -16,5 +16,12 @@ function parseSubject(str, subjectUID) {
     };
 }
 
-module.exports = { parseSubject };
+const generateCustomId = () => {
+    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const timePart = Date.now().toString(36).substring(5, 7).toUpperCase();
+    return randomPart + timePart;
+};
+
+
+module.exports = { parseSubject, generateCustomId };
 

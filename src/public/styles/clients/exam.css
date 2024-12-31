@@ -1,0 +1,36 @@
+.container .table-responsive {
+  height: 45vh;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.container .table-responsive .table {
+  position: relative;
+}
+
+.container .table {
+  width: 100%;
+}
+.container .table-responsive::-webkit-scrollbar {
+  display: none;
+}
+
+.table tbody tr {
+  height: 50px;
+  transition: background-color 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.container .btn {
+  background-color: rgba(25, 135, 84, 1);
+}
+
+.table-responsive .table .table-dark {
+  position: sticky;
+  top: 0; /* Đặt vị trí cố định ở đầu */
+  z-index: 10; /* Đảm bảo nằm trên các phần tử khác */
+  background-color: #343a40;
+}

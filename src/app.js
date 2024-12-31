@@ -7,6 +7,7 @@ const compression = require('compression');
 const cors = require('cors');
 const router = require('./router');
 const adminRouter = require('./router/layouts/admin');
+const clientRouter = require('./router/layouts/client');
 const configViewEngine = require('./configs/config.viewEngine');
 const app = express();
 app.set("view engine", "ejs");
@@ -38,6 +39,7 @@ app.use('/', router.get('/v1/api/keep', (req, res) => {
     res.send('Keep alive');
 }));
 app.use('/admin', adminRouter);
+app.use('/client', clientRouter);
 
 // Handle 404 errors
 app.use((req, res, next) => {
@@ -48,11 +50,13 @@ app.use((req, res, next) => {
 // Handle other errors
 app.use((error, res, next) => {
     res.status(error.statusCode || 500);
+    console.log(error);
     res.json({
         error: {
             message: error.message || 'Server error',
             statusCode: error.statusCode || 500
-        }
+        },
+        stack: error.stack
     });
 });
 
