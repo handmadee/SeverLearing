@@ -54,6 +54,9 @@ class HistoryExamService {
         return await historyExamRepository.getAllHistory(query);
     }
 
+    static async removeBulkExamById(examId) {
+
+    }
 
 
 
