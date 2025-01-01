@@ -114,11 +114,10 @@ const submitExamV = async ({ idExam, idStudent, studentAnswers }) => {
 
 const getHistoryExam = async (examId, studentId) => {
     try {
-        const response = await fetch(`${localhost}examQuestion/history/result/${studentId}/${examId}`);
-        console.log(response);
-        const data = await response.json();
-        return data;
+        const response = await fetch(`${localhost}examQuestion/history/result/${studentId}${'/' + examId}`);
+        return response;
     } catch (error) {
+
         console.log(error);
         alert('Đã xảy ra lỗi !');
     }

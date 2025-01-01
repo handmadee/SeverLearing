@@ -27,6 +27,13 @@ class HistoryExamRepositories extends BaseService {
 
     }
 
+    async removeBulkExamById(examId) {
+        await this.model.deleteMany({
+            examRef: examId
+        })
+    }
+
+
 
 
 

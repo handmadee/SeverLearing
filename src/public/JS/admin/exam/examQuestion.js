@@ -374,6 +374,7 @@ class ExamManager {
             this.elements.detailsModal.style.display = 'block';
             loadingIndicator.remove();
         } catch (error) {
+            console.log(error)
             this.showNotification('Lỗi khi tải chi tiết đề thi', 'error');
         }
     }
@@ -382,8 +383,8 @@ class ExamManager {
         this.elements.detailsTableBody.innerHTML = historyData.length ?
             historyData.map(record => `
                 <tr>
-                     <td>${record.userRef._id}</td>
-                    <td>${record.userRef.fullname}</td>
+                     <td>${record?.userRef?._id}</td>
+                    <td>${record?.userRef?.fullname}</td>
                     <td class="text-center">${record.correctAnswers}</td>
                     <td class="text-center">${record.incorrectAnswers}</td>
                     <td class="text-center">

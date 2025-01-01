@@ -64,5 +64,10 @@ const examQuestionSchema = new Schema({
     timestamps: true
 });
 examQuestionSchema.index({ title: 'text' })
+examQuestionSchema.pre('remove', async function (next) {
+    await mongoose.model('HistoryExamQuestion').deleteMany({ examRef: this._id });
+    next();
+});
+
 
 module.exports = model(DOCUMENT_NAME, examQuestionSchema);

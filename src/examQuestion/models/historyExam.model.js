@@ -40,5 +40,7 @@ const historyExamQuestionSchema = new Schema({
     collection: COLLECTION_NAME,
     timestamps: true
 });
+historyExamQuestionSchema.index({ result: 1 });
+
 
 module.exports = model(DOCUMENT_NAME, historyExamQuestionSchema);

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         elements.tableBody.innerHTML = results.map((result, index) => `
       <tr class="result-row animate-fade-in" style="animation-delay: ${index * 0.1}s">
-        <td class="text-center align-middle">${result.examRef._id}</td>
+        <td class="text-center align-middle">${result.examRef?._id}</td>
         <td class="text-center align-middle">${result.userRef.fullname}</td>
         <td class="text-center align-middle">
           <span class="badge bg-success-subtle text-success">
@@ -56,8 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
         UTILS.showLoading();
 
         try {
-            const results = await getHistoryExam(examId, studentId);
-            renderResults(results.data);
+            const response = await getHistoryExam(examId, studentId);
+            if (response.status == 200) {
+                const results = await response.json();
+                renderResults(results.data);
+            } else {
+                UTILS.showError('Mã số sinh viên không hoặc mã đề thi không tồn tại !!');
+            }
+
         } catch (error) {
             console.log(error)
             UTILS.showError('Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.');

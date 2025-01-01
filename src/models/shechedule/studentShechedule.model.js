@@ -32,5 +32,13 @@ const studentShecheduleQuizSchema = new Schema({
 
 // @prams 
 studentShecheduleQuizSchema.index({ fullname: 'text' })
-
+studentShecheduleQuizSchema.pre('findByIdAndDelete', async function (next) {
+    try {
+        const studentId = this._id;
+        await mongoose.model('HistoryExamQuestion').deleteMany({ userRef: studentId });
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 module.exports = model(DOCUMENT_NAME, studentShecheduleQuizSchema);
