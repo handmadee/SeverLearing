@@ -26,7 +26,13 @@ class Created extends SuccessResponse {
     constructor(message, data) {
         super(StatusCodes.CREATED, message || ReasonPhrases.CREATED, data);
     }
-
 }
 
-module.exports = { OK, Created };
+class NoContent extends SuccessResponse {
+    constructor(message, data) {
+        super(StatusCodes.NO_CONTENT || message, data)
+    }
+}
+
+
+module.exports = { OK, Created, NoContent };

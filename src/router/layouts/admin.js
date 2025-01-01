@@ -21,6 +21,10 @@ const AccountService = require('../../services/account/account.service');
 const ClassService = require('../../services/schedule/class.services');
 const feedBackStudentService = require('../../feeback/services/feedBack.servicer');
 const languageService = require('../../feeback/services/language.service');
+const errorHandler = require('../../untils/errorHandler');
+const notFoundHandler = require('../../middleware/notfound');
+const errorHandlerV = require('../../middleware/errorHandler');
+
 
 
 
@@ -424,6 +428,8 @@ adminRouter.get('/parents/students/:id', asnycHandler(async (req, res) => {
 
 
 
+
+
 // Class
 adminRouter.get('/class', asnycHandler(async (req, res) => {
     const data = await AccountService.accountSupper();
@@ -456,24 +462,26 @@ adminRouter.get('/subject', asnycHandler(async (req, res) => {
 }));
 
 
-
-
+adminRouter.get('/examQuestions', asnycHandler(async (req, res) => {
+    const ListSubject = await languageService.getAll();
+    res.render('admin/examQuestion/examQuestion', { title: "Quản lý hệ thống thi online" });
+}));
 
 
 // Errors
-adminRouter.get('/404', (req, res) => {
-    res.render('errors/404', { title: "404  - Not found" });
-});
+
 adminRouter.get('/403', (req, res) => {
     res.render('errors/403', { title: "403  - Forbidden" });
 });
 
-// Settings
 adminRouter.get('/settings', (req, res) => {
     res.render('admin/settings');
 });
 
-// Notification
+adminRouter.use(errorHandlerV);
+
+adminRouter.all('*', notFoundHandler)
+
 
 
 module.exports = adminRouter;

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kết Quả Bài Thi</title>
+    <!-- Bootstrap 5 CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+      <div class="container">
+        <a class="navbar-brand" href="#">Thi Trắc Nghiệm</a>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+
+    <div class="container my-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card shadow">
+            <div class="card-body">
+              <h3 class="text-center text-success mb-4">KẾT QUẢ BÀI THI</h3>
+
+              <p><strong>Họ và tên thí sinh:</strong> Nguyễn Văn Nam</p>
+              <p><strong>Mã đề:</strong> XAB123</p>
+              <p><strong>Thời gian làm bài:</strong> 20p/45p</p>
+
+              <p><strong>Số câu đúng:</strong> 10</p>
+              <p><strong>Số câu sai:</strong> 5</p>
+              <p><strong>Các câu sai:</strong> 2, 5, 7, 12, 15</p>
+
+              <p><strong>Điểm số:</strong> 5</p>
+              <p>
+                <strong>Kết quả:</strong>
+                <span class="text-success fw-bold">Đạt</span>
+                <!-- Hoặc "Không đạt" -->
+              </p>
+
+              <hr />
+              <p>
+                Phần này bỏ qua thông tin điểm số, chỉ cần đạt hoặc không đạt.
+                <br />
+                (Tổng số câu đúng trên 80% tổng số câu là đạt, ngược lại không
+                đạt)
+              </p>
+
+              <div class="text-center mt-4">
+                <!-- Nút quay về trang đầu hoặc trang nhập mã -->
+                <a href="index.html" class="btn btn-success">
+                  Thi Lại / Trang Chủ
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
