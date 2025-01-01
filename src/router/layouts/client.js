@@ -3,6 +3,8 @@ const express = require('express');
 const { asnycHandler } = require('../../helpers/asyncHandler');
 const ExamQuestionServices = require('../../examQuestion/services/exam.service');
 const { request } = require('../../app');
+const errorHandlerV = require('../../middleware/errorHandler');
+const notFoundHandler = require('../../middleware/notfound');
 const clientRouter = express.Router();
 
 
@@ -39,6 +41,8 @@ clientRouter.get('/exams/online/:examId/:studentId', asnycHandler(async (req, re
     }
 }));
 
+clientRouter.use(errorHandlerV);
+clientRouter.use('*', notFoundHandler)
 
 
 

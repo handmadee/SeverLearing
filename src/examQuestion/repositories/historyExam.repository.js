@@ -20,7 +20,7 @@ class HistoryExamRepositories extends BaseService {
             )
             .populate({
                 path: 'examRef',
-                select: '_id'
+                select: '_id title examIsActive'
             }).sort({ createdAt: -1 })
     }
     async submitExam(payload) {

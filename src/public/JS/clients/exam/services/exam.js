@@ -127,7 +127,7 @@ class ExamService {
 
         } catch (error) {
             console.error('Error submitting exam:', error);
-            alert('Có lỗi xảy ra khi nộp bài. Vui lòng thử lại!');
+            alert('Có lỗi xảy ra kh nộp bài. Vui lòng thử lại!');
         }
     }
 }

@@ -32,11 +32,15 @@ class HistoryExamService {
         return historyExamRepository.create(historyExam);
     }
 
-
-    static async getHistoryByExamId(id) {
+    static async getHistoryByExamId(id, status, q) {
+        let query = {
+            examRef: id
+        };
+        if (status) query.examIsActive = status;
         await ExamQuestionServices.foundExam(id);
-        return await historyExamRepository.getAllHistory({ examRef: id });
+        return await historyExamRepository.getAllHistory(query);
     }
+
 
     static async getResuftExamByStudentId(studentId, examId) {
         await scheduleService.checkStudentExistenceById(studentId);

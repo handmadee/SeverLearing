@@ -14,9 +14,10 @@ class HistoryExamControler {
 
     async getHistoryByExamId(req, res) {
         const { id } = req.params;
+        const { status } = req.query;
         console.log({ id })
         return new OK(
-            await HistoryExamService.getHistoryByExamId(id)
+            await HistoryExamService.getHistoryByExamId(id, status)
         ).send(res)
     }
 

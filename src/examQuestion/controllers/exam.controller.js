@@ -12,9 +12,10 @@ class ExamControllers {
      * IV, 
      */
     async getAllExam(req, res) {
-        const { status, search, page = 1, limit = 20, select } = req.query;
+        const { status, q, page = 1, limit = 20, select } = req.query;
+        console.log(status, q, page, limit, select)
         return new OK(
-            await ExamQuestionServices.getAllExams(status, select, page, limit, search)
+            await ExamQuestionServices.getAllExams(status, select, page, limit, q)
         ).send(res);
     }
     async createdExam(req, res) {
@@ -32,6 +33,7 @@ class ExamControllers {
     }
     async updateExam(req, res) {
         const { id } = req.params;
+        console.log(id)
         const payload = req.body;
         return new OK(
             await ExamQuestionServices.updateById(id, payload)

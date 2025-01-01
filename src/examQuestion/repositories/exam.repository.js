@@ -13,13 +13,16 @@ class ExamRepositories extends BaseService {
         super(examQuestionModel)
     }
     // status -> true/ false
-    async getAllExam(status, select, page = 1, limit = 20, search) {
+    async getAllExam(status, select, page = 1, limit = 20, q) {
         let query = {};
         if (status) {
             query.examIsActive = status;
         }
-        if (search) {
-            query._id = { $regex: search, $options: 'i' };
+        if (q) {
+            query.$or = [
+                { _id: { $regex: q, $options: 'i' } },
+                { title: { $regex: q, $options: 'i' } }
+            ];
         }
         const total = await this.model.countDocuments(query);
         const skip = (page - 1) * limit;
@@ -76,7 +79,7 @@ class ExamRepositories extends BaseService {
     }
 
     async updateExamById(id, newPayload) {
-        return await this.model.update({
+        return await this.model.updateOne({
             _id: id
         }, newPayload);
     }

@@ -20,8 +20,23 @@ app.use(
     helmet.contentSecurityPolicy({
         useDefaults: true,
         directives: {
-            "img-src": ["'self'", "https: data: blob:"],
-        },
+            "default-src": ["'self'"],
+            "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://*.googleapis.com"],
+            "style-src": ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com"],
+            "img-src": ["'self'", "https:", "data:", "blob:"],
+            "font-src": ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "data:"],
+            "frame-src": [
+                "'self'",
+                "https://drive.google.com",
+                "https://*.google.com",
+                "https://docs.google.com",
+                "https://*.googleapis.com"
+            ],
+            "connect-src": ["'self'", "https://*"],
+            "media-src": ["'self'", "https://*"],
+            "object-src": ["'none'"],
+            "base-uri": ["'self'"]
+        }
     })
 );
 app.use(compression());
