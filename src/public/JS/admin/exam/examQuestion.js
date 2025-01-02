@@ -65,6 +65,10 @@ class ExamManager {
             closeBtn.addEventListener('click', () => this.closeModals());
         });
 
+        this.elements.detailsModal.querySelector('.close').addEventListener('click', () => {
+            this.closeModalsDetail();
+        });
+
         // Close modals when clicking outside
         window.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal')) {
@@ -493,8 +497,12 @@ class ExamManager {
 
     closeModals() {
         this.elements.examModal.style.display = 'none';
+    }
+
+    closeModalsDetail() {
         this.elements.detailsModal.style.display = 'none';
     }
+
 
     handleSearch() {
         const codeSearch = this.elements.searchExamCode.value.toLowerCase();
