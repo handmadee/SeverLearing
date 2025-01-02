@@ -29,15 +29,14 @@ class ExamService {
 
     setupTimer() {
         let timeLeft = this.examTime;
-
         const updateTimer = () => {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
             this.timeRemaining.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
-                this.submitExam();
+                const answers = this.collectAnswers();
+                this.submitExam(answers);
             }
             timeLeft--;
         };
@@ -81,11 +80,12 @@ class ExamService {
     }
 
     showResult(data) {
+        console.log(data)
         document.getElementById('studentId').textContent = data.userRef;
         document.getElementById('examId').textContent = data.examRef;
-        document.getElementById('correctAnswers').textContent = data.correctAnswers;
+        document.getElementById('correctAnswers').textContent = data.correctAnswers.length;
         document.getElementById('totalQuestions').textContent =
-            data.correctAnswers + data.incorrectAnswers;
+            data.correctAnswers.length + data.incorrectAnswers.length;
 
         const examStatus = document.getElementById('examStatus');
         if (data.result) {
@@ -106,6 +106,7 @@ class ExamService {
                 idExam: document.querySelector('[data-exam-id]').dataset.examId,
                 idStudent: document.querySelector('[data-student-id]').dataset.studentId
             };
+            console.log(formData)
             const data = await submitExamV(formData);
             console.log(data)
             // const mockResponse = {

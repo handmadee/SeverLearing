@@ -11,6 +11,7 @@ class HistoryExamRepositories extends BaseService {
         super(historyExamModel)
     }
     async getAllHistory(query, select) {
+        console.log(query, select)
         return await this.model.find(query)
             .select(select)
             .populate({

@@ -48,6 +48,7 @@ class StudentShecheduleController {
         const id = req.params.id;
         await StudentShecheduleService.remove(id);
         await attendanceService.delAccountID(id);
+        //! xoas his
         return new OK({
             message: 'Delete success'
         }).send(res);

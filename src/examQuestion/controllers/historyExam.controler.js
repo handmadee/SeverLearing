@@ -24,7 +24,7 @@ class HistoryExamControler {
     async getResuftExamByStudentId(req, res) {
         const { studentId, examId } = req.params;
         return new OK(
-            await HistoryExamService.getResuftExamByStudentId(studentId, examId)
+            await HistoryExamService.getResultExamByStudentId(studentId, examId)
         ).send(res);
     }
 

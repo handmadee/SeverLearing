@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             else {
                 if (result.status == 403) return showAlert('Sinh viên đã đạt giới hạn được phép làm bài kiểm tra', 'danger');
-                showAlert(result.message || 'Mã số sinh viên hoặc Mã đề thi không tồn tại.', 'danger');
+                showAlert(result.message || 'Mã số học sinh hoặc Mã đề thi không tồn tại.', 'danger');
             }
         } catch (error) {
             showAlert(error.message || 'Đã xảy ra lỗi!', 'danger');
