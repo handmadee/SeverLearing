@@ -20,16 +20,12 @@ const historyExamQuestionSchema = new Schema({
         required: true
     },
     correctAnswers: {
-        type: Number,
-        min: 0,
+        type: [],
         required: true,
-        default: 0
     },
     incorrectAnswers: {
-        type: Number,
-        min: 0,
+        type: [],
         required: true,
-        default: 0
     },
     result: {
         type: Boolean,

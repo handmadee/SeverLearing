@@ -101,6 +101,19 @@ class ExamManager {
                 }
             }
         });
+
+        const incorrectModal = document.getElementById('incorrectAnswersModal');
+        incorrectModal.querySelector('.close').addEventListener('click', () => {
+            incorrectModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === incorrectModal) {
+                incorrectModal.style.display = 'none';
+            }
+        });
+
+
     }
 
     copyToClipboard(text) {
@@ -382,20 +395,41 @@ class ExamManager {
     renderExamDetails(historyData) {
         this.elements.detailsTableBody.innerHTML = historyData.length ?
             historyData.map(record => `
-                <tr>
-                     <td>${record?.userRef?._id}</td>
-                    <td>${record?.userRef?.fullname}</td>
-                    <td class="text-center">${record.correctAnswers}</td>
-                    <td class="text-center">${record.incorrectAnswers}</td>
-                    <td class="text-center">
-                        <span data-status="${record.result}" class="badge ${record.result ? 'bg-success' : 'bg-danger'}">
-                            ${record.result ? 'Đạt' : 'Không đạt'}
-                        </span>
-                    </td>
-                      <td class="text-center">${UTILS.formatDate(record.createdAt)}</td>
-                </tr>
-            `).join('') :
-            '<tr><td colspan="4" class="text-center">Chưa có dữ liệu</td></tr>';
+            <tr>
+                <td>${record?.userRef?._id}</td>
+                <td>${record?.userRef?.fullname}</td>
+                <td class="text-center">${record.correctAnswers.length}</td>
+                <td class="text-center">${record.incorrectAnswers.length}</td>
+                <td class="text-center">
+                    <span data-status="${record.result}" class="badge ${record.result ? 'bg-success' : 'bg-danger'}">
+                        ${record.result ? 'Đạt' : 'Không đạt'}
+                    </span>
+                </td>
+                <td class="text-center">${UTILS.formatDate(record.createdAt)}</td>
+                <td class="text-center">
+                    <button class="btn btn-info view-details-btn" 
+                            data-student-id="${record?.userRef?._id}"
+                            data-student-name="${record?.userRef?.fullname}"
+                            data-incorrect='${JSON.stringify(record.incorrectAnswers)}'>
+                        <i class="fas fa-eye"></i> Chi tiết
+                    </button>
+                </td>
+            </tr>
+        `).join('') :
+            '<tr><td colspan="7" class="text-center">Chưa có dữ liệu</td></tr>';
+        this.addDetailButtonListeners();
+    }
+
+    addDetailButtonListeners() {
+        const detailButtons = this.elements.detailsTableBody.querySelectorAll('.view-details-btn');
+        detailButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const studentId = e.currentTarget.dataset.studentId;
+                const studentName = e.currentTarget.dataset.studentName;
+                const incorrectAnswers = JSON.parse(e.currentTarget.dataset.incorrect);
+                this.showAnswerDetails(studentId, studentName, incorrectAnswers);
+            });
+        });
     }
 
     async editExam(examId) {
@@ -489,6 +523,32 @@ class ExamManager {
         };
         return new Date(dateString).toLocaleDateString('vi-VN', options);
     }
+
+    showAnswerDetails(studentId, studentName, incorrectAnswers) {
+        document.getElementById('studentNameDetail').textContent = studentName;
+        document.getElementById('studentIdDetail').textContent = studentId;
+        const incorrect = incorrectAnswers.filter(a => a.answer !== null);
+        const skipped = incorrectAnswers.filter(a => a.answer === null);
+        document.getElementById('incorrectCount').textContent = incorrect.length;
+        document.getElementById('skippedCount').textContent = skipped.length;
+        const incorrectList = document.getElementById('incorrectList');
+        incorrectList.innerHTML = incorrect.map(answer => `
+        <div class="answer-item">
+            <span class="answer-number">Câu ${answer.index}::    <span class="student-answer">Đã chọn: ${answer.answer}</span></span>
+       
+        </div>
+    `).join('');
+        const skippedList = document.getElementById('skippedList');
+        skippedList.innerHTML = skipped.map(answer => `
+        <div class="answer-item">
+            <span class="answer-number">Câu ${answer.index}</span>
+
+        </div>
+    `).join('');
+        document.getElementById('incorrectAnswersModal').style.display = 'block';
+    }
+
+
 
     showLoadingIndicator() {
         const loadingIndicator = document.createElement('div');

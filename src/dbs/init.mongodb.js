@@ -100,7 +100,7 @@ class Database {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             });
-            console.log("Connected to MongoDB successfully!");
+            console.log("Connected to MongoDB successfully!" + config.db.host);
         } catch (error) {
             console.error("Error connecting to MongoDB:", error);
             process.exit(1);

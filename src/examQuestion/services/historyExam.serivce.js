@@ -1,34 +1,35 @@
-'use strict'
+'use strict';
 
-const StudentShecheduleService = require('./../../services/schedule/schedule.service');
+const StudentScheduleService = require('./../../services/schedule/schedule.service');
 const historyExamRepository = require("../repositories/historyExam.repository");
 const ExamQuestionServices = require("./exam.service");
-const scheduleService = require("./../../services/schedule/schedule.service");
 
 class HistoryExamService {
     static async createHistoryExam(payload) {
-        const { examRef, userRef } = payload;
-        await StudentShecheduleService.checkStudentExistenceById(userRef);
+        const { examRef, userRef, studentAnswers } = payload;
+        await StudentScheduleService.checkStudentExistenceById(userRef);
         const { answers: correctAnswersList } = await ExamQuestionServices.getExamById(examRef);
         const totalQuestions = correctAnswersList.length;
-        const { studentAnswers } = payload;
         if (!Array.isArray(studentAnswers) || studentAnswers.length !== totalQuestions) {
             throw new Error("Invalid or mismatched student answers.");
         }
-        let correctAnswers = 0;
+        let correctAnswers = [];
+        let incorrectAnswers = [];
         for (let i = 0; i < totalQuestions; i++) {
-            if (studentAnswers[i] === correctAnswersList[i]) correctAnswers++;
+            if (studentAnswers[i] === correctAnswersList[i]) {
+                correctAnswers.push({ index: i, answer: studentAnswers[i] });
+            } else {
+                incorrectAnswers.push({ index: i, answer: studentAnswers[i], correctAnswer: correctAnswersList[i] });
+            }
         }
-        const incorrectAnswers = totalQuestions - correctAnswers;
-        const result = correctAnswers >= totalQuestions * 0.8;
+        const result = correctAnswers.length >= totalQuestions * 0.8;
         const historyExam = {
+            examRef,
+            userRef,
             correctAnswers,
             incorrectAnswers,
             result,
-            examRef,
-            userRef,
         };
-
         return historyExamRepository.create(historyExam);
     }
 
@@ -41,28 +42,24 @@ class HistoryExamService {
         return await historyExamRepository.getAllHistory(query);
     }
 
-
-    static async getResuftExamByStudentId(studentId, examId) {
-        await scheduleService.checkStudentExistenceById(studentId);
+    static async getResultExamByStudentId(studentId, examId) {
+        await StudentScheduleService.checkStudentExistenceById(studentId);
         let query = {
             userRef: studentId
-        }
+        };
         if (examId) {
             await ExamQuestionServices.foundExam(examId);
-            query.examRef = examId
+            query.examRef = examId;
         }
         return await historyExamRepository.getAllHistory(query);
     }
 
-    static async removeBulkExamById(examId) {
-
+    static async removeBulkExamById(examIds) {
+        if (!Array.isArray(examIds) || examIds.length === 0) {
+            throw new Error("Invalid or empty exam IDs array.");
+        }
+        return await historyExamRepository.removeBulkByIds(examIds);
     }
-
-
-
-
-
-
 }
 
 module.exports = HistoryExamService;
