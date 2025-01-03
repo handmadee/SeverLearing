@@ -650,9 +650,7 @@ async function handleContentClassClick(e) {
         if (target.className.includes("btnClass") || target.className === "") return;
 
         const id = target.dataset.id;
-        addStudents.dataset.id = id; // Lưu ID lớp để tiện xóa/thêm học sinh
-
-        // Mở popup
+        addStudents.dataset.id = id;
         showAllStudents.classList.add("show");
 
         // Loading + fetch data
