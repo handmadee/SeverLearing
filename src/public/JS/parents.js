@@ -20,11 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 const baseUrl = window.location.href.endsWith('/') ? window.location.href.slice(0, -1) : window.location.href;
                 return window.location.href = baseUrl + "/students/" + value;
             } else {
-                alert("Học sinh chưa có đánh giá nào từ giảng viên !!");
+                alert("Học sinh chưa có đánh giá nào từ giáo viên !!");
             }
         } catch (error) {
             console.log(error)
-            alert("Học sinh chưa có đánh giá nào từ giảng viên !!");
+            alert("Học sinh chưa có đánh giá nào từ giáo viên !!");
         }
     });
 })

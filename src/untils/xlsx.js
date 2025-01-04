@@ -45,7 +45,7 @@ function convertExcelToFeedbackJson(filePath) {
             let feedback = {};
             feedback.idStudent = res.idStudent;
             feedback.idTeacher = res.idTeacher;
-
+            console.log(res.A3)
             // Parse các môn học
             let a1 = parseSubject(res.A1, SubjectUID.C);       // C++
             let a2 = parseSubject(res.A2, SubjectUID.PYTHON);  // Python
@@ -56,12 +56,11 @@ function convertExcelToFeedbackJson(filePath) {
             if (a1) feedback.subjectScores.push(a1);
             if (a2) feedback.subjectScores.push(a2);
             if (a3) feedback.subjectScores.push(a3);
-
+            console.log(feedback.subjectScores)
             // Các thuộc tính khác
             feedback.skill = res.skill;
             feedback.thinking = res.thinking;
             feedback.content = res.content;
-
             data.push(feedback);
         });
         console.log('====================================');
@@ -75,5 +74,7 @@ function convertExcelToFeedbackJson(filePath) {
         return [];
     }
 }
+
+convertExcelToFeedbackJson('/Users/admin/Documents/TSMART/SeverLearing/src/public/sheets/N1.xlsx');
 
 module.exports = convertExcelToFeedbackJson;
