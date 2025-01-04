@@ -1,525 +1,406 @@
-// import { LOCALHOST_API_URL } from "./config.js";
-
-// // DOM Elements
-// const selectTeacher = document.querySelector(".teacher");
-// const main = document.querySelector(".main");
-// const selectTime = document.getElementById("time");
-// const contentTable = document.getElementById("contentTable");
-// const EvaluateContent = document.getElementById("EvaluateContent");
-// const items = contentTable.querySelectorAll(".item");
-// const dialogReview = document.querySelector(".dialogReview");
-// const nameStu = dialogReview.querySelector(".nameStudents");
-// const xmark = dialogReview.querySelector(".xmark");
-// const btnEdit = dialogReview.querySelector(".editFeedBack");
-// // Close the dialog
-// xmark.addEventListener('click', () => {
-//     dialogReview.style.display = "none";
-//     btnEdit.removeEventListener('click', handleEditClick);
-// });
-
-// // Helper function to format the date
-// const formatDate = (dateString) => {
-//     const date = new Date(dateString);
-//     const day = String(date.getDate()).padStart(2, '0');
-//     const month = String(date.getMonth() + 1).padStart(2, '0');
-//     const year = date.getFullYear();
-//     return `${day}/${month}/${year}`;
-// };
-
-// // API Call Functions
-// const fetchFeedbackData = async (endpoint) => {
-//     try {
-//         const response = await fetch(endpoint);
-//         const data = await response.json();
-//         return data.data.data;
-//     } catch (error) {
-//         console.error(error);
-//         alert("Đã xảy ra lỗi không mong muốn");
-//         return [];
-//     }
-// };
-
-// const getFeedbackByTeacherAndMonth = (id, month) =>
-//     fetchFeedbackData(`${LOCALHOST_API_URL}feedback/teacher/${id}?month=${month}`);
-
-// const getFeedbackByTeacher = (id) =>
-//     fetchFeedbackData(`${LOCALHOST_API_URL}feedbackByTeacher/${id}`);
-
-// const getFeedbackByMonth = (month) =>
-//     fetchFeedbackData(`${LOCALHOST_API_URL}feedbackByMonth?month=${month}`);
-
-// // Render Functions
-// const renderLoading = () => {
-//     contentTable.innerHTML = `
-//         <tr>
-//             <td colspan="5" class="py-5">
-//                 <div class="d-flex mx-2 col-12 justify-content-center">
-//                     <div class="spinner-border text-success" role="status">
-//                         <span class="visually-hidden">Loading...</span>
-//                     </div>
-//                 </div>
-//             </td>
-//         </tr>`;
-// };
-
-// const renderEmptyRow = () => `
-//     <tr>
-//         <td colspan="5" class="text-center">Không có đánh giá nào tại thời điểm hiện tại</td>
-//     </tr>`;
-
-// const renderItems = (data = []) => {
-//     if (data.length === 0) {
-//         contentTable.innerHTML = renderEmptyRow();
-//         return;
-//     }
-
-//     const fragment = document.createDocumentFragment();
-//     data.forEach((item) => {
-//         const tr = document.createElement('tr');
-//         tr.classList.add('item');
-//         tr.innerHTML = `
-//         <td>${item?.studentsAccount?.fullname}</td>
-//             <td>${item?.teacherAccount?.username}</td>
-//             <td id="contentV">${item?.contentFeedBack}</td>
-//             <td>${formatDate(item?.createdAt)}</td>
-//             <td class="column">
-//                 <button  class="edit"  data-name="${item?.studentsAccount?.fullname}" data-id="${item._id}">
-//                     <i class="review fa-solid fa-street-view"></i> Chỉnh sửa
-//                 </button>
-//                 <button class="delete"  data-id="${item._id}">
-//                     <i class="trash fa-solid fa-trash"></i> Xoá
-//                 </button>
-//             </td>`;
-//         fragment.appendChild(tr);
-//     });
-
-//     contentTable.innerHTML = ''; // Clear previous content
-//     contentTable.appendChild(fragment);
-// };
-
-// // Main Render Function
-// const renderFeedback = async () => {
-//     renderLoading();
-//     let data = [];
-//     const teacherId = selectTeacher.value;
-//     const month = selectTime.value;
-//     if (teacherId === 'all' && month === 'all') {
-//         data = await getFeedbackByMonth(new Date().getMonth() + 1);
-//     } else if (teacherId === 'all') {
-//         data = await getFeedbackByMonth(month);
-//     } else if (month === 'all') {
-//         data = await getFeedbackByTeacher(teacherId);
-//     } else {
-//         data = await getFeedbackByTeacherAndMonth(teacherId, month);
-//     }
-
-//     console.log(data);
-//     renderItems(data);
-// };
-
-// const removeFeedBack = async (id) => {
-//     try {
-//         const response = await fetch(`${LOCALHOST_API_URL}feedback/${id}`, {
-//             method: "DELETE"
-//         });
-//         if (response) {
-//             alert("xoá đánh giá thành công");
-//             location.reload();
-//         }
-//     } catch (error) {
-//         console.error(error);
-//         alert("Đã xảy ra lỗi không mong muốn");
-//     }
-// }
-
-// const editFeedBack = async (id, body) => {
-//     try {
-//         const response = await fetch(`${LOCALHOST_API_URL}feedback/${id}`, {
-//             method: "PATCH",
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify({
-//                 content: body
-//             })
-//         });
-//         if (!response.ok) throw new Error('Network response was not ok');
-//         alert("sửa đổi thành công");
-//         location.reload();
-//     } catch (error) {
-//         console.error(error);
-//         alert("Đã xảy ra lỗi không mong muốn");
-//     }
-// }
-
-// // Event Handlers
-// const handlerEditFeedBack = async (id) => {
-//     const value = tinymce.get('EvaluateContent').getContent();;
-//     console.log(value);
-//     return await editFeedBack(id, value);
-// };
-
-
-
-// // Event Listeners
-// document.addEventListener('DOMContentLoaded', async () => {
-//     tinymce.init({
-//         selector: '#EvaluateContent'
-//     });
-//     selectTime.value = new Date().getMonth() + 1;
-//     await renderFeedback();
-//     selectTeacher.addEventListener("change", renderFeedback);
-//     selectTime.addEventListener("change", renderFeedback);
-//     let id = null;
-
-//     contentTable.addEventListener('click', async (e) => {
-//         if (e.target.classList.contains("edit")) {
-//             const contentV = document.getElementById("contentV");
-//             tinymce.get('EvaluateContent').setContent(contentV.innerHTML);
-//             id = e.target.dataset.id;
-//             const name = e.target.dataset.name;
-//             dialogReview.style.display = "block";
-//             nameStu.textContent = name;
-//         } else if (e.target.classList.contains("delete")) {
-//             await removeFeedBack(e.target.dataset.id);
-//         }
-//     });
-//     btnEdit.addEventListener('click', () => handlerEditFeedBack(id), { once: true });
-// });
-
-
+import { createToastV, eToast } from "./Aleart.js";
 import { LOCALHOST_API_URL } from "./config.js";
 
-// DOM Elements
-const selectTeacher = document.getElementById("teacher");
-const selectTime = document.getElementById("time");
-const contentTable = document.getElementById("contentTable");
-const dialogReview = document.getElementById("dialogReview");
-const nameStudentsEl = dialogReview.querySelector(".nameStudents");
-const phoneStudentsEl = dialogReview.querySelector(".phoneStudents");
-const tableLanguages = dialogReview.querySelector("#tableLanguages");
-const btnCloseDialog = document.getElementById("btnCloseDialog");
-const btnSubmitFeedback = document.getElementById("btnSubmitFeedback");
 
-// Radio skill
-const radioProgramming = dialogReview.querySelectorAll('input[name="programming-skill"]');
-// Radio thinking
-const radioThinking = dialogReview.querySelectorAll('input[name="thinking-skill"]');
-
-let feedbackIdEditing = null;
-let currentFeedbackData = null; // Lưu trữ data feedback đang chỉnh sửa
-
-// Đóng dialog
-btnCloseDialog.addEventListener('click', () => {
-    dialogReview.style.display = "none";
-    feedbackIdEditing = null;
-    currentFeedbackData = null;
-});
-
-// TinyMCE init
-document.addEventListener('DOMContentLoaded', async () => {
-    tinymce.init({
-        selector: '#EvaluateContent'
-    });
-    // Set mặc định tháng hiện tại
-    selectTime.value = new Date().getMonth() + 1;
-    // Render lần đầu
-    await renderFeedback();
-    // Thay đổi filter
-    selectTeacher.addEventListener("change", renderFeedback);
-    selectTime.addEventListener("change", renderFeedback);
-});
-
-// Hàm format ngày
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-};
-
-// Fetch data
-const fetchFeedbackData = async (endpoint) => {
-    try {
-        const response = await fetch(endpoint);
-        const data = await response.json();
-        return data.data.data;
-    } catch (error) {
-        console.error(error);
-        alert("Đã xảy ra lỗi không mong muốn");
-        return [];
+// Constants
+const API_ENDPOINTS = {
+    BASE_URL: LOCALHOST_API_URL,
+    FEEDBACK: {
+        ALL: 'feedback',
+        BY_ID: (id) => `feedback/find-id/${id}`,
+        BY_TEACHER: (id) => `feedbackByTeacher/${id}`,
+        BY_MONTH: (month) => `feedbackByMonth?month=${month}`,
+        BY_TEACHER_AND_MONTH: (id, month) => `feedback/teacher/${id}?month=${month}`
     }
 };
 
-const getAllFeedback = () => fetchFeedbackData(`${LOCALHOST_API_URL}feedback`);
-const getFeedbackByTeacherAndMonth = (id, month) =>
-    fetchFeedbackData(`${LOCALHOST_API_URL}feedback/teacher/${id}?month=${month}`);
-const getFeedbackByTeacher = (id) =>
-    fetchFeedbackData(`${LOCALHOST_API_URL}feedbackByTeacher/${id}`);
-const getFeedbackByMonth = (month) =>
-    fetchFeedbackData(`${LOCALHOST_API_URL}feedbackByMonth?month=${month}`);
+let domManager;
+let apiService;
+let feedbackManager;
 
-// Render loading
-const renderLoading = () => {
-    contentTable.innerHTML = `
-    <tr>
-      <td colspan="7" class="py-5 text-center">
-        <div class="spinner-border text-success" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-      </td>
-    </tr>
-  `;
-};
+class DOMManager {
+    constructor() {
+        this.elements = {
+            selectTeacher: document.getElementById("teacher"),
+            selectTime: document.getElementById("time"),
+            contentTable: document.getElementById("contentTable"),
+            dialogReview: document.getElementById("dialogReview"),
+            nameStudents: document.querySelector(".nameStudents"),
+            phoneStudents: document.querySelector(".phoneStudents"),
+            tableLanguages: document.getElementById("tableLanguages"),
+            btnCloseDialog: document.getElementById("btnCloseDialog"),
+            btnSubmitFeedback: document.getElementById("btnSubmitFeedback"),
+            searchStudent: document.getElementById("searchStudent"),
+            radioProgramming: document.querySelectorAll('input[name="programming-skill"]'),
+            radioThinking: document.querySelectorAll('input[name="thinking-skill"]'),
+            selectFile: document.getElementById("fileInput"),
+            importFile: document.getElementById("importButton")
+        };
 
-// Render empty
-const renderEmptyRow = () => `
-  <tr>
-    <td colspan="7" class="text-center py-3">Không có đánh giá nào tại thời điểm hiện tại</td>
-  </tr>
-`;
-
-// Render danh sách feedback
-const renderItems = (feedbackList = []) => {
-    if (!feedbackList.length) {
-        contentTable.innerHTML = renderEmptyRow();
-        return;
-    }
-    contentTable.innerHTML = feedbackList.map(item => {
-        return `
-      <tr>
-        <td>${item?.studentsAccount?.fullname || '-'}</td>
-        <td>${item?.teacherAccount?.username || '-'}</td>
-       <td
-    class="${item?.skill
-                ? (item.skill === 'good'
-                    ? 'badge-skill good'
-                    : item.skill === 'rather'
-                        ? 'badge-skill rather'
-                        : item.skill === 'medium'
-                            ? 'badge-skill medium'
-                            : '')
-                : ''}">
-    ${item?.skill || '-'}
-  </td>
-  
-  <td
-    class="${item?.thinking
-                ? (item.thinking === 'good'
-                    ? 'badge-skill good'
-                    : item.thinking === 'rather'
-                        ? 'badge-skill rather'
-                        : item.thinking === 'medium'
-                            ? 'badge-skill medium'
-                            : '')
-                : ''}">
-    ${item?.thinking || '-'}
-  </td>
-        <td>${item?.contentFeedBack || '-'}</td>
-        <td>${formatDate(item?.createdAt)}</td>
-        <td>
-          <button class="editBtn" data-id="${item._id}"><i class="review fa-solid fa-street-view"></i> Chỉnh sửa</button>
-          <button class="deleteBtn" data-id="${item._id}"><i class="trash fa-solid fa-trash"></i> Xoá</button>
-        </td>
-      </tr>
-    `;
-    }).join("");
-};
-
-// Render feedback
-const renderFeedback = async () => {
-    renderLoading();
-    let data = [];
-    const teacherId = selectTeacher.value;
-    const month = selectTime.value;
-
-    // Logic filter
-    if (teacherId === 'all' && month === 'all') {
-        data = await getAllFeedback();
-    } else if (teacherId === 'all') {
-        data = await getFeedbackByMonth(month);
-    } else if (month === 'all') {
-        data = await getFeedbackByTeacher(teacherId);
-    } else {
-        data = await getFeedbackByTeacherAndMonth(teacherId, month);
+        this.initializeEventListeners();
     }
 
-    renderItems(data);
-
-    // Thêm sự kiện cho nút edit / delete sau khi render xong
-    document.querySelectorAll(".editBtn").forEach(btn => {
-        btn.addEventListener("click", () => onEditClick(btn.dataset.id));
-    });
-    document.querySelectorAll(".deleteBtn").forEach(btn => {
-        btn.addEventListener("click", () => onDeleteClick(btn.dataset.id));
-    });
-};
-
-// Lấy data theo id feedback
-const getFeedbackById = async (id) => {
-    try {
-        const response = await fetch(`${LOCALHOST_API_URL}feedback/find-id/${id}`);
-        const result = await response.json();
-        return result.data.data;
-    } catch (error) {
-        console.error(error);
-        return null;
-    }
-};
-
-// Xử lý khi click "Chỉnh sửa"
-const onEditClick = async (id) => {
-    feedbackIdEditing = id;
-    console.log("Edit feedback ID:", id);
-    const data = await getFeedbackById(id);
-    if (!data) {
-        alert("Không lấy được dữ liệu feedback!");
-        return;
-    }
-    currentFeedbackData = data;
-
-    // Đổ data vào form
-    /**
-      data ví dụ:
-      {
-        "_id": "6767b0091f4c074f8ee58fe2",
-        "teacherAccount": { "_id": "66b25a528548d1851317b35f", "username": "admin" },
-        "studentsAccount": { "_id": "66936349a1c8c5dd16110d3e", "fullname": "Phan Như Ý 1", "phone":"0377xxxxxx" },
-        "contentFeedBack": "<p>toots</p>",
-        "createdAt": "2024-12-22T06:22:01.699Z",
-        "skill": "rather",
-        "subjectScores": [],
-        "thinking": "rather"
-      }
-    */
-    console.log(data);
-    nameStudentsEl.textContent = data.studentsAccount.fullname || 'N/A';
-    phoneStudentsEl.textContent = data.studentsAccount.phone || 'Chưa có số ĐT';
-
-    // Gán skill
-    radioProgramming.forEach(radio => {
-        radio.checked = (radio.value === data.skill);
-    });
-
-    // Gán thinking
-    radioThinking.forEach(radio => {
-        radio.checked = (radio.value === data.thinking);
-    });
-
-    // Gán content feedback vào TinyMCE
-    tinymce.get('EvaluateContent').setContent(data.contentFeedBack || '');
-
-    renderSubjectScores(data.subjectScores);
-
-    // Show dialog
-    dialogReview.style.display = "block";
-};
-
-// Render subjectScores lên table
-const renderSubjectScores = (scores = []) => {
-    if (!scores.length) {
-        tableLanguages.innerHTML = `
-      <tr><td colspan="3">Chưa có subjectScores</td></tr>
-    `;
-        return;
+    initializeEventListeners() {
+        this.elements.btnCloseDialog.addEventListener('click', this.closeDialog.bind(this));
+        this.elements.btnSubmitFeedback.addEventListener('click', () => feedbackManager.handleSubmit());
+        this.elements.searchStudent.addEventListener('input', (e) => this.handleSearch(e));
+        this.elements.selectTeacher.addEventListener("change", () => feedbackManager.renderFeedback());
+        this.elements.selectTime.addEventListener("change", () => feedbackManager.renderFeedback());
+        this.elements.importFile.addEventListener("click", () => feedbackManager.createFileFeedBack());
     }
 
-    tableLanguages.innerHTML = scores.map(item => {
-        return `
-      <tr class="language" data-id="${item.languageIt._id}">
-        <td>${item.languageIt.nameCode}</td>
-        <td>
-          <select>
-            <option value="">Chọn</option>
-            <option value="1" ${item.level === "1" ? "selected" : ""}>Level 1</option>
-            <option value="2" ${item.level === "2" ? "selected" : ""}>Level 2</option>
-            <option value="3" ${item.level === "3" ? "selected" : ""}>Level 3</option>
-          </select>
-        </td>
-        <td><input type="number" min="0" value="${item.score || 0}"/></td>
-      </tr>
-    `;
-    }).join("");
-};
-
-// Xử lý nút Submit (Cập nhật đánh giá)
-btnSubmitFeedback.addEventListener("click", async () => {
-    if (!feedbackIdEditing) {
-        alert("Chưa có feedback nào để sửa!");
-        return;
+    closeDialog() {
+        this.elements.dialogReview.style.display = "none";
+        feedbackManager.resetEditingState();
     }
 
-    // Lấy giá trị textarea từ TinyMCE
-    const contentValue = tinymce.get('EvaluateContent').getContent();
+    handleSearch(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#contentTable tr');
+        rows.forEach(row => {
+            const studentName = row.querySelector('td:first-child')?.textContent.toLowerCase();
+            row.style.display = studentName?.includes(searchTerm) ? '' : 'none';
+        });
+    }
+}
 
-    // Lấy skill
-    let skillValue = '';
-    radioProgramming.forEach(radio => {
-        if (radio.checked) skillValue = radio.value;
-    });
+class APIService {
+    async fetchData(endpoint) {
+        try {
+            const response = await fetch(`${API_ENDPOINTS.BASE_URL}${endpoint}`);
+            const data = await response.json();
+            return data.data.data;
+        } catch (error) {
+            console.error('API Error:', error);
+            throw new Error("Failed to fetch data");
+        }
+    }
 
-    // Lấy thinking
-    let thinkingValue = '';
-    radioThinking.forEach(radio => {
-        if (radio.checked) thinkingValue = radio.value;
-    });
-
-    // Lấy subjectScores (nếu có)
-    const subjectScoresData = [];
-    tableLanguages.querySelectorAll("tr.language").forEach(tr => {
-        const languageIt = tr.getAttribute("data-id");
-        const level = tr.querySelector("select").value;
-        const score = tr.querySelector("input[type='number']").value;
-        subjectScoresData.push({ languageIt, level, score });
-    });
-
-    // Chuẩn bị body PUT/PATCH
-    const bodyData = {
-        contentFeedBack: contentValue,
-        skill: skillValue,
-        thinking: thinkingValue,
-        subjectScores: subjectScoresData
+    async createFileFeedBack(body) {
+        try {
+            const response = await fetch(`${LOCALHOST_API_URL}create-file/feedback`, {
+                method: "POST",
+                body: body,
+            });
+            const data = await response.json();
+            if (data) {
+                createToastV('success', "Tạo  đánh giá thành công");
+                location.reload();
+            }
+        } catch (error) {
+            console.log(error);
+            createToastV(eToast.error, "Tạo  đánh giá thất bại");
+        }
     };
 
-
-
-
-    // Gọi hàm update
-    await updateFeedback(feedbackIdEditing, bodyData);
-});
-
-const updateFeedback = async (id, body) => {
-    try {
-        const response = await fetch(`${LOCALHOST_API_URL}feedback/${id}`, {
-            method: "PATCH",
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        if (!response.ok) throw new Error("Network response was not ok");
-        alert("Sửa đổi thành công");
-        // Đóng popup, reload
-        dialogReview.style.display = "none";
-        await renderFeedback();
-    } catch (error) {
-        console.error(error);
-        alert("Đã xảy ra lỗi không mong muốn");
-    }
-};
-
-// Xoá
-const onDeleteClick = async (id) => {
-    const confirmDel = confirm("Bạn có chắc muốn xoá đánh giá này?");
-    if (!confirmDel) return;
-
-    try {
-        const response = await fetch(`${LOCALHOST_API_URL}feedback/${id}`, {
-            method: "DELETE"
-        });
-        if (response.ok) {
-            alert("Xoá đánh giá thành công!");
-            await renderFeedback();
+    async updateFeedback(id, data) {
+        try {
+            const response = await fetch(`${API_ENDPOINTS.BASE_URL}feedback/${id}`, {
+                method: "PATCH",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) throw new Error("Update failed");
+            return await response.json();
+        } catch (error) {
+            console.error('Update Error:', error);
+            throw new Error("Failed to update feedback");
         }
-    } catch (error) {
-        console.error(error);
-        alert("Đã xảy ra lỗi không mong muốn");
     }
-};
+
+    async deleteFeedback(id) {
+        try {
+            const response = await fetch(`${API_ENDPOINTS.BASE_URL}feedback/${id}`, {
+                method: "DELETE"
+            });
+            if (!response.ok) throw new Error("Delete failed");
+            return true;
+        } catch (error) {
+            console.error('Delete Error:', error);
+            throw new Error("Failed to delete feedback");
+        }
+    }
+}
+
+class FeedbackManager {
+    constructor(domManager, apiService) {
+        this.dom = domManager;
+        this.api = apiService;
+        this.feedbackIdEditing = null;
+        this.currentFeedbackData = null;
+    }
+
+    resetEditingState() {
+        this.feedbackIdEditing = null;
+        this.currentFeedbackData = null;
+    }
+
+    getBadgeClass(value) {
+        const badges = {
+            good: 'badge-good',
+            rather: 'badge-rather',
+            medium: 'badge-medium'
+        };
+        return badges[value] || '';
+    }
+
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+
+    async handleSubmit() {
+        if (!this.feedbackIdEditing) {
+            alert("No feedback selected for editing!");
+            return;
+        }
+
+        const formData = this.collectFormData();
+        try {
+            await this.api.updateFeedback(this.feedbackIdEditing, formData);
+            createToastV('success', "Feedback updated successfully");
+            this.dom.closeDialog();
+            await this.renderFeedback();
+        } catch (error) {
+            createToastV("Failed to update feedback");
+        }
+    }
+
+    collectFormData() {
+        const content = tinymce.get('EvaluateContent').getContent();
+        const skill = Array.from(this.dom.elements.radioProgramming)
+            .find(radio => radio.checked)?.value || '';
+        const thinking = Array.from(this.dom.elements.radioThinking)
+            .find(radio => radio.checked)?.value || '';
+
+        const subjectScores = Array.from(this.dom.elements.tableLanguages.querySelectorAll("tr.language"))
+            .map(tr => ({
+                languageIt: tr.dataset.id,
+                level: tr.querySelector("select").value,
+                score: tr.querySelector("input[type='number']").value
+            }));
+
+        return {
+            contentFeedBack: content,
+            skill,
+            thinking,
+            subjectScores
+        };
+    }
+
+    async createFileFeedBack() {
+        const formData = new FormData();
+        if (!this.dom.elements.selectFile.files[0]) {
+            return createToastV(eToast.warning, "Vui lòng chọn file 1");
+        }
+        formData.append("excel", this.dom.elements.selectFile.files[0]);
+        await this.api.createFileFeedBack(formData);
+    }
+
+
+
+
+    async renderFeedback() {
+        this.renderLoading();
+        try {
+            const data = await this.fetchFilteredData();
+            this.renderItems(data);
+        } catch (error) {
+            createToastV(eToast.error, "Failed to load feedback");
+            this.renderItems([]);
+        }
+    }
+
+    async fetchFilteredData() {
+        const teacherId = this.dom.elements.selectTeacher.value;
+        const month = this.dom.elements.selectTime.value;
+
+        if (teacherId === 'all' && month === 'all') {
+            return await this.api.fetchData(API_ENDPOINTS.FEEDBACK.ALL);
+        } else if (teacherId === 'all') {
+            return await this.api.fetchData(API_ENDPOINTS.FEEDBACK.BY_MONTH(month));
+        } else if (month === 'all') {
+            return await this.api.fetchData(API_ENDPOINTS.FEEDBACK.BY_TEACHER(teacherId));
+        }
+        return await this.api.fetchData(API_ENDPOINTS.FEEDBACK.BY_TEACHER_AND_MONTH(teacherId, month));
+    }
+
+    renderLoading() {
+        this.dom.elements.contentTable.innerHTML = `
+            <tr>
+                <td colspan="7" class="py-5 text-center">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    renderItems(feedbackList = []) {
+        if (!feedbackList.length) {
+            this.dom.elements.contentTable.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-3">No feedback available at this time</td>
+                </tr>
+            `;
+            return;
+        }
+
+        this.dom.elements.contentTable.innerHTML = feedbackList.map(this.createFeedbackRow.bind(this)).join("");
+        this.attachRowEventListeners();
+    }
+
+    createFeedbackRow(item) {
+        return `
+            <tr>
+                <td>
+                    <div class="student-cell">
+                        ${item?.studentsAccount?.fullname || '-'}
+                        <i class="fas fa-copy copy-icon" 
+                           data-student-id="${item?.studentsAccount?._id}"
+                           title="Copy link"></i>
+                    </div>
+                </td>
+                <td>${item?.teacherAccount?.username || '-'}</td>
+                <td>
+                    <span class="badge ${this.getBadgeClass(item?.skill)}">
+                        ${item?.skill || '-'}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge ${this.getBadgeClass(item?.thinking)}">
+                        ${item?.thinking || '-'}
+                    </span>
+                </td>
+                <td>${item?.contentFeedBack || '-'}</td>
+                <td>${this.formatDate(item?.createdAt)}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary editBtn" data-id="${item._id}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger deleteBtn" data-id="${item._id}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    attachRowEventListeners() {
+        document.querySelectorAll(".editBtn").forEach(btn => {
+            btn.addEventListener("click", () => this.handleEdit(btn.dataset.id));
+        });
+
+        document.querySelectorAll(".deleteBtn").forEach(btn => {
+            btn.addEventListener("click", () => this.handleDelete(btn.dataset.id));
+        });
+
+        document.querySelectorAll(".copy-icon").forEach(icon => {
+            icon.addEventListener("click", (e) => {
+                const studentId = e.target.dataset.studentId;
+                if (studentId) {
+                    const link = `${window.location.origin}/admin/parents/students/${studentId}`;
+                    navigator.clipboard.writeText(link)
+                        .then(() => createToastV(eToast.success, "Copied link to clipboard"))
+                        .catch(() => createToastV(eToast.error, "Failed to copy link"));
+                }
+            });
+        });
+    }
+
+    async handleEdit(id) {
+        try {
+            const data = await this.api.fetchData(API_ENDPOINTS.FEEDBACK.BY_ID(id));
+            if (!data) throw new Error("No feedback data found");
+
+            this.feedbackIdEditing = id;
+            this.currentFeedbackData = data;
+            this.populateEditForm(data);
+            this.dom.elements.dialogReview.style.display = "block";
+        } catch (error) {
+            createToastV(eToast.error, "Failed to load feedback data")
+        }
+    }
+
+    async handleDelete(id) {
+        if (!confirm("Are you sure you want to delete this feedback?")) return;
+
+        try {
+            await this.api.deleteFeedback(id);
+            createToastV(eToast.delete, "Feedback deleted successfully")
+            await this.renderFeedback();
+        } catch (error) {
+            createToastV(eToast.error, "Failed to load feedback data")
+        }
+    }
+
+    populateEditForm(data) {
+        this.dom.elements.nameStudents.textContent = data.studentsAccount?.fullname || 'N/A';
+        this.dom.elements.phoneStudents.textContent = data.studentsAccount?.phone || 'No phone number';
+
+        this.dom.elements.radioProgramming.forEach(radio => {
+            radio.checked = (radio.value === data.skill);
+        });
+
+        this.dom.elements.radioThinking.forEach(radio => {
+            radio.checked = (radio.value === data.thinking);
+        });
+
+        tinymce.get('EvaluateContent').setContent(data.contentFeedBack || '');
+        this.renderSubjectScores(data.subjectScores);
+    }
+
+    renderSubjectScores(scores = []) {
+        if (!scores.length) {
+            this.dom.elements.tableLanguages.innerHTML = `
+                <tr><td colspan="3">No subject scores available</td></tr>
+            `;
+            return;
+        }
+
+        this.dom.elements.tableLanguages.innerHTML = scores.map(score => `
+            <tr class="language" data-id="${score.languageIt._id}">
+                <td>${score.languageIt.nameCode}</td>
+                <td>
+                    <select class="form-select">
+                        <option value="">Select</option>
+                        ${[1, 2, 3].map(level => `
+                            <option value="${level}" ${score.level === level.toString() ? "selected" : ""}>
+                                Level ${level}
+                            </option>
+                        `).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="form-control" min="0" value="${score.score || 0}"/>
+                </td>
+            </tr>
+        `).join("");
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Add styl
+    // Initialize TinyMCE
+    await tinymce.init({
+        selector: '#EvaluateContent'
+    });
+
+    // Initialize managers
+    domManager = new DOMManager();
+    apiService = new APIService();
+    feedbackManager = new FeedbackManager(domManager, apiService);
+
+    // Set default month
+    domManager.elements.selectTime.value = new Date().getMonth() + 1;
+
+    // Initial render
+    await feedbackManager.renderFeedback();
+});

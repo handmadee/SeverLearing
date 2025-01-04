@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <table class="progressTable">
                 <thead>
                     <tr>
-                        <th>Teams</th>
+                        <th>Level</th>
                         ${languages.map(lang => `<th>${lang.nameCode}</th>`).join('')}
                     </tr>
                 </thead>

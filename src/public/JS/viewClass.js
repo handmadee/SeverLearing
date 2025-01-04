@@ -670,6 +670,8 @@ async function handleContentClassClick(e) {
         return;
     }
 
+
+
     // 3. editClass => Sửa thông tin lớp
     if (target.classList.contains("editClass")) {
         const classId = target.dataset.id;

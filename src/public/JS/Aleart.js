@@ -6,6 +6,15 @@
 // })
 
 
+export const eToast = {
+    success: 'success',
+    delete: 'delete',
+    error: 'error',
+    warning: 'warning',
+    info: 'info',
+    login: 'login',
+    comingsoon: 'comingsoon',
+}
 
 const toasts = {
     success: {
@@ -36,6 +45,23 @@ const toasts = {
         icon: '<i class="fas fa-exclamation-circle"></i>',
         msg: 'Chức năng đang được triển khai ',
     },
+}
+
+export function createToastV(status, message) {
+    let toast = document.createElement('div')
+    toast.className = `toast123 ${status}`
+    toast.innerHTML = `
+    ${toasts[status].icon}
+    <span class="msg">${message}</span>
+    <span class="countdown"></span>
+    `
+    document.querySelector('#toasts').appendChild(toast)
+    setTimeout(() => {
+        toast.style.animation = 'hide_slide 1s ease forwards'
+    }, 4000)
+    setTimeout(() => {
+        toast.remove()
+    }, 6000)
 }
 
 export function createToast(status) {
