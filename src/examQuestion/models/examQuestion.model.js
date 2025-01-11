@@ -27,8 +27,59 @@ const examQuestionSchema = new Schema({
         }
     },
     answers: {
-        type: [String],
-        required: true
+        section1: {
+            questions: [{
+                id: {
+                    type: Number,
+                    required: true
+                },
+                correctAnswer: {
+                    type: String,
+                    required: true
+                }
+            }]
+        },
+        section2: {
+            common: {
+                questions: [{
+                    id: {
+                        type: Number,
+                        required: true
+                    },
+                    correctAnswers: {
+                        type: [String],
+                        required: true
+                    }
+                }]
+            },
+            private: {
+                cs: {
+                    questions: [{
+                        id: {
+                            type: Number,
+                            required: true
+                        },
+                        correctAnswers: {
+                            type: [String],
+                            required: true
+                        }
+                    }]
+                },
+                itc: {
+                    questions: [{
+                        id: {
+                            type: Number,
+                            required: true
+                        },
+                        correctAnswers: {
+                            type: [String],
+                            required: true
+                        }
+                    }]
+                },
+            }
+
+        }
     },
     expTime: {
         type: Number,

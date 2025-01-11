@@ -1,5 +1,6 @@
 'use strict';
 
+const { type } = require('express/lib/response');
 const { model, Schema, Types } = require('mongoose');
 
 // Standardized document and collection names
@@ -19,12 +20,57 @@ const historyExamQuestionSchema = new Schema({
         index: true,
         required: true
     },
-    correctAnswers: {
-        type: [],
-        required: true,
+    sections: {
+        section1: {
+            score: {
+                type: Number
+            },
+            correctAnswers: {
+                type: Array,
+            },
+            incorrectAnswers: {
+                type: Array,
+            },
+            totalQuestions: {
+                type: Number,
+            },
+        },
+        section2: {
+            score: {
+                type: Number
+            },
+            common: {
+                score: {
+                    type: Number
+                },
+                correctAnswers: {
+                    type: Array,
+                },
+                incorrectAnswers: {
+                    type: Array,
+                },
+                totalQuestions: {
+                    type: Number,
+                },
+            },
+            specialized: {
+                score: {
+                    type: Number
+                },
+                correctAnswers: {
+                    type: Array,
+                },
+                incorrectAnswers: {
+                    type: Array,
+                },
+                totalQuestions: {
+                    type: Number,
+                },
+            }
+        }
     },
-    incorrectAnswers: {
-        type: [],
+    totalScore: {
+        type: Number,
         required: true,
     },
     result: {

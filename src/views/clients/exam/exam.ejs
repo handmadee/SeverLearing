@@ -51,38 +51,131 @@
       </div>
 
       <!-- Questions Card -->
-      <div class="card shadow" style="max-height: 400px; overflow-y: auto">
-        <div class="card-header bg-white">
-          <strong class="text-success">Trắc nghiệm</strong>
-        </div>
-        <div
-         data-exam-time="<%= exam.expTime %>"
+<div class="card shadow" style="max-height: 400px; overflow-y: auto">
+  <!-- Section 1: Multiple Choice -->
+  <div class="card-header bg-white">
+    <strong class="text-success">Phần 1: Trắc nghiệm</strong>
+  </div>
+  <div 
+  data-exam-time="<%= exam.expTime %>"
     data-exam-id="<%= exam._id %>"
     data-student-id="<%= student._id %>"
-        class="card-body">
-          <form id="examForm">
-            <% exam.answers.forEach((answer, index) => { %>
-              <div class="mb-3">
-                <label class="fw-bold">Câu <%= index + 1 %>:</label>
-                <% ['A', 'B', 'C', 'D'].forEach(option => { %>
-                  <div class="form-check">
-                    <input 
-                      class="form-check-input" 
-                      type="radio" 
-                      name="question<%= index %>" 
-                      id="q<%= index %><%= option %>" 
-                      value="<%= option %>"
-                    />
-                    <label class="form-check-label" for="q<%= index %><%= option %>">
-                      <%= option %>
-                    </label>
+  class="card-body">
+    <form id="examForm">
+      <div class="section-1">
+        <% exam.answers.section1.questions.forEach((question, index) => { %>
+          <div class="mb-3">
+            <label class="fw-bold">Câu <%= index + 1 %>:</label>
+            <% ['A', 'B', 'C', 'D'].forEach(option => { %>
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="radio" 
+                  name="question<%= index %>" 
+                  id="q<%= index %><%= option %>" 
+                  value="<%= option %>"
+                />
+                <label class="form-check-label" for="q<%= index %><%= option %>">
+                  <%= option %>
+                </label>
+              </div>
+            <% }) %>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="section-2 mt-4">
+        <div class="card-header bg-white">
+          <strong class="text-success">Phần 2: Câu hỏi Đúng/Sai</strong>
+        </div>
+
+        <!-- Common Questions -->
+        <div class="common-questions mb-4">
+          <h6 class="text-primary mb-3">Phần chung</h6>
+          <% exam.answers.section2.common.questions.forEach((question, qIndex) => { %>
+            <div class="question-item mb-3">
+              <label class="fw-bold">Câu <%= qIndex + 1 %>:</label>
+              <div class="true-false-options">
+                <% [1,2,3,4].forEach((num, index) => { %>
+                  <div class="form-check  d-flex align-items-center form-check-inline">
+                     <label  class="ms-2 mx-3"><%= num %></label>
+                    <select class="form-select" name="common_q<%= qIndex %>_<%= num %>" required>
+                      <option value="">Chọn...</option>
+                      <option value="Đ">Đúng</option>
+                      <option value="S">Sai</option>
+                    </select>
                   </div>
                 <% }) %>
               </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <!-- Specialized Section Selection -->
+        <div class="specialized-section mb-3">
+          <h6 class="text-primary mb-3">Phần riêng</h6>
+          <div class="btn-group w-100" role="group">
+            <input type="radio" class="btn-check" name="specialization" id="cs" value="cs" required>
+            <label class="btn btn-outline-primary" for="cs">CS</label>
+
+            <input type="radio" class="btn-check" name="specialization" id="itc" value="itc">
+            <label class="btn btn-outline-primary" for="itc">ITC</label>
+          </div>
+        </div>
+
+        <!-- Specialized Questions -->
+        <div id="specializedQuestions">
+          <!-- CS Questions -->
+          <div class="specialized-group" data-group="cs">
+            <% exam.answers.section2.private.cs.questions.forEach((question, qIndex) => { %>
+              <div class="question-item mb-3">
+                <label class="fw-bold">CS - Câu <%= qIndex + 1 %>:</label>
+                <div class="true-false-options">
+                  <% [1,2,3,4].forEach((num, index) => { %>
+                    <div class="form-check form-check-inline">
+                     <label  class="ms-2 mx-3"><%= num %></label>
+                      <select class="form-select" name="cs_q<%= qIndex %>_<%= num %>" required>
+                        <option value="">Chọn...</option>
+                        <option value="Đ">Đúng</option>
+                        <option value="S">Sai</option>
+                      </select>
+
+                    </div>
+                  <% }) %>
+                </div>
+              </div>
             <% }) %>
-          </form>
+          </div>
+
+          <!-- ITC Questions -->
+          <div class="specialized-group" data-group="itc">
+            <% exam.answers.section2.private.itc.questions.forEach((question, qIndex) => { %>
+              <div class="question-item mb-3">
+                <label class="fw-bold">ITC - Câu <%= qIndex + 1 %>:</label>
+                <div class="true-false-options">
+                  <% [1,2,3,4].forEach((num, index) => { %>
+                    <div class="form-check form-check-inline">
+                      <label  class="ms-2 mx-3"><%= num %></label>
+                      <select class="form-select" name="itc_q<%= qIndex %>_<%= num %>" required>
+                        <option value="">Chọn...</option>
+                        <option value="Đ">Đúng</option>
+                        <option value="S">Sai</option>
+                      </select>
+
+                    </div>
+                  <% }) %>
+                </div>
+              </div>
+            <% }) %>
+          </div>
         </div>
       </div>
+    </form>
+  </div>
+</div>
+
+
 
       <!-- Submit Button -->
       <div class="d-grid mt-3">
@@ -111,13 +204,46 @@
         </p>
       </div>
       
-      <div class="result-score">
-        <div class="score-label">Số câu trả lời đúng</div>
-        <div class="score-value">
-          <span id="correctAnswers"></span>/<span id="totalQuestions"></span>
+      <!-- Điểm tổng -->
+      <div class="total-score-section">
+        <div class="score-circle">
+          <div class="score-value" id="totalScore">0.0</div>
+          <div class="score-label">Điểm</div>
         </div>
-        <div class="mt-3">
-          <span class="result-status" id="examStatus"></span>
+      </div>
+
+      <!-- Chi tiết từng phần -->
+      <div class="score-details">
+        <!-- Phần 1 -->
+        <div class="score-card">
+          <div class="score-card-header">Phần I: Trắc nghiệm</div>
+          <div class="score-card-body">
+            <div class="correct-count">
+              <span id="section1Correct">0</span>/<span id="section1Total">0</span>
+            </div>
+            <div class="score-label">câu đúng</div>
+          </div>
+        </div>
+
+        <!-- Phần 2 -->
+        <div class="score-card">
+          <div class="score-card-header">Phần II: Đúng/Sai</div>
+          <div class="section2-details">
+            <!-- Phần chung -->
+            <div class="subscore">
+              <span class="subscore-label">Phần chung:</span>
+              <span class="subscore-value">
+                <span id="commonCorrect">0</span>/<span id="commonTotal">0</span>
+              </span>
+            </div>
+            <!-- Phần chuyên ngành -->
+            <div class="subscore">
+              <span class="subscore-label">Phần riêng:</span>
+              <span class="subscore-value">
+                <span id="specializedCorrect">0</span>/<span id="specializedTotal">0</span>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

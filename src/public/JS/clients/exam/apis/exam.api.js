@@ -88,7 +88,10 @@ const getExamById = async (ID) => {
     }
 }
 //! thieeus submit
-const submitExamV = async ({ idExam, idStudent, studentAnswers }) => {
+const submitExamV = async ({ examRef, userRef, answers }) => {
+    console.log({
+        examRef, userRef, answers
+    })
     try {
         const response = await fetch(`${localhost}examQuestion/submit`,
             {
@@ -97,9 +100,9 @@ const submitExamV = async ({ idExam, idStudent, studentAnswers }) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    examRef: idExam,
-                    userRef: idStudent,
-                    studentAnswers
+                    examRef,
+                    userRef,
+                    answers
                 })
             }
         )
