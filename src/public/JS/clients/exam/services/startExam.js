@@ -46,23 +46,34 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.status == 200) {
                 showAlert('Bắt đầu thi thành công!', 'success');
                 const data = await result.json();
-                // window.location.href = `/exam/${result.examId}/start`;
+
+                // Tính tổng số câu hỏi
+                const totalQuestions = calculateTotalQuestions(data.data.exam.answers);
+
                 // Cập nhật thông tin vào modal
-                let lenthAnswer = data.data.exam.answers.length;
-                studentNameSpan.textContent = data.data.student
-                    .fullname;
+                studentNameSpan.textContent = data.data.student.fullname;
                 examNameSpan.textContent = data.data.exam.title;
                 examDurationSpan.textContent = data.data.exam.expTime;
-                examQuestionsSpan.textContent = lenthAnswer;
+                examQuestionsSpan.textContent = totalQuestions;
                 confirmStartExamModal.classList.add('show');
-            }
-            else {
-                if (result.status == 403) return showAlert('Sinh viên đã đạt giới hạn được phép làm bài kiểm tra', 'danger');
+            } else {
+                if (result.status == 403) {
+                    return showAlert('Sinh viên đã đạt giới hạn được phép làm bài kiểm tra', 'danger');
+                }
                 showAlert(result.message || 'Mã số học sinh hoặc Mã đề thi không tồn tại.', 'danger');
             }
         } catch (error) {
+            console.error('Error:', error);
             showAlert(error.message || 'Đã xảy ra lỗi!', 'danger');
         }
+
     });
+
+    function calculateTotalQuestions(answers) {
+        const section1Count = answers.section1.questions.length;
+        const commonQuestionsCount = answers.section2.common.questions.length;
+        const specializedQuestionsCount = answers.section2.private.cs.questions.length;
+        return section1Count + commonQuestionsCount + specializedQuestionsCount;
+    }
 })
 

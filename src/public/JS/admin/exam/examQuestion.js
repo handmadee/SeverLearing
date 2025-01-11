@@ -1,3 +1,4 @@
+
 'use strict';
 
 import { UTILS } from '../../../untils/untils.js';
@@ -12,6 +13,8 @@ class ExamManager {
         this.itemsPerPage = 20;
         this.totalPages = 1;
         this.init();
+        this.multipleChoiceCount = 0;
+        this.trueFalseCount = 0;
     }
 
     init() {
@@ -25,11 +28,9 @@ class ExamManager {
             examForm: document.getElementById('examForm'),
             examModal: document.getElementById('examModal'),
             detailsModal: document.getElementById('detailsModal'),
-            answersContainer: document.getElementById('answersContainer'),
             searchExamCode: document.getElementById('searchExamCode'),
-            searchExamTitle: document.getElementById('searchExamTitle'),
             examTableBody: document.getElementById('examTableBody'),
-            addAnswerBtn: document.getElementById('addAnswerBtn'),
+            addAnswerBtn: document.getElementById('addMultipleChoiceBtn'),
             createExamBtn: document.getElementById('createExamBtn'),
             detailsTableBody: document.getElementById('detailsTableBody'),
             studentSearch: document.getElementById('studentSearch'),
@@ -37,15 +38,50 @@ class ExamManager {
             closeModalButtons: document.querySelectorAll('.close'),
             paginationContainer: document.getElementById('paginationContainer'),
             resultFilter: document.getElementById('resultFilter'),
-            statusFilter: document.getElementById('statusFilter')
+            statusFilter: document.getElementById('statusFilter'),
+            multipleChoiceContainer: document.getElementById('multipleChoiceContainer'),
+            trueFalseContainer: document.getElementById('trueFalseContainer'),
+            // addTrueFalseBtn: document.getElementById('addTrueFalseBtn')
         };
     }
 
     setupEventListeners() {
         // Form events
         this.elements.examForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
-        this.elements.addAnswerBtn.addEventListener('click', () => this.addQuestionItem());
+        this.elements.addAnswerBtn.addEventListener('click', () => this.addMultipleChoiceQuestion());
         this.elements.createExamBtn.addEventListener('click', () => this.showCreateExamModal());
+        // this.elements.addTrueFalseBtn.addEventListener('click', () => this.addTrueFalseQuestion());
+
+        this.elements.multipleChoiceContainer.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-question-btn')) {
+                const questionItem = e.target.closest('.question-item');
+                if (questionItem) {
+                    this.removeMultipleChoiceQuestion(questionItem);
+                }
+            }
+        });
+
+        this.elements.trueFalseContainer.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-question-btn')) {
+                const questionItem = e.target.closest('.true-false-item');
+                if (questionItem) {
+                    this.removeTrueFalseQuestion(questionItem);
+                }
+            }
+        });
+
+        // From
+        document.getElementById('addCommonQuestionBtn').addEventListener('click', () => {
+            this.addTrueFalseQuestion('common');
+        });
+
+        document.getElementById('addCSQuestionBtn').addEventListener('click', () => {
+            this.addTrueFalseQuestion('cs');
+        });
+
+        document.getElementById('addITCQuestionBtn').addEventListener('click', () => {
+            this.addTrueFalseQuestion('itc');
+        });
 
         // Search events
         this.elements.searchExamCode.addEventListener('input', () => this.handleSearch());
@@ -106,6 +142,10 @@ class ExamManager {
             }
         });
 
+
+
+
+
         const incorrectModal = document.getElementById('incorrectAnswersModal');
         incorrectModal.querySelector('.close').addEventListener('click', () => {
             incorrectModal.style.display = 'none';
@@ -118,7 +158,129 @@ class ExamManager {
         });
 
 
+
     }
+
+    removeMultipleChoiceQuestion(questionItem) {
+        questionItem.remove();
+        this.updateMultipleChoiceNumbers();
+        this.multipleChoiceCount--;
+    }
+
+    removeTrueFalseQuestion(questionItem) {
+        const type = questionItem.getAttribute('data-type');
+        questionItem.remove();
+        this.updateTrueFalseNumbers(type);
+        this.trueFalseCount--;
+    }
+
+    updateMultipleChoiceNumbers() {
+        const questions = this.elements.multipleChoiceContainer.querySelectorAll('.question-item');
+        questions.forEach((item, index) => {
+            const newNumber = index + 1;
+            item.dataset.question = newNumber;
+
+            // Update question number display
+            const numberDisplay = item.querySelector('.question-number');
+            if (numberDisplay) {
+                numberDisplay.textContent = `Câu ${newNumber}`;
+            }
+
+            // Update radio button names and IDs
+            const radioButtons = item.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                const oldName = radio.getAttribute('name');
+                const oldId = radio.getAttribute('id');
+                const option = oldId.slice(-1); // Get the last character (A, B, C, or D)
+
+                radio.setAttribute('name', `mc_question_${newNumber}`);
+                radio.setAttribute('id', `q${newNumber}_${option}`);
+
+                // Update corresponding label
+                const label = item.querySelector(`label[for="${oldId}"]`);
+                if (label) {
+                    label.setAttribute('for', `q${newNumber}_${option}`);
+                }
+            });
+        });
+    }
+
+    updateTrueFalseNumbers(type) {
+        const questions = this.elements.trueFalseContainer.querySelectorAll(`.true-false-item[data-type="${type}"]`);
+        questions.forEach((item, index) => {
+            const newNumber = index + 1;
+            item.dataset.question = newNumber;
+
+            // Update question number display
+            const typeLabel = type === 'common' ? 'Câu hỏi chung' : type.toUpperCase();
+            const numberDisplay = item.querySelector('.question-number');
+            if (numberDisplay) {
+                numberDisplay.textContent = `${typeLabel} - Câu ${newNumber}`;
+            }
+
+            // Update select names
+            const selects = item.querySelectorAll('select');
+            selects.forEach((select, selectIndex) => {
+                select.setAttribute('name', `${type}_q${newNumber}_${selectIndex + 1}`);
+            });
+        });
+    }
+
+
+    addMultipleChoiceQuestion(selectedAnswer = null) {
+        this.multipleChoiceCount++;
+        const questionHTML = `
+            <div class="question-item" data-question="${this.multipleChoiceCount}">
+                <div class="question-header">
+                    <span class="question-number">Câu ${this.multipleChoiceCount}</span>
+                    <button type="button" class="remove-question-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="answer-options">
+                    ${['A', 'B', 'C', 'D'].map(option => `
+                        <div class="option">
+                            <input type="radio" 
+                                   id="q${this.multipleChoiceCount}_${option}" 
+                                   name="mc_question_${this.multipleChoiceCount}" 
+                                   value="${option}" 
+                                   ${selectedAnswer === option ? 'checked' : ''} 
+                                   required>
+                            <label for="q${this.multipleChoiceCount}_${option}">${option}</label>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        this.elements.multipleChoiceContainer.insertAdjacentHTML('beforeend', questionHTML);
+    }
+
+    addTrueFalseQuestion(type = 'common', selectedAnswers = ['Đ', 'Đ', 'Đ', 'Đ']) {
+        this.trueFalseCount++;
+        const typeLabel = type === 'common' ? 'Câu hỏi chung' : type.toUpperCase();
+        const questionHTML = `
+        <div class="true-false-item" data-question="${this.trueFalseCount}" data-type="${type}">
+            <div class="question-header">
+                <span class="question-number">${typeLabel} - Câu ${this.trueFalseCount}</span>
+                <button type="button" class="remove-question-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="true-false-options">
+                ${[1, 2, 3, 4].map((num, index) => `
+                    <div class="true-false-option">
+                        <select name="${type}_q${this.trueFalseCount}_${num}" required>
+                            <option value="Đ" ${selectedAnswers[index] === 'Đ' ? 'selected' : ''}>Đúng</option>
+                            <option value="S" ${selectedAnswers[index] === 'S' ? 'selected' : ''}>Sai</option>
+                        </select>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+        this.elements.trueFalseContainer.insertAdjacentHTML('beforeend', questionHTML);
+    }
+
 
     copyToClipboard(text) {
         navigator.clipboard.writeText(text)
@@ -127,6 +289,9 @@ class ExamManager {
                 this.showNotification('Không thể sao chép mã đề', 'error');
             });
     }
+
+
+
 
     async loadExams(status, q) {
         try {
@@ -230,6 +395,7 @@ class ExamManager {
 
         if (!this.validateForm(formData)) return;
 
+        console.log(formData);
         try {
             const loadingIndicator = this.showLoadingIndicator();
             if (this.editingExamId) {
@@ -249,12 +415,76 @@ class ExamManager {
     }
 
     getFormData() {
+        const title = this.elements.examForm.querySelector('#examTitle').value.trim();
+        const linkTopic = this.elements.examForm.querySelector('#examLink').value.trim();
+        const expTime = parseInt(this.elements.examForm.querySelector('#examTime').value);
+        const limitUser = parseInt(this.elements.examForm.querySelector('#examLimit').value) || 1;
+
+        // Get multiple choice answers (Section 1)
+        const multipleChoiceAnswers = Array.from(this.elements.multipleChoiceContainer.querySelectorAll('.question-item'))
+            .map((item, index) => {
+                const selected = item.querySelector('input[type="radio"]:checked');
+                return {
+                    id: index + 1,
+                    correctAnswer: selected ? selected.value : null
+                };
+            });
+
+        // Get common questions (Section 2)
+        const commonQuestions = Array.from(this.elements.trueFalseContainer.querySelectorAll('.true-false-item[data-type="common"]'))
+            .map((item, index) => {
+                const answers = Array.from(item.querySelectorAll('select'))
+                    .map(select => select.value);
+                return {
+                    id: index + 1,
+                    correctAnswers: answers
+                };
+            });
+
+        // Get specialized questions (CS and ITC)
+        const csQuestions = Array.from(this.elements.trueFalseContainer.querySelectorAll('.true-false-item[data-type="cs"]'))
+            .map((item, index) => {
+                const answers = Array.from(item.querySelectorAll('select'))
+                    .map(select => select.value);
+                return {
+                    id: index + 1,
+                    correctAnswers: answers
+                };
+            });
+
+        const itcQuestions = Array.from(this.elements.trueFalseContainer.querySelectorAll('.true-false-item[data-type="itc"]'))
+            .map((item, index) => {
+                const answers = Array.from(item.querySelectorAll('select'))
+                    .map(select => select.value);
+                return {
+                    id: index + 1,
+                    correctAnswers: answers
+                };
+            });
+
         return {
-            title: this.elements.examForm.querySelector('#examTitle').value.trim(),
-            linkTopic: this.elements.examForm.querySelector('#examLink').value.trim(),
-            answers: this.getAnswersFromForm(),
-            expTime: parseInt(this.elements.examForm.querySelector('#examTime').value),
-            limitUser: parseInt(this.elements.examForm.querySelector('#examLimit').value) || 1
+            title,
+            linkTopic,
+            expTime,
+            limitUser,
+            answers: {
+                section1: {
+                    questions: multipleChoiceAnswers
+                },
+                section2: {
+                    common: {
+                        questions: commonQuestions
+                    },
+                    private: {
+                        cs: {
+                            questions: csQuestions
+                        },
+                        itc: {
+                            questions: itcQuestions
+                        }
+                    }
+                }
+            }
         };
     }
 
@@ -278,7 +508,7 @@ class ExamManager {
             this.showNotification('Vui lòng nhập link topic', 'error');
             return false;
         }
-        if (!data.answers.length) {
+        if (!data.answers.section1.questions.length) {
             this.showNotification('Vui lòng thêm ít nhất một câu hỏi', 'error');
             return false;
         }
@@ -396,17 +626,47 @@ class ExamManager {
         }
     }
 
+    calculateCommonCorrect = (commonSection) => {
+        let correctAnswers = 0;
+        correctAnswers += commonSection.correctAnswers.length * 4;
+        commonSection.incorrectAnswers.forEach(question => {
+            correctAnswers += (4 - question.wrongAnswers.length);
+        });
+
+        return correctAnswers;
+    };
+
+    calculateSpecializedCorrect = (specializedSection) => {
+        let correctAnswers = 0;
+        correctAnswers += specializedSection.correctAnswers.length * 4;
+        specializedSection.incorrectAnswers.forEach(question => {
+            correctAnswers += (4 - question.wrongAnswers.length);
+        });
+
+        return correctAnswers;
+    };
     renderExamDetails(historyData) {
         this.elements.detailsTableBody.innerHTML = historyData.length ?
-            historyData.map(record => `
+            historyData.map(record => {
+                const section1Correct = record.sections.section1.correctAnswers.length;
+                const section1Total = record.sections.section1.totalQuestions;
+                const section2CommonTotal = record.sections.section2.common.totalQuestions * 4;
+                const section2CommonCorrect = this.calculateCommonCorrect(record.sections.section2.common);
+                const section2SpecializedTotal = record.sections.section2.specialized.totalQuestions * 4;
+                const section2SpecializedCorrect = this.calculateSpecializedCorrect(record.sections.section2.specialized);
+                const totalCorrect = section1Correct + section2CommonCorrect + section2SpecializedCorrect;
+                const totalQuestions = section1Total + section2CommonTotal + section2SpecializedTotal;
+                const totalIncorrect = totalQuestions - totalCorrect;
+                return (
+                    `
             <tr>
                 <td>${record?.userRef?._id}</td>
                 <td>${record?.userRef?.fullname}</td>
-                <td class="text-center">${record.correctAnswers.length}</td>
-                <td class="text-center">${record.incorrectAnswers.length}</td>
+                <td class="text-center">${totalCorrect}</td>
+                <td class="text-center">${totalIncorrect}</td>
                 <td class="text-center">
                     <span data-status="${record.result}" class="badge ${record.result ? 'bg-success' : 'bg-danger'}">
-                        ${record.result ? 'Đạt' : 'Không đạt'}
+                        ${record.totalScore}
                     </span>
                 </td>
                 <td class="text-center">${UTILS.formatDate(record.createdAt)}</td>
@@ -414,12 +674,16 @@ class ExamManager {
                     <button class="btn btn-info view-details-btn" 
                             data-student-id="${record?.userRef?._id}"
                             data-student-name="${record?.userRef?.fullname}"
-                            data-incorrect='${JSON.stringify(record.incorrectAnswers)}'>
+                                data-record='${JSON.stringify(record)}'>
                         <i class="fas fa-eye"></i> Chi tiết
                     </button>
                 </td>
             </tr>
-        `).join('') :
+                `
+                )
+            }
+
+            ).join('') :
             '<tr><td colspan="7" class="text-center">Chưa có dữ liệu</td></tr>';
         this.addDetailButtonListeners();
     }
@@ -430,7 +694,7 @@ class ExamManager {
             button.addEventListener('click', (e) => {
                 const studentId = e.currentTarget.dataset.studentId;
                 const studentName = e.currentTarget.dataset.studentName;
-                const incorrectAnswers = JSON.parse(e.currentTarget.dataset.incorrect);
+                const incorrectAnswers = JSON.parse(e.currentTarget.dataset.record);
                 this.showAnswerDetails(studentId, studentName, incorrectAnswers);
             });
         });
@@ -446,16 +710,34 @@ class ExamManager {
     }
 
     populateForm(exam) {
-        const { title, linkTopic, answers, expTime, limitUser } = exam;
-        this.elements.examForm.querySelector('#examTitle').value = title;
-        this.elements.examForm.querySelector('#examLink').value = linkTopic;
-        this.elements.examForm.querySelector('#examTime').value = expTime;
-        this.elements.examForm.querySelector('#examLimit').value = limitUser;
+        this.multipleChoiceCount = 0;
+        this.elements.examForm.querySelector('#examTitle').value = exam.title;
+        this.elements.examForm.querySelector('#examLink').value = exam.linkTopic;
+        this.elements.examForm.querySelector('#examTime').value = exam.expTime;
+        this.elements.examForm.querySelector('#examLimit').value = exam.limitUser;
 
-        // Clear and rebuild answers
-        this.elements.answersContainer.innerHTML = '';
-        answers.forEach(answer => {
-            this.addQuestionItem(answer);
+        // Clear existing questions
+        this.elements.multipleChoiceContainer.innerHTML = '';
+        this.elements.trueFalseContainer.innerHTML = '';
+
+        // Add multiple choice questions
+        exam.answers.section1.questions.forEach(question => {
+            this.addMultipleChoiceQuestion(question.correctAnswer);
+        });
+
+        // Add common questions
+        exam.answers.section2.common.questions.forEach(question => {
+            this.addTrueFalseQuestion('common', question.correctAnswers);
+        });
+
+        // Add CS questions
+        exam.answers.section2.private.cs.questions.forEach(question => {
+            this.addTrueFalseQuestion('cs', question.correctAnswers);
+        });
+
+        // Add ITC questions
+        exam.answers.section2.private.itc.questions.forEach(question => {
+            this.addTrueFalseQuestion('itc', question.correctAnswers);
         });
     }
 
@@ -490,9 +772,13 @@ class ExamManager {
 
     resetForm() {
         this.elements.examForm.reset();
-        this.elements.answersContainer.innerHTML = '';
+        this.elements.multipleChoiceContainer.innerHTML = '';
+        this.elements.trueFalseContainer.innerHTML = '';
+        this.multipleChoiceCount = 0;
+        this.trueFalseCount = 0;
         this.editingExamId = null;
-        this.addQuestionItem();
+        this.addMultipleChoiceQuestion();
+        this.addTrueFalseQuestion();
     }
 
     closeModals() {
@@ -532,27 +818,150 @@ class ExamManager {
         return new Date(dateString).toLocaleDateString('vi-VN', options);
     }
 
-    showAnswerDetails(studentId, studentName, incorrectAnswers) {
+    showAnswerDetails(studentId, studentName, result) {
+        // Cập nhật thông tin học sinh
         document.getElementById('studentNameDetail').textContent = studentName;
         document.getElementById('studentIdDetail').textContent = studentId;
-        const incorrect = incorrectAnswers.filter(a => a.answer !== null);
-        const skipped = incorrectAnswers.filter(a => a.answer === null);
-        document.getElementById('incorrectCount').textContent = incorrect.length;
-        document.getElementById('skippedCount').textContent = skipped.length;
-        const incorrectList = document.getElementById('incorrectList');
-        incorrectList.innerHTML = incorrect.map(answer => `
-        <div class="answer-item">
-            <span class="answer-number">Câu ${answer.index}::    <span class="student-answer">Đã chọn: ${answer.answer}</span></span>
-       
-        </div>
-    `).join('');
-        const skippedList = document.getElementById('skippedList');
-        skippedList.innerHTML = skipped.map(answer => `
-        <div class="answer-item">
-            <span class="answer-number">Câu ${answer.index}</span>
 
+        // Hiển thị tổng điểm
+        const scoreDisplay = document.getElementById('totalScoreDetail');
+        scoreDisplay.textContent = result.totalScore.toFixed(2);
+        scoreDisplay.className = result.totalScore >= 5 ? 'score-pass' : 'score-fail';
+
+        // Phần 1: Trắc nghiệm
+        const section1 = result.sections.section1;
+        const section1Correct = section1.correctAnswers.length;
+        const section1Total = section1.totalQuestions;
+
+        document.getElementById('section1Score').innerHTML = `
+        <div class="score-detail">
+            <div class="score-fraction">${section1Correct}/${section1Total}</div>
+            <div class="score-percentage">${((section1Correct / section1Total) * 100).toFixed(1)}%</div>
         </div>
-    `).join('');
+    `;
+
+        // Hiển thị chi tiết câu sai phần 1
+        document.getElementById('section1Wrong').innerHTML = `
+        <div class="detail-section">
+            <h6 class="detail-subtitle">
+                <i class="fas fa-times-circle text-danger"></i> 
+                Câu trả lời sai (${section1.incorrectAnswers.length})
+            </h6>
+            <div class="answers-container">
+                ${section1.incorrectAnswers.map(wrong => `
+                    <div class="answer-item">
+                        <div class="question-number">Câu ${wrong.questionNumber}</div>
+                        <div class="answer-details">
+                            <div class="student-answer">
+                                <i class="fas fa-user"></i> Đã chọn: 
+                                <span class="badge bg-danger-subtle text-danger">
+                                    ${wrong.studentAnswer || 'Không trả lời'}
+                                </span>
+                            </div>
+                            <div class="correct-answer">
+                                <i class="fas fa-check"></i> Đáp án: 
+                                <span class="badge bg-success-subtle text-success">
+                                    ${wrong.correctAnswer}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+        // Phần 2: Common
+        const commonSection = result.sections.section2.common;
+        const commonTotal = commonSection.totalQuestions * 4;
+        const commonCorrect = this.calculateCommonCorrect(commonSection);
+
+        document.getElementById('commonScore').innerHTML = `
+        <div class="score-detail">
+            <div class="score-fraction">${commonCorrect}/${commonTotal}</div>
+            <div class="score-percentage">${((commonCorrect / commonTotal) * 100).toFixed(1)}%</div>
+        </div>
+    `;
+
+        // Hiển thị chi tiết câu sai phần common
+        document.getElementById('commonWrong').innerHTML = `
+        <div class="detail-section">
+            <h6 class="detail-subtitle">
+                <i class="fas fa-exclamation-triangle text-warning"></i> 
+                Câu trả lời sai
+            </h6>
+            <div class="answers-container">
+                ${commonSection.incorrectAnswers.map(question => `
+                    <div class="answer-item">
+                        <div class="question-number">Câu ${question.questionNumber}</div>
+                        <div class="sub-answers">
+                            ${question.wrongAnswers.map(wrong => `
+                                <div class="sub-answer-item">
+                                    <div class="sub-question">Ý ${wrong.subQuestionNumber}</div>
+                                    <div class="answer-pair">
+                                        <span class="answer wrong">
+                                            <i class="fas fa-times"></i> 
+                                            ${wrong.studentAnswer || 'Không trả lời'}
+                                        </span>
+                                        <span class="answer correct">
+                                            <i class="fas fa-check"></i> 
+                                            ${wrong.correctAnswer}
+                                        </span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+        // Phần 2: Specialized
+        const specializedSection = result.sections.section2.specialized;
+        const specializedTotal = specializedSection.totalQuestions * 4;
+        const specializedCorrect = this.calculateSpecializedCorrect(specializedSection);
+
+        document.getElementById('specializedScore').innerHTML = `
+        <div class="score-detail">
+            <div class="score-fraction">${specializedCorrect}/${specializedTotal}</div>
+            <div class="score-percentage">${((specializedCorrect / specializedTotal) * 100).toFixed(1)}%</div>
+        </div>
+    `;
+
+        // Hiển thị chi tiết câu sai phần specialized
+        document.getElementById('specializedWrong').innerHTML = `
+        <div class="detail-section">
+            <h6 class="detail-subtitle">
+                <i class="fas fa-code text-primary"></i> 
+            </h6>
+            <div class="answers-container">
+                ${specializedSection.incorrectAnswers.map(question => `
+                    <div class="answer-item">
+                        <div class="question-number">Câu ${question.questionNumber}</div>
+                        <div class="sub-answers">
+                            ${question.wrongAnswers.map(wrong => `
+                                <div class="sub-answer-item">
+                                    <div class="sub-question">Ý ${wrong.subQuestionNumber}</div>
+                                    <div class="answer-pair">
+                                        <span class="answer wrong">
+                                            <i class="fas fa-times"></i> 
+                                            ${wrong.studentAnswer || 'Không trả lời'}
+                                        </span>
+                                        <span class="answer correct">
+                                            <i class="fas fa-check"></i> 
+                                            ${wrong.correctAnswer}
+                                        </span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
         document.getElementById('incorrectAnswersModal').style.display = 'block';
     }
 
@@ -604,3 +1013,5 @@ document.addEventListener('DOMContentLoaded', () => {
 `;
     document.head.appendChild(style);
 });
+
+

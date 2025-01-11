@@ -26,11 +26,12 @@ clientRouter.get('/exams/start', asnycHandler(async (req, res) => {
 
 clientRouter.get('/exams/online/:examId/:studentId', asnycHandler(async (req, res) => {
     const { examId, studentId } = req.params;
-
+    console.log(examId, studentId);
     try {
         const hasCheckpoint = req.query.hasCheckpoint === 'true';
         const data = await ExamQuestionServices.StartExam(examId, studentId, hasCheckpoint);
         const { exam, student } = data;
+        console.log(exam);
         res.render('clients/exam/exam', {
             title: "Hệ thống thi online",
             exam,

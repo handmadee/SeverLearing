@@ -71,51 +71,52 @@
         <label>Link Topic</label>
         <input type="url" id="examLink" required />
       </div>
-      <div class="form-group">
-        <label>Đáp Án</label>
-        <div id="answersContainer" class="answers-container">
+
+      <!-- Section 1: Multiple Choice Questions -->
+      <div class="form-section">
+        <h3>Phần 1: Câu hỏi trắc nghiệm</h3>
+        <div id="multipleChoiceContainer" class="answers-container">
           <!-- Questions will be added here dynamically -->
         </div>
-        <button type="button" id="addAnswerBtn" class="add-answer-btn">
-          <i class="fas fa-plus"></i> Thêm câu hỏi
+        <button type="button" id="addMultipleChoiceBtn" class="add-answer-btn">
+          <i class="fas fa-plus"></i> Thêm câu hỏi trắc nghiệm
         </button>
       </div>
 
-      <template id="questionTemplate">
-        <div class="question-item">
-          <div class="question-header">
-            <span class="question-number">Câu hỏi #</span>
-            <button type="button" class="remove-question-btn">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <div class="answer-options">
-            <div class="option">
-              <input type="radio" name="question_" value="A" required />
-              <label>A</label>
-            </div>
-            <div class="option">
-              <input type="radio" name="question_" value="B" required />
-              <label>B</label>
-            </div>
-            <div class="option">
-              <input type="radio" name="question_" value="C" required />
-              <label>C</label>
-            </div>
-            <div class="option">
-              <input type="radio" name="question_" value="D" required />
-              <label>D</label>
-            </div>
-          </div>
+      <!-- Section 2: True/False Questions -->
+      <div class="form-section">
+        <h3>Phần 2: Câu hỏi Đúng/Sai</h3>
+
+        <!-- Common Questions -->
+        <div
+          class="question-section d-flex align-items-center justify-content-around"
+        >
+          <button
+            type="button"
+            id="addCommonQuestionBtn"
+            class="add-answer-btn"
+          >
+            <i class="fas fa-plus"></i> Thêm câu hỏi chung
+          </button>
+
+          <button type="button" id="addCSQuestionBtn" class="add-answer-btn">
+            <i class="fas fa-plus"></i> Thêm câu hỏi CS
+          </button>
+
+          <button type="button" id="addITCQuestionBtn" class="add-answer-btn">
+            <i class="fas fa-plus"></i> Thêm câu hỏi ITC
+          </button>
         </div>
-      </template>
+        <div id="trueFalseContainer" class="answers-container"></div>
+      </div>
+
       <div class="form-group">
         <label>Thời Gian (phút)</label>
-        <input type="number" id="examTime" required />
+        <input type="number" id="examTime" required min="1" />
       </div>
       <div class="form-group">
         <label>Giới Hạn Học Sinh</label>
-        <input type="number" id="examLimit" required />
+        <input type="number" id="examLimit" required min="1" />
       </div>
       <button type="submit" class="submit-btn">Lưu</button>
     </form>
@@ -190,25 +191,73 @@
 </div>
 <!-- Thêm modal chi tiết câu trả lời sai -->
 <!-- Thêm vào cuối file HTML, trước đóng body -->
-<div id="incorrectAnswersModal" class="modal">
+<!-- Modal hiển thị chi tiết -->
+<div class="modal" id="incorrectAnswersModal">
   <div class="modal-content">
     <div class="modal-header">
-      <h2>Chi Tiết Bài Làm</h2>
-      <span class="close">&times;</span>
+      <h4>Chi Tiết Bài Thi</h4>
+      <button class="close">&times;</button>
     </div>
     <div class="modal-body">
+      <!-- Thông tin học sinh -->
       <div class="student-info">
-        <p><strong>Học sinh:</strong> <span id="studentNameDetail"></span></p>
-        <p><strong>Mã số:</strong> <span id="studentIdDetail"></span></p>
-      </div>
-      <div class="answers-container">
-        <div class="incorrect-answers">
-          <h3>Câu trả lời sai (<span id="incorrectCount">0</span>)</h3>
-          <div id="incorrectList"></div>
+        <div class="info-item">
+          <span class="label">Học sinh:</span>
+          <span id="studentNameDetail" class="value"></span>
         </div>
-        <div class="skipped-answers">
-          <h3>Câu bỏ qua (<span id="skippedCount">0</span>)</h3>
-          <div id="skippedList"></div>
+        <div class="info-item">
+          <span class="label">Mã số:</span>
+          <span id="studentIdDetail" class="value"></span>
+        </div>
+      </div>
+
+      <!-- Điểm số -->
+      <div class="score-summary">
+        <div class="total-score">
+          <span class="score-number" id="totalScoreDetail">0.0</span>
+          <span class="score-label">/10 điểm</span>
+        </div>
+      </div>
+
+      <!-- Thống kê từng phần -->
+      <div class="sections-summary">
+        <h5>Chi tiết từng phần:</h5>
+        <div class="section-details">
+          <!-- Phần 1 -->
+          <div class="section-card">
+            <div class="section-header">
+              <h6>Phần 1: Trắc nghiệm</h6>
+              <span class="section-score" id="section1Score">0/0</span>
+            </div>
+            <div class="section-content">
+              <div class="wrong-answers" id="section1Wrong"></div>
+              <div class="skipped-answers" id="section1Skipped"></div>
+            </div>
+          </div>
+
+          <!-- Phần 2 - Common -->
+          <div class="section-card">
+            <div class="section-header">
+              <h6>Phần 2: Câu hỏi chung</h6>
+              <span class="section-score" id="commonScore">0/0</span>
+            </div>
+            <div class="section-content">
+              <div class="wrong-answers" id="commonWrong"></div>
+              <div class="skipped-answers" id="commonSkipped"></div>
+            </div>
+          </div>
+
+          <!-- Phần 2 - Specialized -->
+          <div class="section-card">
+            <div class="section-header">
+              <h6>Phần 2: Chuyên ngành</h6>
+              <span class="section-score" id="specializedScore">0/0</span>
+            </div>
+            <div class="section-content">
+              <div class="wrong-answers" id="specializedWrong"></div>
+              <div class="skipped-answers" id="specializedSkipped"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -352,8 +401,8 @@
     background: white;
     margin: 5% auto;
     padding: 24px;
-    width: 80%;
-    max-width: 700px;
+    width: 90%;
+    max-width: 800px;
     border-radius: 12px;
     position: relative;
   }
@@ -899,7 +948,7 @@
 
   #incorrectAnswersModal .modal-content {
     width: 90%;
-    max-width: 800px;
+    max-width: 900px;
     margin: 30px auto;
     background: white;
     border-radius: 8px;
@@ -982,6 +1031,595 @@
   .skipped {
     color: #9e9e9e;
     font-style: italic;
+  }
+
+  .form-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .form-section h3 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+
+  .true-false-item {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+  }
+
+  .true-false-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .true-false-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    resize: vertical;
+  }
+
+  .question-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .question-section h4 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+  }
+
+  .true-false-item[data-type="common"] {
+    border-left: 4px solid #4caf50;
+  }
+
+  .true-false-item[data-type="cs"] {
+    border-left: 4px solid #2196f3;
+  }
+
+  .true-false-item[data-type="itc"] {
+    border-left: 4px solid #ff9800;
+  }
+
+  /* Style cho modal chi tiết */
+  #incorrectAnswersModal .modal-content {
+    max-width: 800px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .student-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .info-item .label {
+    color: #666;
+    font-weight: 500;
+  }
+
+  .info-item .value {
+    color: #2196f3;
+    font-weight: 600;
+  }
+
+  .score-summary {
+    text-align: center;
+    margin: 30px 0;
+  }
+
+  .total-score {
+    display: inline-block;
+    padding: 20px 40px;
+    background: linear-gradient(135deg, #4caf50, #45a049);
+    border-radius: 12px;
+    color: white;
+  }
+
+  .score-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+
+  .score-label {
+    font-size: 1.2rem;
+    opacity: 0.9;
+  }
+
+  .sections-summary {
+    margin-top: 30px;
+  }
+
+  .section-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .section-header h6 {
+    margin: 0;
+    color: #1976d2;
+    font-weight: 600;
+  }
+
+  .section-score {
+    background: #e3f2fd;
+    padding: 5px 15px;
+    border-radius: 20px;
+    color: #1976d2;
+    font-weight: 500;
+  }
+
+  .section-content {
+    padding: 20px;
+  }
+
+  .wrong-answers,
+  .skipped-answers {
+    margin-bottom: 15px;
+  }
+
+  .answer-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+
+  .answer-number {
+    font-weight: 500;
+    color: #666;
+  }
+
+  .student-answer {
+    color: #dc3545;
+  }
+
+  .correct-answer {
+    color: #28a745;
+  }
+
+  /* Animation */
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .section-card {
+    animation: slideIn 0.3s ease-out forwards;
+  }
+
+  /* Modal Result Detail */
+  .result-detail {
+    max-width: 800px !important;
+    margin: 2vh auto !important;
+    padding: 0 !important;
+    height: 96vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .result-detail .modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .result-detail .modal-body {
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  /* Student Card */
+  .student-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .info-row {
+    margin-bottom: 8px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .info-row label {
+    color: #666;
+    min-width: 80px;
+  }
+
+  .info-row .value {
+    color: #2196f3;
+    font-weight: 500;
+  }
+
+  .total-score-display {
+    text-align: center;
+  }
+
+  .score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4caf50, #45a049);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .score-circle small {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  /* Result Sections */
+  .result-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .result-section {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .section-header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .section-header h5 {
+    margin: 0;
+    color: #1976d2;
+    font-size: 1rem;
+  }
+
+  .section-score {
+    background: #e3f2fd;
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: #1976d2;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .section-body {
+    padding: 15px 20px;
+  }
+
+  /* Answer Items */
+  .answer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .answer-item:hover {
+    background: #f1f3f5;
+  }
+
+  .answer-details {
+    display: flex;
+    gap: 16px;
+  }
+
+  .student-answer,
+  .correct-answer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .student-answer {
+    color: #dc3545;
+  }
+
+  .correct-answer {
+    color: #198754;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .student-card {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .info-row {
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-row label {
+      min-width: auto;
+    }
+  }
+
+  /* Styles for Answer Details Modal */
+  .detail-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .detail-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+    color: #2c3e50;
+    font-weight: 600;
+  }
+
+  .score-detail {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+  }
+
+  .score-fraction {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1976d2;
+    background: #e3f2fd;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  .score-percentage {
+    color: #666;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    background: #f5f5f5;
+    border-radius: 12px;
+  }
+
+  /* Answer Container Styles */
+  .answers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .answer-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.2s ease;
+    border: 1px solid #eee;
+  }
+
+  .answer-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .question-number {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .answer-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Sub Answers Styles */
+  .sub-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-left: 10px;
+  }
+
+  .sub-answer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .sub-question {
+    font-weight: 500;
+    color: #666;
+    min-width: 60px;
+  }
+
+  .answer-pair {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* Answer Status Styles */
+  .answer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .answer.wrong {
+    background: #fff5f5;
+    color: #e53e3e;
+    border: 1px solid #fed7d7;
+  }
+
+  .answer.correct {
+    background: #f0fff4;
+    color: #38a169;
+    border: 1px solid #c6f6d5;
+  }
+
+  .student-answer,
+  .correct-answer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  .student-answer i,
+  .correct-answer i {
+    font-size: 0.9rem;
+  }
+
+  /* Badge Styles */
+  .badge {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .bg-danger-subtle {
+    background: #fff5f5 !important;
+  }
+
+  .bg-success-subtle {
+    background: #f0fff4 !important;
+  }
+
+  /* Animation */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .answer-item {
+    animation: slideIn 0.3s ease-out forwards;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .answer-pair {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sub-answer-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .score-detail {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  /* Custom Scrollbar */
+  .answers-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .answers-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .answers-container::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 4px;
+  }
+
+  .answers-container::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+
+  /* Hover Effects */
+  .answer-item:hover .question-number {
+    color: #1976d2;
+  }
+
+  .sub-answer-item:hover {
+    border-color: #90caf9;
   }
 </style>
 
