@@ -73,7 +73,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const matched = student.subjectScores.find(
                         score => score.languageIt.nameCode === lang.nameCode && score.level == level
                     );
-                    return `<td>${matched ? `${matched.score} BÀI TẬP` : " "}</td>`;
+                    const states = {
+                        learned: {
+                            content: "Đã học",
+                            style: "background-color: rgba(76, 175, 80, 0.2); color: #2E7D32;"
+                        },
+                        learning: {
+                            content: "Đang học",
+                            style: "background-color: rgba(255, 193, 7, 0.2); color: #856404;"
+                        },
+                        notLearned: {
+                            content: "",
+                            style: "background-color: rgba(108, 117, 125, 0.1); color: #6c757d;"
+                        },
+                    };
+
+                    const state = matched?.score > 0
+                        ? states.learned
+                        : matched?.score === 0
+                            ? states.learning
+                            : states.notLearned;
+
+                    return `<td style="${state.style}">${state.content}</td>`;
                 }).join('')}
                         </tr>`;
             }).join('')}

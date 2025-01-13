@@ -270,8 +270,7 @@ async function handleBulkFeedbackSubmit() {
                 score
             });
         }
-    });
-
+    })
     const object = {
         idTeacher: idTeacher.dataset.id,
         subjectScores,
