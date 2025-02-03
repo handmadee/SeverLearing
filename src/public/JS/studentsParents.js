@@ -138,8 +138,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
               
                     <div class="detailed-feedback">
-                          ${student.contentFeedBack &&
-                    `
+                          ${student.contentFeedBack ?
+                        `
                                     <h4 class="section-title">NHẬN XÉT CHI TIẾT</h4>
 
                         <div>
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <i class="fa-solid fa-check"></i>
                             <p> ${student.contentFeedBack || "Chưa có đánh giá"}</p>
                         </div>
-                            `
+                            ` : ""
                     }
                      <div class="signature">
                         <div class="date">

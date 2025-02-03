@@ -48,7 +48,9 @@ function convertExcelToFeedbackJson(filePath) {
             let a1 = parseSubject(res.A1, SubjectUID.C);       // C++
             let a2 = parseSubject(res.A2, SubjectUID.PYTHON);  // Python
             let a3 = parseSubject(res.A3, SubjectUID.SCRATCH); // Scratch
-
+            console.log({
+                a1, a2, a3
+            })
             // Thêm các subjectScores
             feedback.subjectScores = [];
             if (a1) feedback.subjectScores.push(...a1);
@@ -70,6 +72,6 @@ function convertExcelToFeedbackJson(filePath) {
     }
 }
 
-convertExcelToFeedbackJson('/Users/admin/Documents/TSMART/SeverLearing/src/public/sheets/th_1.xlsx');
+convertExcelToFeedbackJson('/Users/admin/Documents/TSMART/SeverLearing/src/public/sheets/th_2_dot1.xlsx');
 
 module.exports = convertExcelToFeedbackJson;
