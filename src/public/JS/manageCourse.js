@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function showLoading() {
         loadingOverlay.classList.remove('d-none');
     }
-
     // Hàm ẩn loading
     function hideLoading() {
         loadingOverlay.classList.add('d-none');

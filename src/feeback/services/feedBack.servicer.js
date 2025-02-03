@@ -64,7 +64,7 @@ class feedBackStudentService {
             const { idTeacher, idStudent, content, ...otherFields } = payload;
 
             // Kiểm tra các trường bắt buộc
-            if (!idTeacher || !idStudent || !content) {
+            if (!idTeacher || !idStudent) {
                 throw new Error('Mỗi payload phải bao gồm idTeacher, idStudent, và content.');
             }
             return {

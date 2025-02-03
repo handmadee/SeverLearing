@@ -20,6 +20,9 @@ class feedBackController {
         const file = req.file;
         const payload = await convertExcelToFeedbackJson(file.path);
         delFile(file.path);
+        console.log({
+            payload
+        })
         return new Created(
             "created feedBack Success",
             await feedBackStudentService.createBulkFeedback(payload)
