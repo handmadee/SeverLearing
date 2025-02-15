@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnSearch = document.getElementById('handlerSearch');
     const tableList = document.getElementById('tableList');
 
+
     // Function to render data into the table
     function renderTableData(data) {
         const tableList = document.getElementById('tableList');
@@ -179,6 +180,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const importButton = document.getElementById('importButton');
     importButton.addEventListener('click', importData);
+
+    // exportStudents.js
+    async function exportData() {
+        try {
+            const response = await fetch(`${LOCALHOST_API_URL}exportShechedule`);
+            console.log(response);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            // Nhận dữ liệu từ API dưới dạng blob (file nhị phân)
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            // Tạo thẻ <a> để tải file
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'schedule_export.xlsx'; // Đặt tên file tải về
+            document.body.appendChild(a);
+            a.click();
+
+            // Xóa URL sau khi tải xong
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            console.log('✅ File đã được tải xuống thành công!');
+        } catch (error) {
+            console.error('❌ Lỗi khi tải file:', error);
+        }
+    }
+
+    const exportButton = document.getElementById('exportButton');
+    exportButton.addEventListener('click', exportData);
 
     // delete students
     async function deleteStudent(id) {

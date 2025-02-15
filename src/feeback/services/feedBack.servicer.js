@@ -7,6 +7,7 @@ const { BadRequestError } = require("../../core/error.response");
 const feedBackStudent = require("../models/feedBackStudent");
 
 
+
 class feedBackStudentService {
     static async createFeedBackv3({
         idTeacher, idStudent, content
@@ -100,7 +101,6 @@ class feedBackStudentService {
         }
     }
 
-    //
     static async getFeedBackByStudents({ idStudent }) {
         const listFeedBack = await feedBackStudent.findOne({
             studentsAccount: new Types.ObjectId(idStudent),
@@ -288,6 +288,8 @@ class feedBackStudentService {
             throw new Error("An error occurred while fetching feedback");
         }
     }
+
+
 
     static async getFeedBackForMonth({ month }) {
         const currentYear = moment().year();

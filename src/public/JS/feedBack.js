@@ -10,7 +10,8 @@ const API_ENDPOINTS = {
         BY_ID: (id) => `feedback/find-id/${id}`,
         BY_TEACHER: (id) => `feedbackByTeacher/${id}`,
         BY_MONTH: (month) => `feedbackByMonth?month=${month}`,
-        BY_TEACHER_AND_MONTH: (id, month) => `feedback/teacher/${id}?month=${month}`
+        BY_TEACHER_AND_MONTH: (id, month) => `feedback/teacher/${id}?month=${month}`,
+        EXPORT_EXCEL: (month) => `feedback/export-feedback/?month=${month}`
     }
 };
 
@@ -34,7 +35,8 @@ class DOMManager {
             radioProgramming: document.querySelectorAll('input[name="programming-skill"]'),
             radioThinking: document.querySelectorAll('input[name="thinking-skill"]'),
             selectFile: document.getElementById("fileInput"),
-            importFile: document.getElementById("importButton")
+            importFile: document.getElementById("importButton"),
+            exportFile: document.getElementById("exportButton")
         };
 
         this.initializeEventListeners();
@@ -47,6 +49,7 @@ class DOMManager {
         this.elements.selectTeacher.addEventListener("change", () => feedbackManager.renderFeedback());
         this.elements.selectTime.addEventListener("change", () => feedbackManager.renderFeedback());
         this.elements.importFile.addEventListener("click", () => feedbackManager.createFileFeedBack());
+        this.elements.exportFile.addEventListener("click", () => feedbackManager.handleExport());
     }
 
     closeDialog() {
@@ -118,6 +121,23 @@ class APIService {
         } catch (error) {
             console.error('Delete Error:', error);
             throw new Error("Failed to delete feedback");
+        }
+    }
+
+    async exportExcelFeedback(month) {
+        try {
+            const response = await fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.FEEDBACK.EXPORT_EXCEL(month)}`);
+            const data = await response.blob();
+            const url = window.URL.createObjectURL(data);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `feedback-${month}.xlsx`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            return response;
+        } catch (error) {
+            console.error('Export Error:', error);
+            createToastV(eToast.error, "Failed to export feedback data");
         }
     }
 }
@@ -208,6 +228,7 @@ class FeedbackManager {
         this.renderLoading();
         try {
             const data = await this.fetchFilteredData();
+            console.log(data.slice(0, 10));
             this.renderItems(data);
         } catch (error) {
             createToastV(eToast.error, "Failed to load feedback");
@@ -327,6 +348,11 @@ class FeedbackManager {
         } catch (error) {
             createToastV(eToast.error, "Failed to load feedback data")
         }
+    }
+
+    async handleExport() {
+        const month = this.dom.elements.selectTime.value;
+        await this.api.exportExcelFeedback(month);
     }
 
     async handleDelete(id) {

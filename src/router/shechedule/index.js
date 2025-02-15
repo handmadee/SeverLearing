@@ -13,7 +13,7 @@ const feedBackControler = require("../../feeback/controllers/feedBackControler")
 
 // Querry search 
 router.get('/searchStudents', asnycHandler(StudentShecheduleController.searchStudentsSchedule));
-
+router.get('/exportShechedule', asnycHandler(StudentShecheduleController.exportStudentToExcelFile));
 // Define routes
 router.post('/importShechedule', uploadExcel.single('excelStudents'), asnycHandler(StudentShecheduleController.importShechedule));
 // Import Students
@@ -82,11 +82,15 @@ router.post('/class', asnycHandler(classController.createClass));
 // edit class
 router.patch('/classAddStudent', asnycHandler(classController.addStudentsToClass));
 // router.patch('/class/addStudent', asnycHandler(classController.addStudentsToClass));
+router.get('/feedback/export-feedback', asnycHandler(feedBackControler.exportExcelFeedBack));
+//
+
 router.patch('/classStudents/removeStudent', asnycHandler(classController.removeStudentsToClass));
 // Nhận xét
 router.get('/feedback/:id', asnycHandler(feedBackControler.getAllFeedBackByStudent));
 router.get('/feedbackStudents/:id', asnycHandler(feedBackControler.getAllFeedBackByID));
 router.get('/feedback/students/:id', asnycHandler(feedBackControler.getFeedBackByIdForMonth));
+
 
 // Get By ID AND MONTH
 router.get('/feedback/teacher/:id', asnycHandler(feedBackControler.getFeedBackByIdTeacherForMonth));
@@ -98,7 +102,6 @@ router.get('/feedbackByMonth', asnycHandler(feedBackControler.getFeedBackForMont
 
 
 router.get('/feedback/find-id/:id', asnycHandler(feedBackControler.getFeedBackById));
-
 router.post('/feedback', asnycHandler(feedBackControler.createdFeedBack));
 router.post('/create-file/feedback', uploadExcel.single('excel'), asnycHandler(feedBackControler.createBulkFileFeedback));
 router.post('/create-bulk/feedback', asnycHandler(feedBackControler.createBulkFeedback));
