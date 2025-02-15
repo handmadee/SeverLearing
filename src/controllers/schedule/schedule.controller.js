@@ -2,38 +2,90 @@ const { ForbiddenError } = require('../../core/error.response');
 const { OK } = require('../../core/success.response');
 const StudentShecheduleService = require('../../services/schedule/schedule.service');
 const attendanceService = require('../../services/schedule/attendance.services');
-const xlsx = require("xlsx");
-const fs = require("fs");
 const _ = require("lodash");
-
-
+const { convertExcelToStudentsJson, exportStudentToExcel } = require('../../untils/xlsx');
+const { delFile } = require('../../untils/file.untils');
+path = require('path');
+fs = require('fs');
 class StudentShecheduleController {
 
-    async importShechedule(req, res) {
-        const file = req.file;
-        const workbook = xlsx.readFile(file.path);
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const data = xlsx.utils.sheet_to_json(worksheet);
-        // delete file after read
-        fs.unlinkSync(file.path);
-        const convertDays = (daysString) => {
-            return daysString.split(',').map(day => parseInt(day.trim()));
-        }
-        const convertedData = data.map(item => {
-            return {
-                ...item,
-                days: convertDays(item.days)
-            };
+    // async importShechedule(req, res) {
+    //     const file = req.file;
+    //     const workbook = xlsx.readFile(file.path);
+    //     const sheetName = workbook.SheetNames[0];
+    //     const worksheet = workbook.Sheets[sheetName];
+    //     const data = xlsx.utils.sheet_to_json(worksheet);
+    //     // delete file after read
+    //     fs.unlinkSync(file.path);
+    //     const convertDays = (daysString) => {
+    //         return daysString.split(',').map(day => parseInt(day.trim()));
+    //     }
+    //     const convertedData = data.map(item => {
+    //         return {
+    //             ...item,
+    //             days: convertDays(item.days)
+    //         };
 
-        });
-        return new OK({
-            message: 'Import success',
-            sheetName,
-            data: await StudentShecheduleService.importStudents(convertedData)
-        }).send(res);
+    //     });
+    //     return new OK({
+    //         message: 'Import success',
+    //         sheetName,
+    //         data: await StudentShecheduleService.importStudents(convertedData)
+    //     }).send(res);
+    // }
+
+
+    async importShechedule(req, res) {
+        try {
+            const file = req.file;
+            const convertedData = convertExcelToStudentsJson(file.path);
+            console.log(convertedData);
+            delFile(file.path);
+            return new OK({
+                message: 'Import student success',
+                data: await StudentShecheduleService.importStudents(convertedData)
+            }).send(res);
+        } catch (error) {
+            console.log(error);
+            return new ForbiddenError({
+                message: 'Import student failed'
+            }).send(res);
+        }
     }
 
+    async exportStudentToExcelFile(req, res) {
+        // EXPORT DOWLOAD   
+        try {
+            const rg = Math.floor(Math.random() * 10);
+            const outputDir = './output';
+            const data = await StudentShecheduleService.getAll();
+            const outputPath = path.join(outputDir, `students$_${rg}.xlsx`);
+            if (!fs.existsSync(outputDir)) {
+                fs.mkdirSync(outputDir);
+            }
+            const isExported = exportStudentToExcel(data, outputPath);
+            if (isExported) {
+                if (fs.existsSync(outputPath)) {
+                    res.download(outputPath, (err) => {
+                        if (err) {
+                            console.error('Error when sending file:', err);
+                            return res.status(500).send('Error downloading the file');
+                        }
+                        fs.unlinkSync(outputPath);
+                    });
+                } else {
+                    return res.status(404).send('File not found');
+                }
+            } else {
+                return res.status(500).send('Error exporting Excel file');
+            }
+        } catch (error) {
+            console.log(error);
+            return new ForbiddenError({
+                message: 'Export failed'
+            }).send(res);
+        }
+    }
 
 
     async getAllShechedule(req, res) {
@@ -83,7 +135,6 @@ class StudentShecheduleController {
             data: result
         }).send(res);
     }
-
     // Query 
     async searchStudentsSchedule(req, res) {
         const keyword = req.query.qkeyword;

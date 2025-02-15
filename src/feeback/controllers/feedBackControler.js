@@ -2,8 +2,9 @@
 const { Created, OK } = require("../../core/success.response");
 const feedBackStudentService = require("../services/feedBack.servicer");
 const { delFile } = require('../../untils/file.untils');
-const convertExcelToFeedbackJson = require('../../untils/xlsx');
-
+const { convertExcelToFeedbackJson, exportFeedbackToExcel } = require('../../untils/xlsx');
+const path = require('path');
+const fs = require('fs');
 
 
 
@@ -15,6 +16,37 @@ class feedBackController {
             "created feedBack Success",
             await feedBackStudentService.createFeedBack(req.body)
         ).send(res);
+    }
+    async exportExcelFeedBack(req, res) {
+        try {
+            const rg = Math.floor(Math.random() * 100);
+            const data = await feedBackStudentService.getFeedBackForMonth({ month: req.query.month });
+            const outputDir = './output';
+            const outputPath = path.join(outputDir, `feedback_${req.query.month}_${rg}.xlsx`);
+            if (!fs.existsSync(outputDir)) {
+                fs.mkdirSync(outputDir);
+            }
+            const isExported = exportFeedbackToExcel(data, outputPath);
+            if (isExported) {
+                if (fs.existsSync(outputPath)) {
+                    res.download(outputPath, (err) => {
+                        if (err) {
+                            console.error('Error when sending file:', err);
+                            return res.status(500).send('Error downloading the file');
+                        }
+                        fs.unlinkSync(outputPath);
+                    });
+                } else {
+                    return res.status(404).send('File not found');
+                }
+            } else {
+                return res.status(500).send('Error exporting Excel file');
+            }
+        } catch (err) {
+            console.log(err);
+            console.error('Error during file processing:', err);
+            return res.status(500).send('Error processing the file');
+        }
     }
     async createBulkFileFeedback(req, res) {
         const file = req.file;

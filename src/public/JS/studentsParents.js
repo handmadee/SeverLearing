@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>¯
               
                     <div class="detailed-feedback">
                           ${student.contentFeedBack ?

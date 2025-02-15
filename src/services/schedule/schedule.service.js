@@ -16,6 +16,7 @@ class StudentShecheduleService extends BaseService {
         const total = await ShecheduleModel.countDocuments();
         const totalPages = Math.ceil(total / limit);
         const data = await ShecheduleModel.find().skip((page - 1) * limit).limit(limit);
+        console.log(data);
         return {
             data,
             total,
