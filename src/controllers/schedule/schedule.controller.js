@@ -91,7 +91,6 @@ class StudentShecheduleController {
     async getAllShechedule(req, res) {
         const { page, limit } = req.query;
         const shechedules = await StudentShecheduleService.getAllShechedule(page, limit);
-
         return new OK({
             data: shechedules
         }).send(res);
