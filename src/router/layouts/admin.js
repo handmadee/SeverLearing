@@ -344,7 +344,7 @@ adminRouter.get('/schedule/importStudents', permission('999'), asnycHandler(asyn
     if (keyword) {
         data = await scheduleService.searchStudents(keyword);
     } else {
-        data = await scheduleService.getAllShechedule(currentPage, 10);
+        data = await scheduleService.getAllShechedule(currentPage, 1000);
     }
     console.log({
         message: `[Account] :: `,
