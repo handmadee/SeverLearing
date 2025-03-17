@@ -58,8 +58,8 @@ const setInitialDateTime = () => {
     day.value = currentDay === 0 ? 8 : currentDay + 1;
 
     const shifts = [
-        { start: 8, end: 9.5, value: 1 },
-        { start: 9.5, end: 11, value: 2 },
+        { start: 7.5, end: 9, value: 1 },
+        { start: 9, end: 10.5, value: 2 },
         { start: 14, end: 15.5, value: 3 },
         { start: 16, end: 17.5, value: 4 },
         { start: 17, end: 18.5, value: 5 },
