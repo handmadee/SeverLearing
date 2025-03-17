@@ -92,7 +92,6 @@
       padding-left: 20px;
     }
 
-
     #countSudents {
       text-align: center;
       display: flex;
@@ -185,10 +184,9 @@
         padding: 8px 18px;
       }
 
-       #contentTable .item td {
+      #contentTable .item td {
         height: 35px !important;
       }
-
     }
     /*  */
   </style>
@@ -221,7 +219,7 @@
           <!-- <i style="pointer-events: none" class="fa-solid fa-file-excel"></i> -->
         </button>
 
-          <button class="btn btn-success" id="exportButton">
+        <button class="btn btn-success" id="exportButton">
           Export
           <i style="pointer-events: none" class="fa-solid fa-file-excel"></i>
         </button>
@@ -433,9 +431,10 @@
                 <option value="1">1 (8h-9h30)</option>
                 <option value="2">2 (9h30-11h)</option>
                 <option value="3">3 (14h-15h30)</option>
-                <option value="4">4 (17h-18h30)</option>
-                <option value="5">5 (18h30-20h)</option>
-                <option value="6">6 (19h30-21h)</option>
+                <option value="4">4 (16h-17h30)</option>
+                <option value="5">5 (17h-18h30)</option>
+                <option value="6">6 (18h30-20h)</option>
+                <option value="7">7 (19h30-21h)</option>
               </select>
 
               <div class="invalid-feedback">Vui lòng nhập ca học.</div>
@@ -483,5 +482,5 @@
 
   <div id="toasts"></div>
   <script type="module" src="/JS/studentsScheducle.js"></script>
-<%- include('./../comon/footer') %>
+  <%- include('./../comon/footer') %>
 </div>

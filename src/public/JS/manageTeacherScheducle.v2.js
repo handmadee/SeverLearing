@@ -61,9 +61,10 @@ const setInitialDateTime = () => {
         { start: 8, end: 9.5, value: 1 },
         { start: 9.5, end: 11, value: 2 },
         { start: 14, end: 15.5, value: 3 },
-        { start: 17, end: 18.5, value: 4 },
-        { start: 18.5, end: 20, value: 5 },
-        { start: 19.5, end: 21, value: 6 },
+        { start: 16, end: 17.5, value: 4 },
+        { start: 17, end: 18.5, value: 5 },
+        { start: 18.5, end: 20, value: 6 },
+        { start: 19.5, end: 21, value: 7 },
     ];
 
     const selectedShift = shifts.find(s => currentHour >= s.start && currentHour < s.end);

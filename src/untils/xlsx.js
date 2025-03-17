@@ -89,9 +89,9 @@ function convertExcelToStudentsJson(filePath) {
                 "CA HỌC",
                 "NGÀY HỌC/TUẦN",
             ],
-            defval: null,       // Giá trị mặc định nếu ô trống
-            blankrows: false,   // Bỏ qua hàng trống
-            skipHidden: true    // Bỏ qua hàng ẩn
+            defval: null,
+            blankrows: false,
+            skipHidden: true
         });
         //
         const object_default = {
