@@ -44,7 +44,11 @@ router.post('/attendanceTeacher', asnycHandler(ettendanceScheduleController.getS
 // ID teacher
 router.get('/attendanceTeacherV2/:id', asnycHandler(ettendanceScheduleController.getStudentByScheduleOfTeacher));
 
-
+// 
+router.get(
+    '/attendance/by-teacher',
+    asnycHandler(ettendanceScheduleController.findStudentsByDateV3)
+);
 
 
 

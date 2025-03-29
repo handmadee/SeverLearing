@@ -1,153 +1,754 @@
-<%- include('./../comon/header') %>
-<!-- Main -->
-<div class="main">
-  <!-- Main -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tsmart - Quản Lý Điểm Danh</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
+    :root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #3b82f6;
+  --primary-hover: #1e40af;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #ca8a04;
+  --gray-light: #f3f4f6;
+  --gray: #e5e7eb;
+  --gray-dark: #9ca3af;
+  --dark: #1f2937;
+}
 
-    .container {
-      width: 95%;
-      margin: 0 auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-shadow: 2px 2px 12px #aaa;
-      margin: 20px;
-    }
+body {
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background-color: #f9fafb;
+  color: #374151;
+}
 
-    .form-group {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+.card {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: none;
+  margin-bottom: 24px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
-    label {
-      margin-right: 10px;
-    }
+.card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
 
-    select,
-    input[type="date"],
-    button {
-      padding: 5px;
-      margin-right: 10px;
-    }
+.card-header {
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 16px 20px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
 
-    button {
-      padding: 5px 10px;
-    }
+.card-title {
+  color: var(--dark);
+  font-weight: 600;
+  margin: 0;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
+.card-title i {
+  margin-right: 10px;
+  color: var(--primary);
+}
 
-    th,
-    td {
-      padding: 8px;
-      text-align: center;
-    }
+.form-control, .form-select {
+  border-radius: 6px;
+  border: 1px solid var(--gray);
+  padding: 10px 14px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+.card .card-header {
+  background-color: #16a34a;
+}
 
-    th {
-      background-color: #f2f2f2;
-    }
-    h5 {
-      background-color: rgba(25, 135, 84, 1);
-      color: white;
-      border-radius: 5px;
-      padding: 15px 0;
-      text-align: center;
-    }
-    h5:hover {
-      cursor: pointer;
-      background-color: #4a95e0;
-      color: white;
-    }
+.card .card-title {
+  color: white;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+  outline: none;
+}
 
-    .systemRestore table tr th {
-      background-color: rgba(25, 135, 84, 1);
-      color: white;
-    }
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
 
-    #attendanceTable {
-      border: none;
-    }
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
 
-    #attendanceTable tr {
-      height: 50px;
-    }
-    #attendanceTable tr td {
-      font-weight: 500;
-      padding: 0;
-      border-bottom: 2px solid #ddd;
-    }
+.btn-outline-primary {
+  color: var(--primary);
+  border-color: var(--primary);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-outline-secondary {
+  color: var(--gray-dark);
+  border-color: var(--gray-dark);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--gray-dark);
+  color: white;
+}
+
+.status-badge {
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 13px;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.table thead th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #4b5563;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--gray);
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: 14px 16px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--gray);
+  font-size: 14px;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.timetable-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.timetable-day {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.timetable-day:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.timetable-day-header {
+  background-color: var(--primary);
+  color: white;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.timetable-day-date {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.timetable-day-content {
+  padding: 12px;
+  flex-grow: 1;
+  min-height: 150px;
+}
+
+.timetable-session {
+  background-color: var(--gray-light);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  position: relative;
+  border-left: 3px solid var(--primary);
+}
+
+.timetable-session:last-child {
+  margin-bottom: 0;
+}
+
+.timetable-session-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.timetable-session-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--dark);
+}
+
+.timetable-absentees {
+  font-size: 13px;
+}
+
+.timetable-absentee {
+  background-color: white;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  border-left: 3px solid var(--danger);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  word-break: break-word;
+}
+
+.timetable-absentee:last-child {
+  margin-bottom: 0;
+}
+
+.timetable-absentees-expanded {
+  margin-top: 8px;
+}
+
+.absentee-reason {
+  font-style: italic;
+  color: var(--gray-dark);
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.absence-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--danger);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 2px 8px;
+  min-width: 24px;
+}
+
+.filter-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filter-title {
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  color: var(--dark);
+}
+
+.filter-title i {
+  margin-right: 8px;
+  color: var(--primary);
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--gray-dark);
+}
+
+.no-data i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.show-more {
+  cursor: pointer;
+  text-align: center;
+  color: var(--primary);
+  border-left: 3px solid var(--primary) !important;
+  transition: background-color 0.2s;
+}
+
+.show-more:hover {
+  background-color: #f9fafb;
+}
+
+.toast-container {
+  z-index: 1060;
+}
+
+.toast {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Modal styles */
+.modal-content {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--gray);
+  padding: 16px 20px;
+}
+
+.modal-title {
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--gray);
+  padding: 16px 20px;
+}
+
+.list-group-item {
+  padding: 12px 16px;
+  border-color: var(--gray);
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.page-link {
+  color: var(--primary);
+  border-color: var(--gray);
+  padding: 8px 16px;
+}
+
+.page-item.active .page-link {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1199px) {
+  .timetable-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 991px) {
+  .timetable-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .timetable-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .card-title {
+    font-size: 16px;
+  }
+  
+  .table thead th {
+    font-size: 11px;
+    padding: 12px 10px;
+  }
+  
+  .table tbody td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+  
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .timetable-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-header {
+    padding: 14px 16px;
+  }
+  
+  .filter-card {
+    padding: 16px;
+  }
+  
+  .form-control, .form-select {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  
+  .btn-primary {
+    padding: 8px 14px;
+  }
+}
   </style>
-
-  <%- include('./../comon/topBarSearch') %>
-
-  <div class="container systemRestore">
-    <h5>Khôi phục điểm danh - Tsmart</h5>
-    <div
-      class="form-group w-75 d-flex flex-row justify-content-around mx-auto py-2"
-    >
-      <div class="item">
-        <label for="shift">Ca</label>
-        <select id="shift">
-          <option value="1">1 (7h30-9h)</option>
-          <option value="2">2 (9h-10h30)</option>
-          <option value="3">3 (14h-15h30)</option>
-          <option value="4">4 (16h-17h30)</option>
-          <option value="5">5 (17h-18h30)</option>
-          <option value="6">6 (18h30-20h)</option>
-          <option value="7">7 (19h30-21h)</option>
-        </select>
+</head>
+<body>
+  <%- include('./../comon/header') %>
+  <div class="main">
+    <%- include('./../comon/topBarSearch') %>
+    
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="card-title">
+                <i class="fas fa-user-check me-2"></i>Quản Lý Điểm Danh Học Sinh
+              </h5>
+            </div>
+            <div class="card-body">
+              <!-- Filters -->
+              <div class="filter-card">
+                <h6 class="filter-title">
+                  <i class="fas fa-filter"></i>Bộ Lọc
+                </h6>
+                <div class="row g-3">
+                  <div class="col-md-3">
+                    <label for="session" class="form-label">Ca học</label>
+                    <select disabled id="session" class="form-select">
+                      <option value="all">Tất cả ca học</option>
+                      <option value="1">Ca 1 (7h30-9h)</option>
+                      <option value="2">Ca 2 (9h-10h30)</option>
+                      <option value="3">Ca 3 (14h-15h30)</option>
+                      <option value="4">Ca 4 (16h-17h30)</option>
+                      <option value="5">Ca 5 (17h-18h30)</option>
+                      <option value="6">Ca 6 (18h30-20h)</option>
+                      <option value="7">Ca 7 (19h30-21h)</option>
+                    </select>
+                  </div>
+                  <div  class="col-md-3">
+                    <label for="teacher" class="form-label">Giáo viên</label>
+                    <select disabled id="teacher" class="form-select">
+                      <option value="all">Tất cả giáo viên</option>
+                      <option value="1">Nguyễn Văn A</option>
+                      <option value="2">Trần Thị B</option>
+                      <option value="3">Lê Hoàng C</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Khoảng thời gian</label>
+                    <div class="input-group">
+                      <input type="date" id="startDate" class="form-control">
+                      <span class="input-group-text">đến</span>
+                      <input type="date" id="endDate" class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-md-2 d-flex align-items-end">
+                    <button id="applyFilter" class="btn btn-primary w-100">
+                      <i class="fas fa-search me-2"></i>Áp dụng
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Timetable View -->
+              <h6 class="filter-title mt-4">
+                <i class="fas fa-calendar-alt"></i>Thời Khoá Biểu Vắng Mặt
+                <span class="ms-2 badge bg-secondary" id="dateRangeDisplay">Tháng 3/2025</span>
+              </h6>
+              
+              <div class="timetable-container" id="timetableContainer">
+                <!-- Monday -->
+                <div class="timetable-day">
+                  <div class="timetable-day-header">
+                    <div>Thứ Hai</div>
+                    <div class="timetable-day-date">17/03/2025</div>
+                  </div>
+                  <div class="timetable-day-content">
+                    <div class="timetable-session">
+                      <div class="timetable-session-header">
+                        <div class="timetable-session-title">Ca 5</div>
+                        <div class="absence-count">1</div>
+                      </div>
+                      <div class="timetable-absentees">
+                        <div class="timetable-absentee">Đàm Minh Gia Bảo</div>
+                      </div>
+                    </div>
+                    <div class="timetable-session">
+                      <div class="timetable-session-header">
+                        <div class="timetable-session-title">Ca 6</div>
+                        <div class="absence-count">4</div>
+                      </div>
+                      <div class="timetable-absentees">
+                        <div class="timetable-absentee">Mai Quang Kiệt</div>
+                        <div class="timetable-absentee">Dương Hải Anh</div>
+                        <div class="timetable-absentee">Thiện Khang</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Tuesday -->
+                <div class="timetable-day">
+                  <div class="timetable-day-header">
+                    <div>Thứ Ba</div>
+                    <div class="timetable-day-date">18/03/2025</div>
+                  </div>
+                  <div class="timetable-day-content">
+                    <div class="timetable-session">
+                      <div class="timetable-session-header">
+                        <div class="timetable-session-title">Ca 6</div>
+                        <div class="absence-count">7</div>
+                      </div>
+                      <div class="timetable-absentees">
+                        <div class="timetable-absentee">Dương Hải Anh</div>
+                        <div class="timetable-absentee">Khánh Huyền</div>
+                        <div class="timetable-absentee">Tuệ Nhi</div>
+                        <div class="timetable-absentee">+4 học sinh khác</div>
+                      </div>
+                    </div>
+                    <div class="timetable-session">
+                      <div class="timetable-session-header">
+                        <div class="timetable-session-title">Ca 5</div>
+                        <div class="absence-count">1</div>
+                      </div>
+                      <div class="timetable-absentees">
+                        <div class="timetable-absentee">Trần Thanh Duy</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Wednesday -->
+                <div class="timetable-day">
+                  <div class="timetable-day-header">
+                    <div>Thứ Tư</div>
+                    <div class="timetable-day-date">19/03/2025</div>
+                  </div>
+                  <div class="timetable-day-content">
+                    <div class="timetable-session">
+                      <div class="timetable-session-header">
+                        <div class="timetable-session-title">Ca 5</div>
+                        <div class="absence-count">2</div>
+                      </div>
+                      <div class="timetable-absentees">
+                        <div class="timetable-absentee">Ngô Minh Khang</div>
+                        <div class="timetable-absentee">Hải Yến - A xôn</div>
+                      </div>
+                    </div>
+                    <div class="timetable-session">
+                      <div class="timetable-session-header">
+                        <div class="timetable-session-title">Ca 6</div>
+                        <div class="absence-count">5</div>
+                      </div>
+                      <div class="timetable-absentees">
+                        <div class="timetable-absentee">Hải Nam</div>
+                        <div class="timetable-absentee">Minh Kỳ</div>
+                        <div class="timetable-absentee">+3 học sinh khác</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Thursday -->
+                <div class="timetable-day">
+                  <div class="timetable-day-header">
+                    <div>Thứ Năm</div>
+                    <div class="timetable-day-date">20/03/2025</div>
+                  </div>
+                  <div class="timetable-day-content">
+                    <div class="no-data">
+                      <i class="fas fa-smile"></i>
+                      <p>Không có học sinh vắng mặt</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Friday -->
+                <div class="timetable-day">
+                  <div class="timetable-day-header">
+                    <div>Thứ Sáu</div>
+                    <div class="timetable-day-date">21/03/2025</div>
+                  </div>
+                  <div class="timetable-day-content">
+                    <div class="timetable-session">
+                      <div class="timetable-session-header">
+                        <div class="timetable-session-title">Ca 5</div>
+                        <div class="absence-count">7</div>
+                      </div>
+                      <div class="timetable-absentees">
+                        <div class="timetable-absentee">Trần Thanh Duy</div>
+                        <div class="timetable-absentee">Gia Khánh</div>
+                        <div class="timetable-absentee">+5 học sinh khác</div>
+                      </div>
+                    </div>
+                    <div class="timetable-session">
+                      <div class="timetable-session-header">
+                        <div class="timetable-session-title">Ca 6</div>
+                        <div class="absence-count">2</div>
+                      </div>
+                      <div class="timetable-absentees">
+                        <div class="timetable-absentee">Lê Phước Tuấn Anh</div>
+                        <div class="timetable-absentee">Nguyễn Hoàng Phúc-Gôn</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Detailed Table View -->
+              <h6 class="filter-title mt-4">
+                <i class="fas fa-list"></i>Danh Sách Chi Tiết
+              </h6>
+              
+              <div class="table-responsive">
+                <table class="table" id="absenceTable">
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Họ và tên</th>
+                      <th>Tổng số buổi học</th>
+                      <th>Tổng vắng</th>
+                      <th>Ngày vắng</th>
+                      <th>Ca học</th>
+                      <th>Trạng thái</th>
+                      <th>Chức năng</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Đàm Minh Gia Bảo</td>
+                      <td>1</td>
+                      <td>17/03/2025</td>
+                      <td>Ca 5</td>
+                      <td><span class="status-badge bg-danger">Vắng mặt</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary changeAttendance" data-id="1" data-attendance="false">
+                          <i class="fas fa-exchange-alt me-1"></i>Đổi trạng thái
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Mai Quang Kiệt</td>
+                      <td>3</td>
+                      <td>17/03/2025</td>
+                      <td>Ca 6</td>
+                      <td><span class="status-badge bg-danger">Vắng mặt</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary changeAttendance" data-id="2" data-attendance="false">
+                          <i class="fas fa-exchange-alt me-1"></i>Đổi trạng thái
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>Dương Hải Anh</td>
+                      <td>3</td>
+                      <td>18/03/2025</td>
+                      <td>Ca 6</td>
+                      <td><span class="status-badge bg-danger">Vắng mặt</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary changeAttendance" data-id="3" data-attendance="false">
+                          <i class="fas fa-exchange-alt me-1"></i>Đổi trạng thái
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>Thiện Khang</td>
+                      <td>1</td>
+                      <td>17/03/2025</td>
+                      <td>Ca 6</td>
+                      <td><span class="status-badge bg-danger">Vắng mặt</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary changeAttendance" data-id="4" data-attendance="false">
+                          <i class="fas fa-exchange-alt me-1"></i>Đổi trạng thái
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td>Khánh Huyền</td>
+                      <td>2</td>
+                      <td>18/03/2025</td>
+                      <td>Ca 6</td>
+                      <td><span class="status-badge bg-danger">Vắng mặt</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary changeAttendance" data-id="5" data-attendance="false">
+                          <i class="fas fa-exchange-alt me-1"></i>Đổi trạng thái
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="item">
-        <label for="day" class="disabled">Thứ</label>
-        <select id="day" class="disabled" disabled>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">Chủ nhật</option>
-        </select>
-      </div>
-      <div class="item">
-        <label for="date">Ngày</label>
-        <input type="date" id="date" />
-      </div>
-
-      <button class="btn btn-success" id="search">Tìm kiếm</button>
     </div>
-    <table id="attendanceTable">
-      <thead>
-        <tr>
-          <th>STT</th>
-          <th>Họ và tên</th>
-          <th>Số điện thoại phụ huynh</th>
-          <th>Trạng thái</th>
-          <th>Lý do</th>
-          <th>Chức Năng</th>
-        </tr>
-      </thead>
-      <tbody id="studentTableBody">
-        <tr>
-          <td>Lê Văn Nam</td>
-          <td>0905777888</td>
-          <td>1</td>
-        </tr>
-        <tr>
-          <td>Trần Thị Nam</td>
-          <td>0777898000</td>
-          <td>0</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
+  
 
+    
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
   <script type="module" src="/JS/findSchedule.js"></script>
   <%- include('./../comon/footer') %>
-</div>
+
+</body>
+</html>

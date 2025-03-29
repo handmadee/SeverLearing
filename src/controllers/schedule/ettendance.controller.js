@@ -55,12 +55,8 @@ class AttendanceController {
     async getStudentByScheduleOfTeacher(req, res) {
         const { study, date } = req.query;
         const idTeacher = req.params.id;
-        // Nếu lớp đó có 2 giáo viên dạy cung 1 lớp thì sao
 
-        console.log({
-            study, date,
-            idTeacher
-        })
+
         // const dateNow = new Date(date)
         const students = await attendanceService.getStudyByTeacher(study, date, idTeacher);
         return new OK({
@@ -79,8 +75,22 @@ class AttendanceController {
     }
 
 
-
-
+    // Find Student Date
+    async findStudentsByDateV3(req, res) {
+        try {
+            const { study, date, date1, session, teacherId } = req.query;
+            const fromDate = date ? new Date(date) : new Date('1970-01-01');
+            const toDate = date1 ? new Date(date1) : new Date();
+            const students = await attendanceService.getAbsentStudents(study, fromDate, toDate, session, teacherId);
+            return new OK({
+                message: 'Danh sách học sinh vắng mặt',
+                data: students
+            }).send(res);
+        } catch (error) {
+            console.error('Lỗi tìm học sinh vắng:', error);
+            return new InternalServerError({ message: 'Đã xảy ra lỗi server' }).send(res);
+        }
+    }
 
     // Change attendance
     async changeAttendance(req, res) {
