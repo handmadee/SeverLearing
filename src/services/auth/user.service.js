@@ -30,16 +30,26 @@ exports.register = async (userData) => {
 };
 
 exports.login = async (loginData) => {
-    const { username, password } = loginData;
-    const user = await User.findOne({ username }).select('password pemission');
-    if (!user || !await bcrypt.compare(password, user.password)) {
-        throw new BadRequestError('Invalid usernamemobmo or password');
+    try {
+        const { username, password } = loginData;
+        const pass = await bcrypt.hash('123456', 10);
+        console.log("🚀 ~ exports.login= ~ pass:", pass)
+        const user = await User.findOne({ username }).select('password pemission');
+        console.log(user)
+        if (!user || !await bcrypt.compare(password, user.password)) {
+            throw new BadRequestError('Invalid usernamemobmo or password');
+        }
+        const { accessToken, refreshToken } = generateTokens(user);
+        const token = new Token({ user_id: user._id, role: user?.pemission, access_token: accessToken, refresh_token: refreshToken });
+        await token.save();
+        return { user_id: user._id, role: user?.pemission, accessToken, refreshToken };
+    } catch (error) {
+        console.log(error)
+        throw error;
+        
     }
-    const { accessToken, refreshToken } = generateTokens(user);
-    const token = new Token({ user_id: user._id, role: user?.pemission, access_token: accessToken, refresh_token: refreshToken });
-    await token.save();
-    return { user_id: user._id, role: user?.pemission, accessToken, refreshToken };
 };
+
 
 // exports.verifyToken = async (token) => {
 //     try {

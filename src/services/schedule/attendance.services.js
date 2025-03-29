@@ -5,6 +5,7 @@ const BaseService = require("../base.service");
 const accountModel = require('../../models/account.model');
 const { NotFoundError, BadRequestError } = require('../../core/error.response');
 const ClassService = require('./class.services');
+const { formatDateTime } = require('../../untils/time.untils');
 
 class StudentEttendanceService extends BaseService {
     constructor() {
@@ -40,8 +41,76 @@ class StudentEttendanceService extends BaseService {
     // Thay đổi trạng thái điểm danh
     async changeAttendance(id, attendance) {
         console.log(id, attendance);
-        return await ettendanceModel.findByIdAndUpdate(id, attendance, { new: true })
+        return await ettendanceModel.findByIdAndUpdate({
+            _id: new mongoose.Types.ObjectId(id)
+        }, {
+            attendance: attendance.attendance
+        }, { new: true })
     }
+    
+    async getAbsentStudents(study = null, fromDate, toDate, session = null, teacherId = null) {
+        const query = {
+            date: { $gte: fromDate, $lte: toDate },
+            // attendance: false
+        };
+
+        if (study) {
+            query.study = study;
+        }
+
+        if (session) {
+            query.session = session;
+        }
+
+        if (teacherId) {
+            query.teacherAccount = new mongoose.Types.ObjectId(teacherId);
+        }
+
+        const absents = await ettendanceModel.find(query)
+            .populate('studentAccount')
+            .select('studentAccount date reason attendance  study _id ')
+            .lean();
+
+        const studentMap = {};
+
+        for (const record of absents) {
+            const studentId = record.studentAccount?._id?.toString();
+            const fullname = record.studentAccount?.fullname || 'Không rõ tên';
+            console.log(record)
+            const study = record.study;
+            const id = record._id;
+            const desC = record.reason;
+            const date = record.date;
+
+            if (!studentMap[studentId]) {
+                studentMap[studentId] = {
+                    studentId,
+                    fullname,
+                    des: desC,
+                    totalAbsent: 0,
+                    absentDates: []
+                };
+            }
+
+            if(record.attendance == false) {
+                studentMap[studentId].totalAbsent++;
+            }
+            studentMap[studentId].absentDates.push({
+                id,
+                status: record.attendance,
+                lable: `${formatDateTime(date)} - Ca học : ${study}`,
+                date: formatDateTime(date),
+                study: record.study,
+                reason: desC
+            });
+        }
+
+        return Object.values(studentMap);
+    }
+
+
+
+
 
     async getStudyByDate(date, date1, study) {
         return await ettendanceModel.aggregate([

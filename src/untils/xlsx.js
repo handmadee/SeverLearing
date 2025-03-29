@@ -267,7 +267,6 @@ function exportStudentToExcel(studentData, outputPath = './students_export.xlsx'
 
         // Ghi file Excel
         reader.writeFile(wb, outputPath);
-        console.log(`✅ File Excel đã được tạo thành công: ${outputPath}`);
 
         return outputPath;
     } catch (error) {
@@ -276,16 +275,7 @@ function exportStudentToExcel(studentData, outputPath = './students_export.xlsx'
     }
 }
 
-// convertExcelToStudentsJson('/Users/admin/Documents/TSMART/SeverLearing/import_students_default_v1.xlsx');
-exportStudentToExcel([
-    {
-        _id: "6692016f40a1291a267b5bce",
-        fullname: "Như Ý",
-        phone: "0868552445",
-        study: 1,
-        days: [3, 5],
-    },
-]);
+
 
 
 
