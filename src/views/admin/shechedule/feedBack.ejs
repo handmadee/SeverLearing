@@ -1,4 +1,3 @@
-
 <%- include('./../comon/header') %>
 <!-- Style Respon -->
 <!-- <link rel="stylesheet" type="text/css" href="/styles/parents.css" /> -->
@@ -11,7 +10,8 @@
     --main-color: #198754; /* Hoặc rgba(25, 135, 84, 1) */
   }
 
-  button, .btn {
+  button,
+  .btn {
     background-color: var(--main-color);
     color: #fff;
     border: none;
@@ -19,13 +19,16 @@
     border-radius: 5px;
     cursor: pointer;
   }
-  button i, .btn i {
+  button i,
+  .btn i {
     pointer-events: none;
   }
-  button:hover .trash, .btn:hover .trash {
+  button:hover .trash,
+  .btn:hover .trash {
     color: red;
   }
-  button:hover .review, .btn:hover .review {
+  button:hover .review,
+  .btn:hover .review {
     color: #fff;
   }
 
@@ -56,13 +59,30 @@
   }
 
   /* Điều chỉnh width 7 cột */
-  .boxFeedBack tbody tr th:nth-child(1) { width: 15%; } /* Học viên */
-  .boxFeedBack tbody tr th:nth-child(2) { width: 15%; } /* Giáo viên */
-  .boxFeedBack tbody tr th:nth-child(3) { width: 10%; } /* Kĩ năng */
-  .boxFeedBack tbody tr th:nth-child(4) { width: 10%; } /* Tư duy */
-  .boxFeedBack tbody tr th:nth-child(5) { width: 25%; } /* Nội dung */
-  .boxFeedBack tbody tr th:nth-child(6) { width: 10%; } /* Ngày tạo */
-  .boxFeedBack tbody tr th:nth-child(7) { width: 15%; } /* Chức năng */
+  .boxFeedBack tbody tr th:nth-child(1) {
+    width: 15%;
+  } /* Checkbox all */
+  .boxFeedBack tbody tr th:nth-child(1) {
+    width: 15%;
+  } /* Học viên */
+  .boxFeedBack tbody tr th:nth-child(2) {
+    width: 15%;
+  } /* Giáo viên */
+  .boxFeedBack tbody tr th:nth-child(3) {
+    width: 10%;
+  } /* Kĩ năng */
+  .boxFeedBack tbody tr th:nth-child(4) {
+    width: 10%;
+  } /* Tư duy */
+  .boxFeedBack tbody tr th:nth-child(5) {
+    width: 25%;
+  } /* Nội dung */
+  .boxFeedBack tbody tr th:nth-child(6) {
+    width: 10%;
+  } /* Ngày tạo */
+  .boxFeedBack tbody tr th:nth-child(7) {
+    width: 15%;
+  } /* Chức năng */
 
   .boxFeedBack tr:hover {
     background-color: #f5f5f5;
@@ -88,7 +108,8 @@
     font-size: 15px;
     margin-left: 5px;
   }
-  .item.col-3, .item.col-4 {
+  .item.col-3,
+  .item.col-4 {
     display: flex;
     align-items: center;
   }
@@ -120,7 +141,7 @@
     border-radius: 20px;
     transform: translate(-50%, -50%);
     box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
-                rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+      rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
     display: none;
     z-index: 9999;
     overflow-y: auto;
@@ -146,32 +167,31 @@
     color: var(--main-color);
   }
 
+  .dialogReview .header p {
+    margin: 0;
+  }
 
-.dialogReview .header p {
-  margin: 0;
-}
+  .dialogReview .header p:first-child {
+    font-weight: bold;
+  }
+  .dialogReview .container {
+    width: 100%;
+  }
 
-.dialogReview .header p:first-child {
-  font-weight: bold;
-}
-.dialogReview .container {
-  width: 100%;
-}
+  .Evaluate .createEvaluate {
+    float: left;
+  }
 
-.Evaluate .createEvaluate {
-  float: left;
-}
-
-.dialogReview .container .createEvaluate {
-  padding: 10px;
-  background-color: rgba(25, 135, 84, 1);
-  color: white;
-  display: block;
-  width: max-content;
-  margin-left: auto;
-  margin-left: 0;
-  margin-top: 10px;
-}
+  .dialogReview .container .createEvaluate {
+    padding: 10px;
+    background-color: rgba(25, 135, 84, 1);
+    color: white;
+    display: block;
+    width: max-content;
+    margin-left: auto;
+    margin-left: 0;
+    margin-top: 10px;
+  }
 
   .evaluation-table {
     width: 100%;
@@ -182,7 +202,8 @@
     background-color: var(--main-color);
     color: #fff;
   }
-  .evaluation-table th, .evaluation-table td {
+  .evaluation-table th,
+  .evaluation-table td {
     padding: 10px;
     border: 1px solid #ccc;
     text-align: center;
@@ -213,10 +234,10 @@
     right: 20px;
     background-color: #ddd;
     border-radius: 50%;
-    width: 30px; 
-    height: 30px; 
-    display: flex; 
-    align-items: center; 
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
     justify-content: center;
   }
   .btn1.xmark:hover {
@@ -224,190 +245,190 @@
     color: #fff;
   }
 
+  .dialogReview .container .header .nameStudents,
+  .dialogReview .container .header .phoneStudents {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #198754;
+  }
 
-.dialogReview .container .header .nameStudents,
-.dialogReview .container .header .phoneStudents {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #198754;
-}
+  /* Table Styling */
+  .dialogReview .container .evaluation-table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+  }
 
-/* Table Styling */
-.dialogReview .container .evaluation-table {
-  width: 100%;
-  margin: 1rem 0;
-  border-collapse: collapse;
-}
+  .dialogReview .container .evaluation-table th {
+    background-color: #198754;
+    color: #fff;
+    padding: 0.5rem;
+    text-align: left;
+    font-size: 1rem;
+  }
 
-.dialogReview .container .evaluation-table th {
-  background-color: #198754;
-  color: #fff;
-  padding: 0.5rem;
-  text-align: left;
-  font-size: 1rem;
-}
+  .dialogReview .container .evaluation-table td {
+    border: 1px solid #198754;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    color: #495057;
+  }
 
-.dialogReview .container .evaluation-table td {
-  border: 1px solid #198754;
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  color: #495057;
-}
+  .dialogReview .container .evaluation-table td input {
+    padding: 5px;
+    width: 90%;
+    border-radius: 5px;
+  }
 
-.dialogReview .container .evaluation-table td input {
-  padding: 5px;
-  width: 90%;
-  border-radius: 5px;
-}
+  .dialogReview .container .evaluation-table select {
+    width: 100%;
+    padding: 0.3rem;
+    border: 1px solid #198754;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    background-color: #e9f7ec;
+    transition: background-color 0.3s ease;
+  }
 
-.dialogReview .container .evaluation-table select {
-  width: 100%;
-  padding: 0.3rem;
-  border: 1px solid #198754;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  background-color: #e9f7ec;
-  transition: background-color 0.3s ease;
-}
+  .dialogReview .container .evaluation-table select option[value="1"] {
+    background-color: #d4edda;
+    color: #155724;
+  }
 
-.dialogReview .container .evaluation-table select option[value="1"] {
-  background-color: #d4edda;
-  color: #155724;
-}
+  .dialogReview .container .evaluation-table select option[value="2"] {
+    background-color: #ffeeba;
+    color: #856404;
+  }
 
-.dialogReview .container .evaluation-table select option[value="2"] {
-  background-color: #ffeeba;
-  color: #856404;
-}
+  .dialogReview .container .evaluation-table select option[value="3"] {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
 
-.dialogReview .container .evaluation-table select option[value="3"] {
-  background-color: #f8d7da;
-  color: #721c24;
-}
+  /* Evaluation Metrics Styling */
+  .dialogReview .container .evaluation-metrics {
+    margin-top: 1rem;
+  }
 
-/* Evaluation Metrics Styling */
-.dialogReview .container .evaluation-metrics {
-  margin-top: 1rem;
-}
+  .dialogReview .container .evaluation-metrics p {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #198754;
+    margin-bottom: 0.5rem;
+  }
 
-.dialogReview .container .evaluation-metrics p {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #198754;
-  margin-bottom: 0.5rem;
-}
+  .dialogReview .container .evaluation-metrics .radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
 
-.dialogReview .container .evaluation-metrics .radio-group {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
+  .dialogReview .container .evaluation-metrics .radio-group label {
+    font-size: 0.9rem;
+    padding: 0.3rem 1rem;
+    border-radius: 15px;
+    border: 1px solid #198754;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 
-.dialogReview .container .evaluation-metrics .radio-group label {
-  font-size: 0.9rem;
-  padding: 0.3rem 1rem;
-  border-radius: 15px;
-  border: 1px solid #198754;
-  cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
-}
+  .dialogReview
+    .container
+    .evaluation-metrics
+    .radio-group
+    input[type="radio"] {
+    display: none;
+  }
 
-.dialogReview .container .evaluation-metrics .radio-group input[type="radio"] {
-  display: none;
-}
+  .dialogReview
+    .container
+    .evaluation-metrics
+    .radio-group
+    input[type="radio"]:checked
+    + label {
+    background-color: #198754;
+    color: #fff;
+  }
 
-.dialogReview
-  .container
-  .evaluation-metrics
-  .radio-group
-  input[type="radio"]:checked
-  + label {
-  background-color: #198754;
-  color: #fff;
-}
+  .dialogReview .container .Evaluate {
+    height: 200px;
+  }
 
-.dialogReview .container .Evaluate {
-  height: 200px;
-}
+  /* Evaluate Textarea Styling */
+  .dialogReview .container .Evaluate textarea {
+    border: 2px solid #198754;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    resize: none;
+    color: #495057;
+  }
 
-/* Evaluate Textarea Styling */
-.dialogReview .container .Evaluate textarea {
-  border: 2px solid #198754;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  padding: 0.5rem;
-  resize: none;
-  color: #495057;
-}
+  /* Button Styling */
+  .dialogReview .btn {
+    background-color: #198754;
+    color: #fff;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
-/* Button Styling */
-.dialogReview .btn {
-  background-color: #198754;
-  color: #fff;
-  padding: 0.7rem 1.5rem;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+  .dialogReview .btn:hover {
+    background-color: #145c3b;
+  }
 
-.dialogReview .btn:hover {
-  background-color: #145c3b;
-}
+  .dialogReview .btn1 {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+  }
 
-.dialogReview .btn1 {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  cursor: pointer;
-}
+  .dialogReview .btn1 i {
+    font-size: 1.5rem;
+    color: #198754;
+    transition: color 0.3s ease;
+  }
 
-.dialogReview .btn1 i {
-  font-size: 1.5rem;
-  color: #198754;
-  transition: color 0.3s ease;
-}
+  .dialogReview .btn1 i:hover {
+    color: #145c3b;
+  }
 
-.dialogReview .btn1 i:hover {
-  color: #145c3b;
-}
+  .badge-skill {
+    padding: 4px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+  }
 
-.badge-skill {
-  padding: 4px;
-  border-radius: 10px;
-  color: #fff;
-  font-weight: bold;
-  text-align: center;;
-}
-
-.badge-skill.good {
-  background-color: #28a745;
+  .badge-skill.good {
+    background-color: #28a745;
     height: 50px;
     width: 100px;
-        display: inline-block;
+    display: inline-block;
     text-align: center;
     margin-top: 50%;
     line-height: 40px;
-}
+  }
 
-.badge-skill.rather {
+  .badge-skill.rather {
     background-color: #cfdc5f;
     color: #000;
     height: 50px;
     width: 90%;
     text-align: center;
     margin-top: 50%;
-        width: 100px;
+    width: 100px;
     display: inline-block;
     line-height: 40px;
-}
-.badge-skill.medium {
-  background-color: #dc3545;
-}
-
+  }
+  .badge-skill.medium {
+    background-color: #dc3545;
+  }
 
   /*===============================*
    *  (5) RESPONSIVE (nếu cần)
@@ -417,567 +438,631 @@
       width: 90%;
       height: 80vh;
     }
-    .evaluation-table th, .evaluation-table td {
+    .evaluation-table th,
+    .evaluation-table td {
       font-size: 14px;
       padding: 5px;
     }
     .dialogReview .header p {
       font-size: 0.9rem;
     }
-    
   }
 
   /*===============================*
  * (1) SEARCH & FILTERS SECTION
  *===============================*/
-.search-filters {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  margin-bottom: 25px;
-}
+  .search-filters {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+  }
 
-.search-row {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  flex-wrap: wrap;
-}
+  .search-row {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
 
-.search-box {
-  flex: 1;
-  min-width: 300px;
-  position: relative;
-}
+  .search-box {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+  }
 
-.search-box i {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-}
+  .search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+  }
 
-.search-box input {
-  width: 100%;
-  padding: 12px 20px 12px 45px;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
+  .search-box input {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
 
-.search-box input:focus {
-  border-color: var(--main-color);
-  box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
-  outline: none;
-}
+  .search-box input:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+    outline: none;
+  }
 
-/* Select Styling */
-.filter-select {
-  min-width: 200px;
-  position: relative;
-}
+  /* Select Styling */
+  .filter-select {
+    min-width: 200px;
+    position: relative;
+  }
 
-.filter-select select {
-  width: 100%;
-  padding: 12px 35px 12px 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  appearance: none;
-  background: #fff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+  .filter-select select {
+    width: 100%;
+    padding: 12px 35px 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    appearance: none;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
 
-.filter-select::after {
-  content: '▼';
-  font-size: 0.8rem;
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  pointer-events: none;
-}
+  .filter-select::after {
+    content: "▼";
+    font-size: 0.8rem;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    pointer-events: none;
+  }
 
-.filter-select select:focus {
-  border-color: var(--main-color);
-  box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
-  outline: none;
-}
+  .filter-select select:focus {
+    border-color: var(--main-color);
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+    outline: none;
+  }
 
-/*===============================*
+  /*===============================*
  * (2) TABLE STYLING
  *===============================*/
-.feedback-table-wrapper {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  overflow: hidden;
-}
-
-.boxFeedBack {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  margin: 0;
-}
-
-.boxFeedBack thead th {
-  background: linear-gradient(135deg, var(--main-color), #2cb67d);
-  color: white;
-  padding: 15px 20px;
-  font-weight: 500;
-  font-size: 0.95rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border: none;
-}
-
-.boxFeedBack tbody tr {
-  transition: all 0.3s ease;
-}
-
-.boxFeedBack tbody tr:hover {
-  background-color: #f8f9fa;
-  transform: translateY(-1px);
-}
-
-.boxFeedBack td {
-  padding: 15px 20px;
-  border-bottom: 1px solid #edf2f7;
-  font-size: 0.95rem;
-  vertical-align: middle;
-}
-
-/* Student Name Cell */
-.student-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.copy-link {
-  opacity: 0;
-  cursor: pointer;
-  color: var(--main-color);
-  transition: all 0.3s ease;
-}
-
-.student-cell:hover .copy-link {
-  opacity: 1;
-}
-
-/* Badge Styling */
-.skill-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  display: inline-block;
-}
-
-.skill-badge.good {
-  background-color: #d1fae5;
-  color: #059669;
-}
-
-.skill-badge.rather {
-  background-color: #fef3c7;
-  color: #d97706;
-}
-
-.skill-badge.medium {
-  background-color: #fee2e2;
-  color: #dc2626;
-}
-
-/* Action Buttons */
-.action-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-action {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.3s ease;
-}
-
-.btn-edit {
-  background-color: var(--main-color);
-  color: white;
-}
-
-.btn-delete {
-  background-color: #fee2e2;
-  color: #dc2626;
-}
-
-.btn-action:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  background: var(--primary-dark);
-}
-
-.btn-danger {
-  background: var(--danger);
-  color: white;
-}
-
-/* Student Cell */
-.student-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.copy-icon {
-  color: var(--secondary);
-  cursor: pointer;
-  opacity: 1;
-  transition: opacity 0.2s;
-}
-
-.student-cell:hover .copy-icon {
-  opacity: 1;
-}
-
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  background: var(--primary);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
+  .feedback-table-wrapper {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
   }
-  to {
-    transform: translateY(0);
+
+  .boxFeedBack {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+  }
+
+  .boxFeedBack thead th {
+    background: linear-gradient(135deg, var(--main-color), #2cb67d);
+    color: white;
+    padding: 15px 20px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+  }
+
+  .boxFeedBack tbody tr {
+    transition: all 0.3s ease;
+  }
+
+  .boxFeedBack tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+  }
+
+  .boxFeedBack td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 0.95rem;
+    vertical-align: middle;
+  }
+
+  /* Student Name Cell */
+  .student-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .copy-link {
+    opacity: 0;
+    cursor: pointer;
+    color: var(--main-color);
+    transition: all 0.3s ease;
+  }
+
+  .student-cell:hover .copy-link {
     opacity: 1;
   }
-}
 
-
-:root {
-  --primary: #0ea5e9;
-  --primary-dark: #0284c7;
-  --secondary: #64748b;
-  --success: #22c55e;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --background: #f8fafc;
-  --text: #334155;
-  --border: #e2e8f0;
-}
-
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--background);
-  color: var(--text);
-}
-
-.feedback-container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
-
-/* Search & Filters */
-.search-filters {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  margin-bottom: 1.5rem;
-}
-
-.search-row {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.search-input {
-  flex: 1;
-  min-width: 250px;
-  position: relative;
-}
-
-.search-input input {
-  width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  transition: all 0.2s;
-}
-
-.search-input i {
-  position: absolute;
-  left: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--secondary);
-}
-
-.filter-select {
-  min-width: 200px;
-}
-
-.filter-select select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  background: white;
-  cursor: pointer;
-}
-
-/* Table Styles */
-.feedback-table {
-  background: white;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.table th {
-  background: var(--primary);
-  color: white;
-  font-weight: 500;
-  text-align: left;
-  padding: 1rem;
-  font-size: 0.875rem;
-}
-
-.table td {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.875rem;
-}
-
-.table tr:hover {
-  background: #f8fafc;
-}
-
-/* Status Badges */
-.badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.badge-good {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.badge-rather {
-  background: #fef3c7;
-  color: #b45309;
-}
-
-.badge-medium {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-/* Actions */
-.action-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: white;
-}
-
-.btn-primary:hover {
-  background: var(--primary-dark);
-}
-
-.btn-danger {
-  background: var(--danger);
-  color: white;
-}
-
-/* Student Cell */
-.student-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.copy-icon {
-  color: var(--secondary);
-  cursor: pointer;
-  opacity: 1;
-  transition: opacity 0.2s;
-}
-
-.student-cell:hover .copy-icon {
-  opacity: 1;
-}
-
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  background: var(--primary);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
+  /* Badge Styling */
+  .skill-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-block;
   }
-  to {
-    transform: translateY(0);
+
+  .skill-badge.good {
+    background-color: #d1fae5;
+    color: #059669;
+  }
+
+  .skill-badge.rather {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+
+  .skill-badge.medium {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-action {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-edit {
+    background-color: var(--main-color);
+    color: white;
+  }
+
+  .btn-delete {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+
+  .btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+  }
+
+  .btn-danger {
+    background: var(--danger);
+    color: white;
+  }
+
+  /* Student Cell */
+  .student-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .copy-icon {
+    color: var(--secondary);
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+
+  .student-cell:hover .copy-icon {
     opacity: 1;
   }
-}
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: var(--primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  :root {
+    --primary: #0ea5e9;
+    --primary-dark: #0284c7;
+    --secondary: #64748b;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --background: #f8fafc;
+    --text: #334155;
+    --border: #e2e8f0;
+  }
+
+  body {
+    font-family: "Inter", sans-serif;
+    background: var(--background);
+    color: var(--text);
+  }
+
+  .feedback-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  /* Search & Filters */
+  .search-filters {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+  }
+
+  .search-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+  }
+
+  .search-input input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .search-input i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary);
+  }
+
+  .filter-select {
+    min-width: 200px;
+  }
+
+  .filter-select select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background: white;
+    cursor: pointer;
+  }
+
+  /* Table Styles */
+  .feedback-table {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .table th {
+    background: var(--primary);
+    color: white;
+    font-weight: 500;
+    text-align: left;
+    padding: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+  }
+
+  .table tr:hover {
+    background: #f8fafc;
+  }
+
+  /* Status Badges */
+  .badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .badge-good {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  .badge-rather {
+    background: #fef3c7;
+    color: #b45309;
+  }
+
+  .badge-medium {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  /* Actions */
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+  }
+
+  .btn-danger {
+    background: var(--danger);
+    color: white;
+  }
+
+  /* Student Cell */
+  .student-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .copy-icon {
+    color: var(--secondary);
+    cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+
+  .student-cell:hover .copy-icon {
+    opacity: 1;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background: var(--primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out;
+  }
+
+  /* Checkbox styling */
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .custom-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    border: 2px solid var(--main-color);
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+
+  .custom-checkbox:checked {
+    background-color: var(--main-color);
+  }
+
+  /* Make the checkboxes more prominent */
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--main-color);
+  }
+
+  /* Add a floating action button for bulk actions */
+  .bulk-actions {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: var(--main-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: none; /* Initially hidden */
+    z-index: 100;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bulk-actions.visible {
+    display: flex;
+    animation: slideUp 0.3s ease-out forwards;
+  }
+
+  .selected-count {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
   /* Toast Notification System */
-.toast-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-}
-
-.toast {
-  background: white;
-  padding: 15px 25px;
-  border-radius: 8px;
-  margin: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  animation: slideIn 0.3s ease-out forwards;
-}
-
-.toast.success {
-  border-left: 4px solid #22c55e;
-}
-
-.toast.error {
-  border-left: 4px solid #ef4444;
-}
-
-.toast.info {
-  border-left: 4px solid #3b82f6;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
+  .toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
   }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
 
-@keyframes fadeOut {
-  from {
-    opacity: 1;
+  .toast {
+    background: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    margin: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease-out forwards;
   }
-  to {
-    opacity: 0;
-  }
-}
 
+  .toast.success {
+    border-left: 4px solid #22c55e;
+  }
+
+  .toast.error {
+    border-left: 4px solid #ef4444;
+  }
+
+  .toast.info {
+    border-left: 4px solid #3b82f6;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
 </style>
 
 <div class="main">
   <%- include('./../comon/topBarSearch') %>
   <!-- MAIN -->
-<div class="search-filters">
-  <div class="search-row">
-    <div class="search-box">
-      <i class="fas fa-search"></i>
-      <input type="text" id="searchStudent" placeholder="Tìm kiếm học viên...">
-    </div>
-    
-    <div class="filter-select">
-      <select id="teacher">
-        <option value="all">Tất cả giáo viên</option>
-        <% if (data && data.length > 0) { %>
-            <% data.forEach(item => { %>
-              <option value="<%= item._id %>"><%= item.username %></option>
-            <% }); %>
-          <% } %>
-      </select>
-    </div>
-    
-    <div class="filter-select">
-      <select id="time">
-        <option value="all">Tất cả tháng</option>
-         <option value="1">Tháng 1</option>
+  <div class="search-filters">
+    <div class="search-row">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="searchStudent"
+          placeholder="Tìm kiếm học viên..."
+        />
+      </div>
+
+      <div class="filter-select">
+        <select id="teacher">
+          <option value="all">Tất cả giáo viên</option>
+          <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
+          <option value="<%= item._id %>"><%= item.username %></option>
+          <% }); %> <% } %>
+        </select>
+      </div>
+
+      <div class="filter-select">
+        <select id="time">
+          <option value="all">Tất cả tháng</option>
+          <option value="1">Tháng 1</option>
           <option value="2">Tháng 2</option>
           <option value="3">Tháng 3</option>
           <option value="4">Tháng 4</option>
@@ -989,49 +1074,51 @@ body {
           <option value="10">Tháng 10</option>
           <option value="11">Tháng 11</option>
           <option value="12">Tháng 12</option>
-      </select>
-    </div>
+        </select>
+      </div>
 
-      <div class="selectExcel mt-2 d-flex  flex-row">
-     <div class="fileInput mx-3">
+      <div class="selectExcel mt-2 d-flex flex-row">
+        <div class="fileInput mx-3">
           <label for="fileInput" class="btn btn-success">
             Select
             <i style="pointer-events: none" class="fa-solid fa-file-excel"></i>
           </label>
           <input id="fileInput" style="display: none" type="file" />
         </div>
-         <button class="btn btn-success" id="importButton">
+        <button class="btn btn-success" id="importButton">
           Import
           <!-- <i style="pointer-events: none" class="fa-solid fa-file-excel"></i> -->
         </button>
-           <button class="btn btn-success mx-2" id="exportButton">
+        <button class="btn btn-success mx-2" id="exportButton">
           Export
           <i style="pointer-events: none" class="fa-solid fa-file-excel"></i>
         </button>
-  </div>
+      </div>
+    </div>
   </div>
 
-       
-</div>
+  <div class="feedback-table-wrapper">
+    <table class="boxFeedBack">
+      <thead>
+        <tr>
+          <th>
+            <input type="checkbox" id="selectAll" title="Select All" />
+          </th>
 
-<div class="feedback-table-wrapper">
-  <table class="boxFeedBack">
-    <thead>
-      <tr>
-        <th>Học viên</th>
-        <th>Giáo viên</th>
-        <th>Kỹ năng</th>
-        <th>Tư duy</th>
-        <th>Nội dung</th>
-        <th>Ngày tạo</th>
-        <th>Thao tác</th>
-      </tr>
-    </thead>
-    <tbody id="contentTable">
-      <!-- Dynamic content -->
-    </tbody>
-  </table>
-</div>
+          <th>Học viên</th>
+          <th>Giáo viên</th>
+          <th>Kỹ năng</th>
+          <th>Tư duy</th>
+          <th>Nội dung</th>
+          <th>Ngày tạo</th>
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody id="contentTable">
+        <!-- Dynamic content -->
+      </tbody>
+    </table>
+  </div>
 
   <!-- DIALOG REVIEW (POPUP) -->
   <div class="dialogReview" id="dialogReview">
@@ -1050,20 +1137,20 @@ body {
           </tr>
         </thead>
         <tbody id="tableLanguages">
-            <% language.forEach((item)=> { %>
-              <tr class="language" data-id="<%= item._id %>">
-                <td><%= item?.nameCode %></td>
-                <td>
-                  <select>
-                    <option value="">Chọn</option>
-                    <option value="1">Level 1</option>
-                    <option value="2">Level 2</option>
-                    <option value="3">Level 3</option>
-                  </select>
-                </td>
-                <td><input type="number" min="0"  max="1"/></td>
-              </tr>
-            <% }) %>
+          <% language.forEach((item)=> { %>
+          <tr class="language" data-id="<%= item._id %>">
+            <td><%= item?.nameCode %></td>
+            <td>
+              <select>
+                <option value="">Chọn</option>
+                <option value="1">Level 1</option>
+                <option value="2">Level 2</option>
+                <option value="3">Level 3</option>
+              </select>
+            </td>
+            <td><input type="number" min="0" max="1" /></td>
+          </tr>
+          <% }) %>
         </tbody>
       </table>
 
@@ -1071,31 +1158,65 @@ body {
         <div class="evaluation-metrics col-4">
           <p>Kỹ năng lập trình:</p>
           <div class="radio-group">
-            <input type="radio" name="programming-skill" value="good" id="radio-good"/>
+            <input
+              type="radio"
+              name="programming-skill"
+              value="good"
+              id="radio-good"
+            />
             <label for="radio-good">Tốt</label>
 
-            <input type="radio" name="programming-skill" value="rather" id="radio-rather"/>
+            <input
+              type="radio"
+              name="programming-skill"
+              value="rather"
+              id="radio-rather"
+            />
             <label for="radio-rather">Khá</label>
 
-            <input type="radio" name="programming-skill" value="medium" id="radio-medium"/>
+            <input
+              type="radio"
+              name="programming-skill"
+              value="medium"
+              id="radio-medium"
+            />
             <label for="radio-medium">Trung bình</label>
           </div>
 
           <p>Tư duy môn học:</p>
           <div class="radio-group">
-            <input type="radio" name="thinking-skill" value="good" id="radio-good-min"/>
+            <input
+              type="radio"
+              name="thinking-skill"
+              value="good"
+              id="radio-good-min"
+            />
             <label for="radio-good-min">Tốt</label>
 
-            <input type="radio" name="thinking-skill" value="rather" id="radio-fair-min"/>
+            <input
+              type="radio"
+              name="thinking-skill"
+              value="rather"
+              id="radio-fair-min"
+            />
             <label for="radio-fair-min">Khá</label>
 
-            <input type="radio" name="thinking-skill" value="medium" id="radio-average-min"/>
+            <input
+              type="radio"
+              name="thinking-skill"
+              value="medium"
+              id="radio-average-min"
+            />
             <label for="radio-average-min">Trung bình</label>
           </div>
         </div>
 
         <div class="Evaluate col-8">
-          <textarea style="padding: 30px; width:100%; min-height:150px;" name="content" id="EvaluateContent"></textarea>
+          <textarea
+            style="padding: 30px; width: 100%; min-height: 150px"
+            name="content"
+            id="EvaluateContent"
+          ></textarea>
         </div>
       </div>
 
@@ -1112,8 +1233,6 @@ body {
   <%- include('./../comon/footer') %>
 
   <!-- TinyMCE nếu cần -->
-<script type="module" src="/tinymce/tinymce.min.js"></script>
-<script type="module" src="/JS/feedBack.js"></script>
-
+  <script type="module" src="/tinymce/tinymce.min.js"></script>
+  <script type="module" src="/JS/feedBack.js"></script>
 </div>
-

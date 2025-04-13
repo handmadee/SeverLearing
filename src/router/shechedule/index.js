@@ -109,6 +109,7 @@ router.get('/feedback/find-id/:id', asnycHandler(feedBackControler.getFeedBackBy
 router.post('/feedback', asnycHandler(feedBackControler.createdFeedBack));
 router.post('/create-file/feedback', uploadExcel.single('excel'), asnycHandler(feedBackControler.createBulkFileFeedback));
 router.post('/create-bulk/feedback', asnycHandler(feedBackControler.createBulkFeedback));
+router.delete('/delete-bulk/feedback', asnycHandler(feedBackControler.deleteBulkFeeback));
 router.patch('/feedback/:id', asnycHandler(feedBackControler.modifreFeedBack));
 router.delete('/feedback/:id', asnycHandler(feedBackControler.removeFeedBack));
 

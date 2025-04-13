@@ -101,6 +101,33 @@ class feedBackStudentService {
         }
     }
 
+    static async deleteBulkFeeback(payload) {
+        if (!Array.isArray(payload) || payload.length === 0) {
+            throw new BadRequestError('Payload phải là một mảng ID không rỗng');
+        }
+
+        try {
+            const result = await feedBackStudent.deleteMany({
+                _id: { $in: payload }
+            });
+
+            // Kiểm tra kết quả xóa
+            if (result.deletedCount === 0) {
+                throw new BadRequestError('Không tìm thấy feedback nào để xóa');
+            }
+
+            return {
+                success: true,
+                deletedCount: result.deletedCount,
+                message: `Đã xóa thành công ${result.deletedCount} feedback`
+            };
+
+        } catch (error) {
+            console.error(`[deleteBulkFeeback] :: REMOVE ERROR:`, error);
+            throw new BadRequestError(error.message || 'Lỗi khi xóa feedback');
+        }
+    }
+
     static async getFeedBackByStudents({ idStudent }) {
         const listFeedBack = await feedBackStudent.findOne({
             studentsAccount: new Types.ObjectId(idStudent),
@@ -207,7 +234,6 @@ class feedBackStudentService {
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }
-
 
     static async getAllFeedBackByIDV2({ idStudent }) {
         try {
