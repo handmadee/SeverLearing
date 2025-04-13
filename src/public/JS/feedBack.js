@@ -11,7 +11,8 @@ const API_ENDPOINTS = {
         BY_TEACHER: (id) => `feedbackByTeacher/${id}`,
         BY_MONTH: (month) => `feedbackByMonth?month=${month}`,
         BY_TEACHER_AND_MONTH: (id, month) => `feedback/teacher/${id}?month=${month}`,
-        EXPORT_EXCEL: (month) => `feedback/export-feedback/?month=${month}`
+        EXPORT_EXCEL: (month) => `feedback/export-feedback/?month=${month}`,
+        DELETE_BULK: () => `delete-bulk/feedback`
     }
 };
 
@@ -76,6 +77,21 @@ class APIService {
         } catch (error) {
             console.error('API Error:', error);
             throw new Error("Failed to fetch data");
+        }
+    }
+
+    async deleteBulkFeedBack(ids) {
+        try {
+            const response = await fetch(`${API_ENDPOINTS.BASE_URL}delete-bulk/feedback`, {
+                method: "DELETE",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: ids })
+            });
+            const result = await response.json();
+            return result.data;
+        } catch (error) {
+            console.error('API Error:', error);
+            throw new Error("Failed to delete feedback items");
         }
     }
 
@@ -148,6 +164,92 @@ class FeedbackManager {
         this.api = apiService;
         this.feedbackIdEditing = null;
         this.currentFeedbackData = null;
+        this.selectedItems = [];
+        document.getElementById('selectAll').addEventListener('change', this.handleSelectAll.bind(this));
+        this.createBulkActionsContainer();
+
+    }
+
+    createBulkActionsContainer() {
+        const bulkActions = document.createElement('div');
+        bulkActions.className = 'bulk-actions';
+        bulkActions.innerHTML = `
+            <span class="selected-count">0 selected</span>
+            <button class="btn" id="bulkExport">Export Selected</button>
+            <button class="btn" style="background-color: #dc3545" id="bulkDelete">Delete Selected</button>
+        `;
+        document.body.appendChild(bulkActions);
+
+        // Add event listeners for bulk action buttons
+        // document.getElementById('bulkExport').addEventListener('click', this.handleBulkExport.bind(this));
+        document.getElementById('bulkDelete').addEventListener('click', this.handleBulkDelete.bind(this));
+    }
+
+    handleSelectAll(e) {
+        const isChecked = e.target.checked;
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+            this.handleItemSelection({ target: checkbox });
+        });
+    }
+    handleItemSelection(e) {
+        const checkbox = e.target;
+        const feedbackId = checkbox.value;
+
+        if (checkbox.checked) {
+            if (!this.selectedItems.includes(feedbackId)) {
+                this.selectedItems.push(feedbackId);
+            }
+        } else {
+            this.selectedItems = this.selectedItems.filter(id => id !== feedbackId);
+            document.getElementById('selectAll').checked = false;
+        }
+
+        this.updateBulkActionsVisibility();
+    }
+
+    updateBulkActionsVisibility() {
+        const bulkActions = document.querySelector('.bulk-actions');
+        const countElem = document.querySelector('.selected-count');
+        const bulkDeleteBtn = document.getElementById('bulkDelete');
+
+        if (this.selectedItems.length > 0) {
+            bulkActions.classList.add('visible');
+            countElem.textContent = `${this.selectedItems.length} selected`;
+            bulkDeleteBtn.disabled = false;
+        } else {
+            bulkActions.classList.remove('visible');
+            bulkDeleteBtn.disabled = true;
+        }
+    }
+
+    async handleBulkDelete() {
+        if (this.selectedItems.length === 0) {
+            createToastV(eToast.warning, "No items selected");
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to delete ${this.selectedItems.length} selected items?`)) {
+            return;
+        }
+
+        const bulkDeleteBtn = document.getElementById('bulkDelete');
+        try {
+            bulkDeleteBtn.disabled = true;
+            bulkDeleteBtn.innerHTML = 'Deleting...';
+
+            await this.api.deleteBulkFeedBack(this.selectedItems);
+            createToastV(eToast.success, `Deleted ${this.selectedItems.length} items`);
+            this.resetSelection();
+            await this.renderFeedback();
+        } catch (error) {
+            createToastV(eToast.error, "Failed to delete selected items");
+        } finally {
+            bulkDeleteBtn.disabled = false;
+            bulkDeleteBtn.innerHTML = 'Delete Selected';
+        }
     }
 
     resetEditingState() {
@@ -274,11 +376,30 @@ class FeedbackManager {
 
         this.dom.elements.contentTable.innerHTML = feedbackList.map(this.createFeedbackRow.bind(this)).join("");
         this.attachRowEventListeners();
+        if (this.selectedItems.length > 0) {
+            document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+                if (this.selectedItems.includes(checkbox.value)) {
+                    checkbox.checked = true;
+                }
+            });
+            const allChecked = this.selectedItems.length === feedbackList.length;
+            document.getElementById('selectAll').checked = allChecked;
+            this.updateBulkActionsVisibility();
+        }
+    }
+
+
+    resetSelection() {
+        this.selectedItems = [];
+        this.updateBulkActionsVisibility();
     }
 
     createFeedbackRow(item) {
         return `
             <tr>
+              <td class="checkbox-container">
+                    <input type="checkbox" class="item-checkbox" value="${item._id}">
+                </td>
                 <td>
                     <div class="student-cell">
                         ${item?.studentsAccount?.fullname || '-'}
@@ -312,7 +433,9 @@ class FeedbackManager {
                 </td>
             </tr>
         `;
+
     }
+
 
     attachRowEventListeners() {
         document.querySelectorAll(".editBtn").forEach(btn => {
@@ -333,6 +456,9 @@ class FeedbackManager {
                         .catch(() => createToastV(eToast.error, "Failed to copy link"));
                 }
             });
+        });
+        document.querySelectorAll(".item-checkbox").forEach(checkbox => {
+            checkbox.addEventListener("change", (e) => this.handleItemSelection(e));
         });
     }
 

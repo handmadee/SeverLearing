@@ -67,6 +67,11 @@ class feedBackController {
         ).send(res);
     }
 
+    async deleteBulkFeeback(req, res) {
+        const { data } = req.body;
+        const remove = await feedBackStudentService.deleteBulkFeeback(data)
+        return new OK(remove).send(res);
+    }
     async getAllFeedBackByStudent(req, res) {
         const id = req.params.id;
         return new OK(
