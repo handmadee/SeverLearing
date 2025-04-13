@@ -62,7 +62,7 @@ class DOMManager {
         const searchTerm = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('#contentTable tr');
         rows.forEach(row => {
-            const studentName = row.querySelector('td:first-child')?.textContent.toLowerCase();
+            const studentName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase();
             row.style.display = studentName?.includes(searchTerm) ? '' : 'none';
         });
     }
