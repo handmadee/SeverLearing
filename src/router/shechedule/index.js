@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require("express");
-const { asnycHandler } = require('./../../helpers/asyncHandler');
+const { asyncHandler } = require('./../../helpers/asyncHandler');
 const { uploadExcel } = require('./../../untils/upload');
 const router = express.Router();
 const StudentShecheduleController = require("./../../controllers/schedule/schedule.controller");
@@ -12,106 +12,106 @@ const feedBackControler = require("../../feeback/controllers/feedBackControler")
 
 
 // Querry search 
-router.get('/searchStudents', asnycHandler(StudentShecheduleController.searchStudentsSchedule));
-router.get('/exportShechedule', asnycHandler(StudentShecheduleController.exportStudentToExcelFile));
+router.get('/searchStudents', asyncHandler(StudentShecheduleController.searchStudentsSchedule));
+router.get('/exportShechedule', asyncHandler(StudentShecheduleController.exportStudentToExcelFile));
 // Define routes
-router.post('/importShechedule', uploadExcel.single('excelStudents'), asnycHandler(StudentShecheduleController.importShechedule));
+router.post('/importShechedule', uploadExcel.single('excelStudents'), asyncHandler(StudentShecheduleController.importShechedule));
 // Import Students
-router.post('/importPersonal', asnycHandler(StudentShecheduleController.importPersonalShechedule));
+router.post('/importPersonal', asyncHandler(StudentShecheduleController.importPersonalShechedule));
 // Detete Student
-router.delete('/deleteShechedule/:id', asnycHandler(StudentShecheduleController.deleteShechedule));
+router.delete('/deleteShechedule/:id', asyncHandler(StudentShecheduleController.deleteShechedule));
 // Get All Students
-router.get('/getShechedule/:id', asnycHandler(StudentShecheduleController.getShecheduleById));
+router.get('/getShechedule/:id', asyncHandler(StudentShecheduleController.getShecheduleById));
 // Create Student
-router.put('/updateSchedule/:id', asnycHandler(StudentShecheduleController.updateShechedule));
+router.put('/updateSchedule/:id', asyncHandler(StudentShecheduleController.updateShechedule));
 //  get Sheducle 
-router.get('/getScheducle', asnycHandler(StudentShecheduleController.getStudy));
+router.get('/getScheducle', asyncHandler(StudentShecheduleController.getStudy));
 
 // 
-router.get('/getStudentsByDays', asnycHandler(StudentShecheduleController.getStudentsByDays));
-router.get('/getStudentsAll', asnycHandler(StudentShecheduleController.getStudentsALL));
-router.get('/getStudentsByStudy', asnycHandler(StudentShecheduleController.getStudentsByStudy));
-router.get('/getStudentsByStudyByDays', asnycHandler(StudentShecheduleController.getStudentsByStudyByDays));
+router.get('/getStudentsByDays', asyncHandler(StudentShecheduleController.getStudentsByDays));
+router.get('/getStudentsAll', asyncHandler(StudentShecheduleController.getStudentsALL));
+router.get('/getStudentsByStudy', asyncHandler(StudentShecheduleController.getStudentsByStudy));
+router.get('/getStudentsByStudyByDays', asyncHandler(StudentShecheduleController.getStudentsByStudyByDays));
 
 
 // get Sheducle 
 
 // Attendance 
-router.post('/attendance', asnycHandler(ettendanceScheduleController.create));
+router.post('/attendance', asyncHandler(ettendanceScheduleController.create));
 // find date and study
-router.post('/attendanceTeacher', asnycHandler(ettendanceScheduleController.getStudentBySchedule));
+router.post('/attendanceTeacher', asyncHandler(ettendanceScheduleController.getStudentBySchedule));
 
 // ID teacher
-router.get('/attendanceTeacherV2/:id', asnycHandler(ettendanceScheduleController.getStudentByScheduleOfTeacher));
+router.get('/attendanceTeacherV2/:id', asyncHandler(ettendanceScheduleController.getStudentByScheduleOfTeacher));
 
 // 
 router.get(
     '/attendance/by-teacher',
-    asnycHandler(ettendanceScheduleController.findStudentsByDateV3)
+    asyncHandler(ettendanceScheduleController.findStudentsByDateV3)
 );
 
 
 
 // find date and study
-router.post('/attendanceTeacherByDate', asnycHandler(ettendanceScheduleController.findStudentsByDate));
+router.post('/attendanceTeacherByDate', asyncHandler(ettendanceScheduleController.findStudentsByDate));
 // change attendance
-router.patch('/changeAttendance/:id', asnycHandler(ettendanceScheduleController.changeAttendance));
+router.patch('/changeAttendance/:id', asyncHandler(ettendanceScheduleController.changeAttendance));
 // Get all attendance 
-router.post('/getAttendanceAloneByAccount/:id', asnycHandler(ettendanceScheduleController.getAttendanceAloneByAccount));
+router.post('/getAttendanceAloneByAccount/:id', asyncHandler(ettendanceScheduleController.getAttendanceAloneByAccount));
 // get date teacher 
-router.post('/getAttendanceAloneByTeacher', asnycHandler(ettendanceScheduleController.getAttendanceAloneByTeacher));
+router.post('/getAttendanceAloneByTeacher', asyncHandler(ettendanceScheduleController.getAttendanceAloneByTeacher));
 
 // update antendace 
-router.patch('/updateSchedule/:id', asnycHandler(ettendanceScheduleController.updateStudentManyByTeacher));
+router.patch('/updateSchedule/:id', asyncHandler(ettendanceScheduleController.updateStudentManyByTeacher));
 
 
 
 
 // Student
-router.get('/class', asnycHandler(classController.getClassAll));
-router.patch('/class/:id', asnycHandler(classController.editClassByID));
-router.get('/classByID/:id', asnycHandler(classController.getClassByID))
-router.get('/allStudentInClass/:id', asnycHandler(classController.getStudetnsInClassByID));
+router.get('/class', asyncHandler(classController.getClassAll));
+router.patch('/class/:id', asyncHandler(classController.editClassByID));
+router.get('/classByID/:id', asyncHandler(classController.getClassByID))
+router.get('/allStudentInClass/:id', asyncHandler(classController.getStudetnsInClassByID));
 // điểm danh ngayf
-router.get('/class/day', asnycHandler(classController.getClassByDays));
+router.get('/class/day', asyncHandler(classController.getClassByDays));
 // điểm danh ngàY VÀ GIÁO VIÊN
-router.get('/class/teacher/:id', asnycHandler(classController.getClassByTeacher));
+router.get('/class/teacher/:id', asyncHandler(classController.getClassByTeacher));
 // Lọc giáo viên điểm danh và ngày
-router.get('/class/:id', asnycHandler(classController.getScheducleClassByTeacherAll));
+router.get('/class/:id', asyncHandler(classController.getScheducleClassByTeacherAll));
 
-router.delete('/class/:id', asnycHandler(classController.deleteClass))
+router.delete('/class/:id', asyncHandler(classController.deleteClass))
 
 // pOST
-router.post('/class', asnycHandler(classController.createClass));
+router.post('/class', asyncHandler(classController.createClass));
 // edit class
-router.patch('/classAddStudent', asnycHandler(classController.addStudentsToClass));
-// router.patch('/class/addStudent', asnycHandler(classController.addStudentsToClass));
-router.get('/feedback/export-feedback', asnycHandler(feedBackControler.exportExcelFeedBack));
+router.patch('/classAddStudent', asyncHandler(classController.addStudentsToClass));
+// router.patch('/class/addStudent', asyncHandler(classController.addStudentsToClass));
+router.get('/feedback/export-feedback', asyncHandler(feedBackControler.exportExcelFeedBack));
 //
 
-router.patch('/classStudents/removeStudent', asnycHandler(classController.removeStudentsToClass));
+router.patch('/classStudents/removeStudent', asyncHandler(classController.removeStudentsToClass));
 // Nhận xét
-router.get('/feedback/:id', asnycHandler(feedBackControler.getAllFeedBackByStudent));
-router.get('/feedbackStudents/:id', asnycHandler(feedBackControler.getAllFeedBackByID));
-router.get('/feedback/students/:id', asnycHandler(feedBackControler.getFeedBackByIdForMonth));
+router.get('/feedback/:id', asyncHandler(feedBackControler.getAllFeedBackByStudent));
+router.get('/feedbackStudents/:id', asyncHandler(feedBackControler.getAllFeedBackByID));
+router.get('/feedback/students/:id', asyncHandler(feedBackControler.getFeedBackByIdForMonth));
 
 
 // Get By ID AND MONTH
-router.get('/feedback/teacher/:id', asnycHandler(feedBackControler.getFeedBackByIdTeacherForMonth));
+router.get('/feedback/teacher/:id', asyncHandler(feedBackControler.getFeedBackByIdTeacherForMonth));
 // Lấy tất cả feed back bằng ID teacher 
-router.get('/feedbackByTeacher/:id', asnycHandler(feedBackControler.getFeedAllBackTeacher));
+router.get('/feedbackByTeacher/:id', asyncHandler(feedBackControler.getFeedAllBackTeacher));
 // Lấy tất cả feed back bằng tháng
-router.get('/feedbackByMonth', asnycHandler(feedBackControler.getFeedBackForMonth));
+router.get('/feedbackByMonth', asyncHandler(feedBackControler.getFeedBackForMonth));
 
 
 
-router.get('/feedback/find-id/:id', asnycHandler(feedBackControler.getFeedBackById));
-router.post('/feedback', asnycHandler(feedBackControler.createdFeedBack));
-router.post('/create-file/feedback', uploadExcel.single('excel'), asnycHandler(feedBackControler.createBulkFileFeedback));
-router.post('/create-bulk/feedback', asnycHandler(feedBackControler.createBulkFeedback));
-router.delete('/delete-bulk/feedback', asnycHandler(feedBackControler.deleteBulkFeeback));
-router.patch('/feedback/:id', asnycHandler(feedBackControler.modifreFeedBack));
-router.delete('/feedback/:id', asnycHandler(feedBackControler.removeFeedBack));
+router.get('/feedback/find-id/:id', asyncHandler(feedBackControler.getFeedBackById));
+router.post('/feedback', asyncHandler(feedBackControler.createdFeedBack));
+router.post('/create-file/feedback', uploadExcel.single('excel'), asyncHandler(feedBackControler.createBulkFileFeedback));
+router.post('/create-bulk/feedback', asyncHandler(feedBackControler.createBulkFeedback));
+router.delete('/delete-bulk/feedback', asyncHandler(feedBackControler.deleteBulkFeeback));
+router.patch('/feedback/:id', asyncHandler(feedBackControler.modifreFeedBack));
+router.delete('/feedback/:id', asyncHandler(feedBackControler.removeFeedBack));
 
 
 module.exports = router;

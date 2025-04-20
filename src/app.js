@@ -10,12 +10,23 @@ const adminRouter = require('./router/layouts/admin');
 const clientRouter = require('./router/layouts/client');
 const configViewEngine = require('./configs/config.viewEngine');
 const app = express();
+
+// Cấu hình view engine
 app.set("view engine", "ejs");
 
-// Middleware
+/**
+ * MIDDLEWARE CONFIGURATION
+ */
+// CORS - Cho phép truy cập từ các domain khác
 app.use(cors());
+
+// Morgan - Ghi log request
 app.use(morgan('dev'));
+
+// Helmet - Tăng cường bảo mật HTTP header
 app.use(helmet());
+
+// Content Security Policy - Chính sách bảo mật nội dung
 app.use(
     helmet.contentSecurityPolicy({
         useDefaults: true,
@@ -39,30 +50,49 @@ app.use(
         }
     })
 );
+
+// Compression - Nén response để giảm kích thước
 app.use(compression());
+
+// Parser - Xử lý dữ liệu request
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Initialize database connection
+/**
+ * DATABASE INITIALIZATION
+ */
 require('./dbs/init.mongodb');
-// Set up static files directory
-configViewEngine(app)
-// Initialize router
+
+/**
+ * STATIC FILES & VIEW ENGINE
+ */
+configViewEngine(app);
+
+/**
+ * ROUTES CONFIGURATION
+ */
+// API Routes
 app.use('/', router);
 app.use('/', router.get('/v1/api/keep', (req, res) => {
     res.send('Keep alive');
 }));
+
+// Layout Routes
 app.use('/admin', adminRouter);
 app.use('/client', clientRouter);
 
-// Handle 404 errors
+/**
+ * ERROR HANDLING
+ */
+// 404 Not Found Handler
 app.use((req, res, next) => {
     const error = new Error('Not found');
     error.status = 404;
     next(error);
 });
-// Handle other errors
+
+// Global Error Handler
 app.use((error, res, next) => {
     res.status(error.statusCode || 500);
     console.log(error);

@@ -9,7 +9,7 @@ const ChapterService = require('../../services/course/chapter.service');
 const categoryQuizService = require('../../services/trakingQuiz/categoryQuiz.service');
 const examQuiz = require('../../services/trakingQuiz/Quiz.service');
 const permission = require('../../auth/permission');
-const { asnycHandler } = require('../../helpers/asyncHandler');
+const { asyncHandler } = require('../../helpers/asyncHandler');
 const NewsService = require('../../services/news/news.service');
 const NotificationService = require('./../../services/notification/listNotification');
 const TrackingCourseService = require('../../services/trackingCourse/trackingCourse.service');
@@ -62,12 +62,12 @@ adminRouter.get('/auth', (req, res, next) => {
     } catch (err) {
         console.log(err)
     }
-}, asnycHandler(async (req, res) => {
+}, asyncHandler(async (req, res) => {
     res.render('admin/authAdmin');
 }));
 
 // viewAccout 
-adminRouter.get('/selectAccout', asnycHandler(async (req, res) => {
+adminRouter.get('/selectAccout', asyncHandler(async (req, res) => {
     const arAccout = await AccountService.accountSupper();
     console.log({
         messaging: 'Accout ::',
@@ -82,13 +82,13 @@ adminRouter.get('/selectAccout', asnycHandler(async (req, res) => {
 // 
 
 // Create account 
-adminRouter.get('/students/create', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/students/create', permission('999'), asyncHandler(async (req, res) => {
     const data = await AccountService.accountSupper();
     res.render('admin/createAccount', { title: "Tạo tài khoản", data });
 }));
 
 // Dashboard 
-adminRouter.get('/dashboard', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/dashboard', permission('999'), asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const [data, course, quiz, totalItems, news, rank] = await Promise.all([
@@ -109,7 +109,7 @@ adminRouter.get('/dashboard', permission('999'), asnycHandler(async (req, res) =
 }));
 
 // Exam
-adminRouter.get('/exam', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/exam', permission('999'), asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const quizsWithCount = await QuizService12.getExamAdmin(page, limit);
@@ -122,7 +122,7 @@ adminRouter.get('/exam', permission('999'), asnycHandler(async (req, res) => {
 }));
 
 // Create Exam category
-adminRouter.get('/exam/category/create', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/exam/category/create', permission('999'), asyncHandler(async (req, res) => {
     res.render('admin/createCategoryQuiz', { title: "Tạo danh mục game" });
 }));
 
@@ -130,7 +130,7 @@ adminRouter.get('/exam/category/create', permission('999'), asnycHandler(async (
 
 
 // Create Exam Quiz
-adminRouter.get('/exam/quiz/create', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/exam/quiz/create', permission('999'), asyncHandler(async (req, res) => {
     const quiz = await examQuizService.getAll();
     const game = await categoryQuiz.getAll();
     if (!quiz || !game) throw new Error('No data found');
@@ -138,7 +138,7 @@ adminRouter.get('/exam/quiz/create', permission('999'), asnycHandler(async (req,
 }));
 
 // Question Exam 
-adminRouter.get('/exam/question/view/:id', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/exam/question/view/:id', permission('999'), asyncHandler(async (req, res) => {
     const id = req.params.id;
     const exam = await examQuizService.getQuizById(id);
     if (!exam) throw new Error('No data found');
@@ -154,7 +154,7 @@ adminRouter.get('/exam/question/view/:id', permission('999'), asnycHandler(async
 }));
 
 // View Exam 
-adminRouter.get('/exam/category', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/exam/category', permission('999'), asyncHandler(async (req, res) => {
     const data = await categoryQuiz.getAll();
     if (!data) throw new Error('No data found');
     res.render('admin/categoryGame', { title: "Tạo danh mục khoá học", data });
@@ -163,7 +163,7 @@ adminRouter.get('/exam/category', permission('999'), asnycHandler(async (req, re
 
 
 // Exam by id 
-adminRouter.get('/exam/tracking/:id/:max', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/exam/tracking/:id/:max', permission('999'), asyncHandler(async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
     const limit = 10;
     const id = req.params.id;
@@ -177,7 +177,7 @@ adminRouter.get('/exam/tracking/:id/:max', permission('999'), asnycHandler(async
 }))
 
 // Students
-adminRouter.get('/students', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/students', permission('999'), asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const data = await InfoService.getInfoFullPage(page, limit);
@@ -188,7 +188,7 @@ adminRouter.get('/students', permission('999'), asnycHandler(async (req, res) =>
 }));
 
 // Course
-adminRouter.get('/course', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/course', permission('999'), asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const data = await CourseService12.getPageCourse(page, limit);
@@ -198,7 +198,7 @@ adminRouter.get('/course', permission('999'), asnycHandler(async (req, res) => {
     res.render('admin/course', { title: "Quản lý khoá học", data: data?.courses, totalPages, currentPage: page, totalItems });
 }));
 // view lesson course 
-adminRouter.get('/course/lesson/find/:id', asnycHandler(async (req, res) => {
+adminRouter.get('/course/lesson/find/:id', asyncHandler(async (req, res) => {
     const courseid = req.params.id;
     const rp = await CourseService12.findCourseByCategory(courseid);
     if (!rp) throw new Error('No data found');
@@ -209,19 +209,19 @@ adminRouter.get('/course/lesson/find/:id', asnycHandler(async (req, res) => {
     res.render('admin/lesson', { title: "Quản lý bài học", data, dataLesson, courseName, courseid });
 }));
 // Create Course & Category Course
-adminRouter.get('/course/create', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/course/create', permission('999'), asyncHandler(async (req, res) => {
     const category = await categoryCourse.getAll();
     if (!category) throw new Error('No data found');
     res.render('admin/createCourse', { title: "Tạo khoá học", category });
 }));
 // Create category
-adminRouter.get('/course/category', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/course/category', permission('999'), asyncHandler(async (req, res) => {
     const data = await categoryCourse.getAll();
     if (!data) throw new Error('No data found');
     res.render('admin/categoryCourse', { title: "Tạo danh mục khoá học", data });
 }));
 // Create Exam 
-adminRouter.get('/course/exam/create', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/course/exam/create', permission('999'), asyncHandler(async (req, res) => {
     const course = await CourseService12.getCourseByChapter();
     const chapter = await chapterCourse.getChapterFull();
     if (!chapter || !course) throw new Error('No data found');
@@ -229,14 +229,14 @@ adminRouter.get('/course/exam/create', permission('999'), asnycHandler(async (re
 }));
 
 // Create Lesson
-adminRouter.get('/course/lesson/create', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/course/lesson/create', permission('999'), asyncHandler(async (req, res) => {
     const course = await CourseService12.getCourseByChapter();
     if (!course) throw new Error('No data found');
     res.render('admin/createLessonCourse', { title: "Tạo video", course });
 }));
 
 // Rank
-adminRouter.get('/rank', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/rank', permission('999'), asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const data = await trakingQuizServices.getRanking(page, limit);
@@ -247,7 +247,7 @@ adminRouter.get('/rank', permission('999'), asnycHandler(async (req, res) => {
 }));
 
 // Rank in month
-adminRouter.get('/rank/inMonth', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/rank/inMonth', permission('999'), asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const data = await trakingQuizServices.getRankingByMonthPage(page, limit);
@@ -258,7 +258,7 @@ adminRouter.get('/rank/inMonth', permission('999'), asnycHandler(async (req, res
 }));
 
 // Rank in week
-adminRouter.get('/rank/inWeek', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/rank/inWeek', permission('999'), asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const data = await trakingQuizServices.getRankingByWeekPage(page, limit);
@@ -271,36 +271,36 @@ adminRouter.get('/rank/inWeek', permission('999'), asnycHandler(async (req, res)
 
 
 // News 
-adminRouter.get('/news', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/news', permission('999'), asyncHandler(async (req, res) => {
     const data = await newsService.getAll();
     if (!data) throw new Error('No data found');
     res.render('admin/news', { title: "Quản lý tin tức", data: data });
 }));
 // Create news 
-adminRouter.get('/news/create', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/news/create', permission('999'), asyncHandler(async (req, res) => {
     res.render('admin/createNews', { title: "Tạo tin tức" });
 }));
 
 // Popup 
-adminRouter.get('/popup', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/popup', permission('999'), asyncHandler(async (req, res) => {
     const data = await popupService.getAll();
     if (!data) throw new Error('No data found');
     res.render('admin/popup', { title: "Quản lý popup ", data: data });
 }));
 // Create popup
-adminRouter.get('/popup/create', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/popup/create', permission('999'), asyncHandler(async (req, res) => {
     res.render('admin/createPopup', { title: "Tạo popup " });
 }));
 
 // notification
-adminRouter.get('/slider', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/slider', permission('999'), asyncHandler(async (req, res) => {
     const data = await NotificationService.getNotificationFull();
     if (!data) throw new Error('No data found');
     res.render('admin/slider', { title: "Quản lý slider", data: data });
 }));
 
 // Create Slider 
-adminRouter.get('/slider/create', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/slider/create', permission('999'), asyncHandler(async (req, res) => {
     res.render('admin/createSlider', { title: "Tạo slider" });
 }));
 
@@ -308,7 +308,7 @@ adminRouter.get('/slider/create', permission('999'), asnycHandler(async (req, re
 // Firebase Services
 
 //+ 1 Notification 
-adminRouter.get('/firebase/notification', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/firebase/notification', permission('999'), asyncHandler(async (req, res) => {
     // FcmToken
     const currentPage = parseInt(req.query.page) || 1;
     const fcmToken = await fcmDevice.getAllFcmToken(currentPage, 10);
@@ -319,7 +319,7 @@ adminRouter.get('/firebase/notification', permission('999'), asnycHandler(async 
 }));
 // Schedule Notification
 // hiển thị chiến dịch
-adminRouter.get('/firebase/scheduleNotification', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/firebase/scheduleNotification', permission('999'), asyncHandler(async (req, res) => {
     const limit = 10;
     const page = parseInt(req.query.page) || 1;
     const jobs = await notificationService.getAllJobs(limit, page);
@@ -331,7 +331,7 @@ adminRouter.get('/firebase/scheduleNotification', permission('999'), asnycHandle
 
 
 // Schedule students
-adminRouter.get('/schedule/importStudents', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/schedule/importStudents', permission('999'), asyncHandler(async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
     // const data = await scheduleService.getAllShechedule(currentPage, 10);
     let data;
@@ -354,19 +354,19 @@ adminRouter.get('/schedule/importStudents', permission('999'), asnycHandler(asyn
     const totalPages = data?.totalPages;
     res.render('./admin/shechedule/importSchedule', { title: "Đăng tải học sinh", data: data?.data, totalPages, currentPage, total });
 }));
-adminRouter.get('/schedule/ettendanceTeacher', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/schedule/ettendanceTeacher', permission('999'), asyncHandler(async (req, res) => {
     // const data = await AccountService.selectTeachers();
     const data = await AccountService.accountSupper();
     res.render('./admin/shechedule/exportTeacher', { title: "Lịch giảng viên", data });
 }))
-adminRouter.get('/schedule/findShechedule', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/schedule/findShechedule', permission('999'), asyncHandler(async (req, res) => {
     res.render('./admin/shechedule/findShechedule', { title: "Tìm kiếm thời khoá biểu " });
 }));
-adminRouter.get('/schedule/exportShechedule', permission('999'), asnycHandler(async (req, res) => {
+adminRouter.get('/schedule/exportShechedule', permission('999'), asyncHandler(async (req, res) => {
     res.render('./admin/shechedule/exportShechedule', { title: "Xuất thời khoá biểu" });
 }));
 
-adminRouter.get('/schedule/teacherSheduleV1', permission('789 999'), asnycHandler(async (req, res) => {
+adminRouter.get('/schedule/teacherSheduleV1', permission('789 999'), asyncHandler(async (req, res) => {
     const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
     const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
     const { userId } = req.payload;
@@ -376,7 +376,7 @@ adminRouter.get('/schedule/teacherSheduleV1', permission('789 999'), asnycHandle
     })
     res.render('./admin/shechedule/teacherShedule', { title: "Điểm danh", date, days, userId });
 }));
-adminRouter.get('/schedule/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
+adminRouter.get('/schedule/teacherShedule', permission('789 999'), asyncHandler(async (req, res) => {
     const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
     const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
     const data = await AccountService.accountSupper();
@@ -391,7 +391,7 @@ adminRouter.get('/schedule/teacherShedule', permission('789 999'), asnycHandler(
     res.render('./admin/shechedule/teacherSheduleV2', { title: "Điểm danh", date, days, userId, data, role });
 }));
 // @Role Teacher    
-adminRouter.get('/teacher/teacherShedule', permission('789 999'), asnycHandler(async (req, res) => {
+adminRouter.get('/teacher/teacherShedule', permission('789 999'), asyncHandler(async (req, res) => {
     const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
     const days = new Date().getDay() == 0 ? 8 : new Date().getDay() + 1;
     const data = await AccountService.accountSupper();
@@ -401,18 +401,18 @@ adminRouter.get('/teacher/teacherShedule', permission('789 999'), asnycHandler(a
 
 
 
-adminRouter.get('/teacher/changeSub', permission('789 999'), asnycHandler(async (req, res) => {
+adminRouter.get('/teacher/changeSub', permission('789 999'), asyncHandler(async (req, res) => {
     const date = `${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}`;
     res.render('./admin/teacher/changeSub', { title: "Tìm kiếm thời khoá biểu ", date });
 }));
 
 
 // Parents
-adminRouter.get('/parents', asnycHandler(async (req, res) => {
+adminRouter.get('/parents', asyncHandler(async (req, res) => {
     res.render('./admin/Parents', { title: "Phu huynh " });
 }));
 
-adminRouter.get('/parents/students/:id', asnycHandler(async (req, res) => {
+adminRouter.get('/parents/students/:id', asyncHandler(async (req, res) => {
     const idStudents = req.params.id;
     const students = await scheduleService.getById(idStudents);
     const getAllMonth = await feedBackStudentService.getAlwaysFeedbackByStudents(idStudents);
@@ -431,7 +431,7 @@ adminRouter.get('/parents/students/:id', asnycHandler(async (req, res) => {
 
 
 // Class
-adminRouter.get('/class', asnycHandler(async (req, res) => {
+adminRouter.get('/class', asyncHandler(async (req, res) => {
     const data = await AccountService.accountSupper();
     const listStudent = await scheduleService.getAllStudents();
     console.log(listStudent)
@@ -439,7 +439,7 @@ adminRouter.get('/class', asnycHandler(async (req, res) => {
 }));
 
 // Select Class 
-adminRouter.get('/viewClass', permission('789 999'), asnycHandler(async (req, res) => {
+adminRouter.get('/viewClass', permission('789 999'), asyncHandler(async (req, res) => {
     const data = await AccountService.accountSupper();
     const language = await languageService.getAll();
     const { userId, role } = req.payload;
@@ -448,7 +448,7 @@ adminRouter.get('/viewClass', permission('789 999'), asnycHandler(async (req, re
 
 
 // Select Class 
-adminRouter.get('/feedBack', permission(' 999'), asnycHandler(async (req, res) => {
+adminRouter.get('/feedBack', permission(' 999'), asyncHandler(async (req, res) => {
     const data = await AccountService.accountSupper();
     const language = await languageService.getAll();
     const { userId } = req.payload;
@@ -456,13 +456,13 @@ adminRouter.get('/feedBack', permission(' 999'), asnycHandler(async (req, res) =
 }));
 
 
-adminRouter.get('/subject', asnycHandler(async (req, res) => {
+adminRouter.get('/subject', asyncHandler(async (req, res) => {
     const ListSubject = await languageService.getAll();
     res.render('admin/shechedule/subjectV2', { title: "Danh sách môn học ", ListSubject });
 }));
 
 
-adminRouter.get('/examQuestions', asnycHandler(async (req, res) => {
+adminRouter.get('/examQuestions', asyncHandler(async (req, res) => {
     const ListSubject = await languageService.getAll();
     res.render('admin/examQuestion/examQuestion', { title: "Quản lý hệ thống thi online" });
 }));

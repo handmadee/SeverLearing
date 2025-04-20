@@ -12,96 +12,96 @@ const lessonController = require('../../controllers/course/lesson.controller');
 const quizController = require('../../controllers/course/exam.controller');
 const questionController = require('../../controllers/course/question.controller');
 const AnswerController = require('../../controllers/course/answer.controller');
-const { asnycHandler } = require('../../helpers/asyncHandler');
+const { asyncHandler } = require('../../helpers/asyncHandler');
 const { upload } = require('./../../untils/upload');
 const TrackingCourseController = require('../../controllers/trackingCourse/trackingCourse');
 const router = express.Router();
 
 // Category
-router.post('/category', asnycHandler(categoryController.createCategory));
-router.get('/category', asnycHandler(categoryController.getCategory));
-router.get('/category/:id', asnycHandler(categoryController.getCategoryById));
-router.put('/category/:id', asnycHandler(categoryController.updateCategory));
-router.delete('/category/:id', asnycHandler(categoryController.removeCategory));
+router.post('/category', asyncHandler(categoryController.createCategory));
+router.get('/category', asyncHandler(categoryController.getCategory));
+router.get('/category/:id', asyncHandler(categoryController.getCategoryById));
+router.put('/category/:id', asyncHandler(categoryController.updateCategory));
+router.delete('/category/:id', asyncHandler(categoryController.removeCategory));
 
 // Get Chapter
-router.get('/categoryFull', asnycHandler(categoryController.getFullCategory));
+router.get('/categoryFull', asyncHandler(categoryController.getFullCategory));
 
 
 // Admin page
-router.post('/course', upload.single('imageCourse'), asnycHandler(courseController.createCourse));
-router.get('/course', asnycHandler(courseController.getCourses));
+router.post('/course', upload.single('imageCourse'), asyncHandler(courseController.createCourse));
+router.get('/course', asyncHandler(courseController.getCourses));
 // Check permission course 
-router.get('/course/:id', permission(['888', '999']), asnycHandler(courseController.getCourseById));
-router.put('/course/:id', upload.single('imageCourse'), asnycHandler(courseController.updateCourse));
-router.delete('/course/:id', asnycHandler(courseController.removeCourse));
-router.get('/search', asnycHandler(courseController.searchCourse));
-router.get('/courselesson/:id', asnycHandler(courseController.getCountLesson));
-router.get('/courseFull', asnycHandler(courseController.getCourseAll));
+router.get('/course/:id', permission(['888', '999']), asyncHandler(courseController.getCourseById));
+router.put('/course/:id', upload.single('imageCourse'), asyncHandler(courseController.updateCourse));
+router.delete('/course/:id', asyncHandler(courseController.removeCourse));
+router.get('/search', asyncHandler(courseController.searchCourse));
+router.get('/courselesson/:id', asyncHandler(courseController.getCountLesson));
+router.get('/courseFull', asyncHandler(courseController.getCourseAll));
 
 
 
 // Get Page Course 
-router.get('/course/page/:page', asnycHandler(courseController.getCoursePage));
+router.get('/course/page/:page', asyncHandler(courseController.getCoursePage));
 
 
 // Chapter
-router.post('/chapter', asnycHandler(chapterController.createChapter));
-router.get('/chapter', asnycHandler(chapterController.getChapters));
-router.get('/chapter/:id', asnycHandler(chapterController.getChapterById));
-router.put('/chapter/:id', asnycHandler(chapterController.updateChapter));
-router.delete('/chapter/:id', asnycHandler(chapterController.removeChapter));
-router.get('/chapterCourse/:id', asnycHandler(chapterController.getChapterByCourseId));
+router.post('/chapter', asyncHandler(chapterController.createChapter));
+router.get('/chapter', asyncHandler(chapterController.getChapters));
+router.get('/chapter/:id', asyncHandler(chapterController.getChapterById));
+router.put('/chapter/:id', asyncHandler(chapterController.updateChapter));
+router.delete('/chapter/:id', asyncHandler(chapterController.removeChapter));
+router.get('/chapterCourse/:id', asyncHandler(chapterController.getChapterByCourseId));
 
 // Get Chapter
-router.get('/chapterFull', asnycHandler(chapterController.getFullChapter));
+router.get('/chapterFull', asyncHandler(chapterController.getFullChapter));
 
 // Lesson
-router.post('/lesson', asnycHandler(lessonController.createLesson));
-router.get('/lesson', asnycHandler(lessonController.getLessons));
-router.get('/lesson/:id', asnycHandler(lessonController.getLessonById));
-router.put('/lesson/:id', asnycHandler(lessonController.updateLesson));
-router.delete('/lesson/:id', asnycHandler(lessonController.removeLesson));
+router.post('/lesson', asyncHandler(lessonController.createLesson));
+router.get('/lesson', asyncHandler(lessonController.getLessons));
+router.get('/lesson/:id', asyncHandler(lessonController.getLessonById));
+router.put('/lesson/:id', asyncHandler(lessonController.updateLesson));
+router.delete('/lesson/:id', asyncHandler(lessonController.removeLesson));
 
 // Quiz
-router.post('/quiz', asnycHandler(quizController.createExam));
-router.get('/quiz', asnycHandler(quizController.getExams));
-router.get('/quiz/:id', asnycHandler(quizController.getExamById));
-router.put('/quiz/:id', asnycHandler(quizController.updateExam));
-router.delete('/quiz/:id', asnycHandler(quizController.removeExam));
+router.post('/quiz', asyncHandler(quizController.createExam));
+router.get('/quiz', asyncHandler(quizController.getExams));
+router.get('/quiz/:id', asyncHandler(quizController.getExamById));
+router.put('/quiz/:id', asyncHandler(quizController.updateExam));
+router.delete('/quiz/:id', asyncHandler(quizController.removeExam));
 
 // Question on many
-router.post('/question', asnycHandler(questionController.createQuestion));
-router.get('/question', asnycHandler(questionController.getQuestions));
-router.get('/question/:id', asnycHandler(questionController.getQuestionById));
-router.put('/question/:id', asnycHandler(questionController.updateQuestion));
-router.delete('/question/:id', asnycHandler(questionController.removeQuestion));
+router.post('/question', asyncHandler(questionController.createQuestion));
+router.get('/question', asyncHandler(questionController.getQuestions));
+router.get('/question/:id', asyncHandler(questionController.getQuestionById));
+router.put('/question/:id', asyncHandler(questionController.updateQuestion));
+router.delete('/question/:id', asyncHandler(questionController.removeQuestion));
 
 // Asnwer on many
-router.post('/answer', asnycHandler(AnswerController.createAnswer));
-router.get('/answer', asnycHandler(AnswerController.getAnswers));
-router.get('/answer/:id', asnycHandler(AnswerController.getAnswerById));
-router.put('/answer/:id', asnycHandler(AnswerController.updateAnswer));
-router.delete('/answer/:id', asnycHandler(AnswerController.removeAnswer));
+router.post('/answer', asyncHandler(AnswerController.createAnswer));
+router.get('/answer', asyncHandler(AnswerController.getAnswers));
+router.get('/answer/:id', asyncHandler(AnswerController.getAnswerById));
+router.put('/answer/:id', asyncHandler(AnswerController.updateAnswer));
+router.delete('/answer/:id', asyncHandler(AnswerController.removeAnswer));
 
 // Tracking course 
-router.post('/tracking', permission('888', '999'), asnycHandler(TrackingCourseController.createTrackingCourse));
-router.get('/tracking', asnycHandler(TrackingCourseController.getTrackingCourse));
-router.get('/trackingFinish/:id', asnycHandler(TrackingCourseController.findTrackingAccountFinish));
-router.get('/trackingLearn/:id', asnycHandler(TrackingCourseController.findTrackingAccountLearn));
-router.put('/tracking', asnycHandler(TrackingCourseController.updateTrackingCourse));
-router.get('/trackingFull', asnycHandler(TrackingCourseController.getFullTrackingCourse));
+router.post('/tracking', permission('888', '999'), asyncHandler(TrackingCourseController.createTrackingCourse));
+router.get('/tracking', asyncHandler(TrackingCourseController.getTrackingCourse));
+router.get('/trackingFinish/:id', asyncHandler(TrackingCourseController.findTrackingAccountFinish));
+router.get('/trackingLearn/:id', asyncHandler(TrackingCourseController.findTrackingAccountLearn));
+router.put('/tracking', asyncHandler(TrackingCourseController.updateTrackingCourse));
+router.get('/trackingFull', asyncHandler(TrackingCourseController.getFullTrackingCourse));
 
 // Tracking course by id
-router.get('/tracking/:id', asnycHandler(TrackingCourseController.getTrackingCourseById));
+router.get('/tracking/:id', asyncHandler(TrackingCourseController.getTrackingCourseById));
 
 // Tracking user by id 
-router.get('/trackingUser/:id', asnycHandler(TrackingCourseController.getTrackingCourseByIdUser));
+router.get('/trackingUser/:id', asyncHandler(TrackingCourseController.getTrackingCourseByIdUser));
 
 // get topCourse 
-router.get('/topCourse', asnycHandler(TrackingCourseController.getTopCourse));
+router.get('/topCourse', asyncHandler(TrackingCourseController.getTopCourse));
 // get lowCourse
-router.get('/lowCourse', asnycHandler(TrackingCourseController.getLowCourse));
+router.get('/lowCourse', asyncHandler(TrackingCourseController.getLowCourse));
 
 
 

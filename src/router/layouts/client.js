@@ -1,6 +1,6 @@
 'use strict';
 const express = require('express');
-const { asnycHandler } = require('../../helpers/asyncHandler');
+const { asyncHandler } = require('../../helpers/asyncHandler');
 const ExamQuestionServices = require('../../examQuestion/services/exam.service');
 const { request } = require('../../app');
 const errorHandlerV = require('../../middleware/errorHandler');
@@ -8,23 +8,23 @@ const notFoundHandler = require('../../middleware/notfound');
 const clientRouter = express.Router();
 
 
-clientRouter.get('/exams', asnycHandler(async (req, res) => {
+clientRouter.get('/exams', asyncHandler(async (req, res) => {
     res.render('clients/exam/listExam', { title: "Danh sách đề thi" });
 }));
 
 
 
-clientRouter.get('/exams/history', asnycHandler(async (req, res) => {
+clientRouter.get('/exams/history', asyncHandler(async (req, res) => {
     res.render('clients/exam/historyExam', { title: "Lịch sử làm bài" });
 }));
 
 
-clientRouter.get('/exams/start', asnycHandler(async (req, res) => {
+clientRouter.get('/exams/start', asyncHandler(async (req, res) => {
     let examId = req.query.examId ? req.query.examId : "";
     res.render('clients/exam/startExam', { title: "Hệ thống thi online", examId });
 }));
 
-clientRouter.get('/exams/online/:examId/:studentId', asnycHandler(async (req, res) => {
+clientRouter.get('/exams/online/:examId/:studentId', asyncHandler(async (req, res) => {
     const { examId, studentId } = req.params;
     console.log(examId, studentId);
     try {

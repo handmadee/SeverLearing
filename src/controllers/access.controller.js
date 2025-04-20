@@ -2,16 +2,23 @@ const { OK, Created } = require('../core/success.response');
 const { accountSupper } = require('../services/account/account.service');
 const userService = require('./../services/auth/user.service');
 
+/**
+ * AUTHENTICATION CONTROLLERS
+ */
 
+/**
+ * Đăng ký tài khoản mới
+ */
 exports.register = async (req, res, next) => {
-    return new Created(
-        {
-            message: 'Register success',
-            data: await userService.register(req.body)
-        }
-    ).send(res);
+    return new Created({
+        message: 'Register success',
+        data: await userService.register(req.body)
+    }).send(res);
 };
 
+/**
+ * Đăng nhập vào hệ thống
+ */
 exports.login = async (req, res, next) => {
     return new OK({
         message: 'Login success',
@@ -19,6 +26,9 @@ exports.login = async (req, res, next) => {
     }).send(res);
 };
 
+/**
+ * Làm mới token xác thực
+ */
 exports.refreshToken = async (req, res, next) => {
     return new OK({
         message: 'Token refreshed successfully',
@@ -26,6 +36,9 @@ exports.refreshToken = async (req, res, next) => {
     }).send(res)
 };
 
+/**
+ * Đăng xuất khỏi hệ thống
+ */
 exports.logout = async (req, res, next) => {
     return new OK({
         message: 'Logout successfully',
@@ -33,6 +46,9 @@ exports.logout = async (req, res, next) => {
     }).send(res);
 };
 
+/**
+ * Kiểm tra tính hợp lệ của token
+ */
 exports.verifyToken = async (req, res) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -45,6 +61,13 @@ exports.verifyToken = async (req, res) => {
     }).send(res);
 }
 
+/**
+ * USER MANAGEMENT CONTROLLERS
+ */
+
+/**
+ * Lấy thông tin người dùng theo ID
+ */
 exports.getUser = async (req, res) => {
     const id = req.params.id;
     return new OK({
@@ -53,6 +76,9 @@ exports.getUser = async (req, res) => {
     }).send(res);
 }
 
+/**
+ * Đổi mật khẩu người dùng
+ */
 exports.changePassword = async (req, res) => {
     return new OK({
         message: 'Change password successfully',
@@ -60,6 +86,9 @@ exports.changePassword = async (req, res) => {
     }).send(res);
 }
 
+/**
+ * Tìm người dùng theo tên đăng nhập
+ */
 exports.findUserByUsername = async (req, res) => {
     return new OK({
         message: 'User found successfully',
@@ -67,13 +96,19 @@ exports.findUserByUsername = async (req, res) => {
     }).send(res);
 }
 
+/**
+ * Đổi mật khẩu theo tên đăng nhập
+ */
 exports.changePasswordByUsername = async (req, res) => {
     return new OK({
         message: 'Change password successfully',
         data: await userService.changePasswordByUsername(req.body)
     }).send(res);
 }
-// Delete Account
+
+/**
+ * Xóa tài khoản
+ */
 exports.deleteAccount = async (req, res) => {
     return new OK({
         message: 'Delete account successfully',
@@ -81,7 +116,13 @@ exports.deleteAccount = async (req, res) => {
     }).send(res);
 }
 
-// Edit role
+/**
+ * PERMISSION CONTROLLERS
+ */
+
+/**
+ * Chỉnh sửa quyền người dùng
+ */
 exports.editRole = async (req, res) => {
     const id = req.params.id;
     const pemission = req.body.pemission;
@@ -91,9 +132,12 @@ exports.editRole = async (req, res) => {
     }).send(res);
 }
 
+/**
+ * Khởi tạo tài khoản quản trị viên
+ */
 exports.accountSupper = async (req, res) => {
     return new OK({
-        message: 'Edit role successfully',
+        message: 'Create super admin account successfully',
         data: await accountSupper()
     }).send(res);
 }
