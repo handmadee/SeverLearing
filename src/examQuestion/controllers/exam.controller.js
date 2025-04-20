@@ -66,11 +66,5 @@ class ExamControllers {
             await ExamQuestionServices.getExamById(id)
         ).send(res)
     }
-
-    // !chi tiết bài kiểm tra 
-    // GỒM SỐ LƯỢNG HỌC SINH LÀM BÀI 
-    // 
-
-
 }
 module.exports = new ExamControllers();

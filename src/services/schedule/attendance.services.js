@@ -47,7 +47,7 @@ class StudentEttendanceService extends BaseService {
             attendance: attendance.attendance
         }, { new: true })
     }
-    
+
     async getAbsentStudents(study = null, fromDate, toDate, session = null, teacherId = null) {
         const query = {
             date: { $gte: fromDate, $lte: toDate },
@@ -92,7 +92,7 @@ class StudentEttendanceService extends BaseService {
                 };
             }
 
-            if(record.attendance == false) {
+            if (record.attendance == false) {
                 studentMap[studentId].totalAbsent++;
             }
             studentMap[studentId].absentDates.push({
@@ -384,7 +384,6 @@ class StudentEttendanceService extends BaseService {
         }
     }
 
-    // t2
     async getAloneByAccount(studentAccount, date, date1, study) {
         console.error("Đúng ");
         console.log(studentAccount, date, date1, study);
