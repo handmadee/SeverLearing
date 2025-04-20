@@ -2,27 +2,27 @@
 
 const express = require('express');
 const userController = require('./../../controllers/access.controller');
-const { asnycHandler } = require('../../helpers/asyncHandler');
+const { asyncHandler } = require('../../helpers/asyncHandler');
 const router = express.Router();
 
 
-router.post('/auth/signup', asnycHandler(userController.register));
-router.post('/auth/login', asnycHandler(userController.login));
-router.post('/auth/verify-token', asnycHandler(userController.verifyToken));
-router.post('/auth/refresh-token', asnycHandler(userController.refreshToken));
-router.post('/auth/logout', asnycHandler(userController.logout));
-router.get('/auth/user/:id', asnycHandler(userController.getUser));
-router.put('/auth/changePassword', asnycHandler(userController.changePassword));
-router.get('/findUserName/:username', asnycHandler(userController.findUserByUsername));
-router.put('/authChangeUser', asnycHandler(userController.changePasswordByUsername));
-router.get('/allSupper', asnycHandler(userController.accountSupper));
+router.post('/auth/signup', asyncHandler(userController.register));
+router.post('/auth/login', asyncHandler(userController.login));
+router.post('/auth/verify-token', asyncHandler(userController.verifyToken));
+router.post('/auth/refresh-token', asyncHandler(userController.refreshToken));
+router.post('/auth/logout', asyncHandler(userController.logout));
+router.get('/auth/user/:id', asyncHandler(userController.getUser));
+router.put('/auth/changePassword', asyncHandler(userController.changePassword));
+router.get('/findUserName/:username', asyncHandler(userController.findUserByUsername));
+router.put('/authChangeUser', asyncHandler(userController.changePasswordByUsername));
+router.get('/allSupper', asyncHandler(userController.accountSupper));
 
 // 
 
 // Delete user
-router.delete('/deleteAccount/:id', asnycHandler(userController.deleteAccount));
+router.delete('/deleteAccount/:id', asyncHandler(userController.deleteAccount));
 // Select role 
-router.patch('/auth/role/:id', asnycHandler(userController.editRole));
+router.patch('/auth/role/:id', asyncHandler(userController.editRole));
 
 
 module.exports = router; 

@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require("express");
-const { asnycHandler } = require('./../../helpers/asyncHandler');
+const { asyncHandler } = require('./../../helpers/asyncHandler');
 const { uploadExcel } = require('./../../untils/upload');
 const router = express.Router();
 const languageItController = require('./../../feeback/controllers/language.controller');

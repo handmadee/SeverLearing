@@ -1,86 +1,246 @@
 <%if (role.includes('999')) { %> <%- include('./../comon/header') %> <% } else {
 %> <%- include('./../comon/headerTeacher') %> <% } %>
-
 <div class="main">
   <%- include('./../comon/topBarSearch') %>
   <!-- Main -->
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', 'Segoe UI', -apple-system, system-ui, sans-serif;
+      background-color: #f8f9fa;
     }
+    
     .sheduleTeacher {
-      margin: 0 auto;
-      padding: 20px;
+      margin: 20px auto;
+      padding: 24px;
       height: 85vh;
-      overflow: scroll;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-shadow: 2px 2px 12px #aaa;
-      margin: 20px;
+      overflow: auto;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      background-color: #fff;
+    }
+
+    .attendance-header {
+      background: linear-gradient(135deg, #198754 0%, #157347 100%);
+      color: white;
+      border-radius: 8px;
+      padding: 18px 0;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(21, 115, 71, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .attendance-header:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(21, 115, 71, 0.25);
+      background: linear-gradient(135deg, #157347 0%, #0e5233 100%);
+    }
+
+    .sheduleControler {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin: 24px auto;
+      gap: 16px;
+    }
+
+    .sheduleControler .item {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px;
+      border-radius: 8px;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+      border: 1px solid #e9ecef;
+    }
+
+    .sheduleControler .item:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .sheduleControler .item h6 {
+      margin-bottom: 8px;
+      color: #495057;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .sheduleControler .item strong {
+      color: #212529;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .sheduleControler .item select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ced4da;
+      background-color: #fff;
+      font-size: 15px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23495057' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+    }
+
+    .sheduleControler .item select:focus {
+      border-color: #198754;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.2);
+    }
+
+    .sheduleControler .item label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ced4da;
+      background-color: #fff;
+      font-size: 15px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-select:focus {
+      border-color: #198754;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.2);
+    }
+
+    #saveInfor {
+      background-color: #198754;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(25, 135, 84, 0.2);
+      width: 100%;
+      max-width: 200px;
+      margin-left: auto;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 14px;
+    }
+
+    #saveInfor:hover {
+      background-color: #157347;
+      box-shadow: 0 4px 12px rgba(25, 135, 84, 0.25);
+      transform: translateY(-2px);
+    }
+
+    #saveInfor:active {
+      transform: translateY(0);
     }
 
     table {
       width: 100%;
-      border-collapse: collapse;
-    }
-    th,
-    td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    h5 {
-      background-color: rgba(25, 135, 84, 1);
-      color: white;
-      border-radius: 5px;
-      padding: 15px 0;
-      text-align: center;
-    }
-    h5:hover {
-      cursor: pointer;
-      background-color: #4a95e0;
-      color: white;
-    }
-    .sheduleControler {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      justify-content: space-evenly;
-      margin: 10px auto;
-      width: 100%;
-    }
-    .sheduleControler .item {
-      margin: 0 10px;
-      justify-content: space-evenly;
-    }
-    /*  */
-    tr td:nth-child(3) input {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-    tr td:nth-child(4) input {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-      color: #d20606;
-    }
-    tr td:nth-child(4) input:checked {
-      background-color: #d20606;
-    }
-    .sheduleControler .item {
-      padding: 5px;
-      border-radius: 5px;
-      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    }
-    .sheduleControler .item h6 {
-      margin-bottom: 0;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
     }
 
-    /*  */
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    th {
+      background-color: #198754;
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+
+    th:first-child {
+      border-top-left-radius: 8px;
+    }
+
+    th:last-child {
+      border-top-right-radius: 8px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: rgba(25, 135, 84, 0.03);
+    }
+
+    tr td:nth-child(3), 
+    tr td:nth-child(4) {
+      text-align: center;
+    }
+
+    tr td:nth-child(3) input,
+    tr td:nth-child(4) input {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      border-radius: 50%;
+      border: 2px solid #ced4da;
+      appearance: none;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    tr td:nth-child(3) input:checked {
+      background-color: #198754;
+      border-color: #198754;
+    }
+
+    tr td:nth-child(3) input:checked:after {
+      content: "✓";
+      color: white;
+      position: absolute;
+      font-size: 14px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    tr td:nth-child(4) input {
+      color: #dc3545;
+    }
+
+    tr td:nth-child(4) input:checked {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+
+    tr td:nth-child(4) input:checked:after {
+      content: "✓";
+      color: white;
+      position: absolute;
+      font-size: 14px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
 
     /* Custom checkbox */
     .switch {
@@ -88,17 +248,16 @@
       display: inline-block;
       width: 130px;
       height: 34px;
-      border-radius: 10px;
+      border-radius: 34px;
+      overflow: hidden;
     }
 
-    /* Hide default HTML checkbox */
     .switch input {
       opacity: 0;
       width: 0;
       height: 0;
     }
 
-    /* The slider */
     .slider {
       position: absolute;
       cursor: pointer;
@@ -106,10 +265,10 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #d20606;
-      -webkit-transition: 0.4s;
+      background-color: #dc3545;
       transition: 0.4s;
-      border-radius: 10px;
+      border-radius: 34px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .slider:before {
@@ -120,63 +279,163 @@
       left: 4px;
       bottom: 4px;
       background-color: white;
-      border-radius: 10px;
-      -webkit-transition: 0.4s;
       transition: 0.4s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
     }
 
     input:checked + .slider {
-      background-color: #07cb56;
+      background-color: #198754;
     }
 
     input:focus + .slider {
-      box-shadow: 0 0 1px #07cb56;
+      box-shadow: 0 0 1px #198754;
     }
 
     input:checked + .slider:before {
-      -webkit-transform: translateX(95px);
-      -ms-transform: translateX(95px);
       transform: translateX(95px);
     }
-    .slider {
-      text-align: center;
-    }
+
     .slider small {
       line-height: 34px;
-      font-weight: 700;
+      font-weight: 600;
       color: white;
       text-transform: uppercase;
-    }
-    .present {
-      color: rgb(40, 37, 37);
-    }
-    .sheduleTeacher table tbody tr th {
-      background-color: rgba(25, 135, 84, 1);
-      color: white;
+      position: relative;
+      transition: 0.4s;
+      font-size: 12px;
+      letter-spacing: 1px;
     }
 
     #contentTable .item-child {
-      height: 40px;
+      transition: all 0.3s ease;
     }
+
+    #contentTable .item-child:hover {
+      background-color: rgba(25, 135, 84, 0.05);
+    }
+
     #contentTable .item-child td {
-      height: 40px;
-      padding: 0;
+      height: 54px;
+      padding: 10px 16px;
+      vertical-align: middle;
     }
+
     #contentTable .item-child td:nth-child(2) {
       font-weight: 500;
+      color: #212529;
+    }
+
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: #6c757d;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      margin-bottom: 0;
+    }
+
+    /* Toast notifications */
+    #toasts {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+    }
+
+    .toast {
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      color: white;
+      background-color: #198754;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      animation: slideIn 0.3s ease forwards;
+      width: 300px;
+      display: flex;
+      align-items: center;
+    }
+
+    .toast-error {
+      background-color: #dc3545;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .sheduleControler {
+        flex-wrap: wrap;
+      }
+      
+      .sheduleControler .item {
+        flex: 0 0 calc(50% - 16px);
+        min-width: 150px;
+      }
+      
+      #saveInfor {
+        margin: 12px auto;
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sheduleTeacher {
+        padding: 16px;
+        height: auto;
+        max-height: 100vh;
+      }
+      
+      .sheduleControler .item {
+        flex: 0 0 100%;
+      }
+      
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .attendance-header {
+        font-size: 18px;
+        padding: 14px;
+      }
+      
+      th, td {
+        padding: 10px 12px;
+        font-size: 14px;
+      }
     }
   </style>
-  <div class="sheduleTeacher p-5">
-    <h5>Hệ thống điểm danh trung tâm Tsmart</h5>
-    <div class="sheduleControler mt-4">
+
+  <div class="sheduleTeacher">
+    <h5 class="attendance-header">Hệ thống điểm danh trung tâm Tsmart</h5>
+    <div class="sheduleControler">
       <div class="item">
-        <h6>Lớp <strong id="nameClass">.....</strong></h6>
+        <h6>Lớp</h6>
+        <strong id="nameClass">.....</strong>
       </div>
       <div class="item">
-        <h6>Ngày <%= date %></h6>
+        <h6>Ngày</h6>
+        <strong><%= date %></strong>
       </div>
-      <div class="item flex">
-        <label for="shift">Ca:</label>
+      <div class="item">
+        <label for="shift">Ca học</label>
         <select id="shift">
           <option value="1">1 (7h30-9h)</option>
           <option value="2">2 (9h-10h30)</option>
@@ -187,19 +446,21 @@
           <option value="7">7 (19h30-21h)</option>
         </select>
       </div>
-      <div class="item flex">
-<select class="form-select teacher" name="teacher" required="" <%= role.includes('789') ? 'disabled' : '' %> >
-
-          <option disabled="">Giáo viên đứng lớp</option>
+      <div class="item">
+        <label for="teacher">Giáo viên đứng lớp</label>
+        <select class="form-select teacher" id="teacher" name="teacher" required="" <%= role.includes('789') ? 'disabled' : '' %> >
+          <option disabled selected>Chọn giáo viên</option>
           <!-- Data select -->
-          <% if (data && data.length > 0) { %> <% data.forEach(item => { %>
-          <option value="<%= item._id %>"><%= item.username %></option>
-          <% }); %> <% } %>
+          <% if (data && data.length > 0) { %> 
+            <% data.forEach(item => { %>
+              <option value="<%= item._id %>"><%= item.username %></option>
+            <% }); %> 
+          <% } %>
           <!-- The end -->
         </select>
       </div>
-      <div class="item flex">
-        <label for="day">Thứ:</label>
+      <div class="item">
+        <label for="day">Thứ</label>
         <select id="day" disabled>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -210,43 +471,53 @@
           <option value="8">Chủ nhật</option>
         </select>
       </div>
-
-      <button class="btn btn-success" data-id="<%=userId %>" id="saveInfor">
-        Lưu thông tin
-      </button>
+      <div class="item">
+        <button class="btn btn-success" data-id="<%=userId %>" id="saveInfor">
+          Lưu thông tin
+        </button>
+      </div>
     </div>
 
     <table>
-      <tr>
-        <th>STT</th>
-        <th>Họ và tên</th>
-        <th>Có Mặt</th>
-        <th>Vắng mặt</th>
-        <th>Lý Do</th>
-      </tr>
-      <!--BODY -->
+      <thead>
+        <tr>
+          <th width="60">STT</th>
+          <th>Họ và tên</th>
+          <th width="100">Có Mặt</th>
+          <th width="100">Vắng mặt</th>
+          <th>Lý Do</th>
+        </tr>
+      </thead>
       <tbody id="contentTable">
-        <!-- <tr>
-          <td>1</td>
-          <td>1</td>
-          <td>1</td>
-          <td>
-            <label class="switch">
-              <input type="checkbox" checked />
-              <span class="slider round">
-                <small>Absent</small>
-              </span>
-            </label>
+        <!-- Empty state -->
+        <tr>
+          <td colspan="5">
+            <div class="empty-state">
+              <p>Không có dữ liệu. Vui lòng chọn lớp và ca học để hiển thị danh sách học viên.</p>
+            </div>
           </td>
+        </tr>
+        
+        <!-- Template for student rows (hidden by default) -->
+        <!-- 
+        <tr class="item-child">
           <td>1</td>
-        </tr> -->
-        <td colspan="5">
-          <p>Không có dữ liệu</p>
-        </td>
+          <td>Nguyễn Văn A</td>
+          <td>
+            <input type="checkbox" name="attendance" checked />
+          </td>
+          <td>
+            <input type="checkbox" name="absence" />
+          </td>
+          <td>
+            <input type="text" class="form-control" placeholder="Nhập lý do vắng mặt..." />
+          </td>
+        </tr>
+        -->
       </tbody>
-      <!-- The end -->
     </table>
   </div>
+  
   <div id="toasts"></div>
   <script type="module" src="/JS/manageTeacherScheducle.v2.js"></script>
   <%- include('./../comon/footer') %>
