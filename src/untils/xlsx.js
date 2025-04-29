@@ -1,75 +1,284 @@
 const reader = require('xlsx');
-const { parseSubject, generateCustomId } = require('./../untils/string.untils');
+const { generateCustomId, parseLearningStatus } = require('./string.untils');
 const { SubjectUID } = require('../enums/feeback.enum');
+const { Types } = require('mongoose');
 
 /**
- * Chuyển đổi file Excel thành mảng JSON chứa thông tin feedback.
- * @param {string} filePath - Đường dẫn tới file Excel.
- * @returns {Array} - Mảng các đối tượng feedback.
+ * Parse subject score from string format "level,score"
+ * @param {string} value - The score string in format "level,score"
+ * @param {string} subjectUID - The subject ID
+ * @returns {Array|null} - Array of score objects or null if invalid
  */
-function convertExcelToFeedbackJson(filePath) {
+function parseSubject(value, subjectUID) {
+    if (!value) return null;
+
+    try {
+        const parts = value.split(',').map(s => s.trim());
+        if (parts.length < 2) return null;
+
+        const level = Number(parts[0]);
+        const score = Number(parts[1]);
+
+        if (isNaN(level) || isNaN(score)) return null;
+
+        return [{
+            languageIt: subjectUID,
+            level: level.toString(),
+            score: score
+        }];
+    } catch (error) {
+        console.error("Error parsing subject:", error);
+        return null;
+    }
+}
+
+function normalizeName(name) {
+    if (!name) return '';
+    return name
+        .toLowerCase()
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/&/g, '')
+        .replace(/[^\w]/g, '');
+}
+
+
+const LanguageIDs = {
+    PYTHON: '6767ff3d4ba9e6b3d58a8aec',
+    CPP: '6767ff474ba9e6b3d58a8af0',
+    SCRATCH: '6767ff304ba9e6b3d58a8ae8'
+};
+
+function convertExcelToFeedbackJson(filePath, topicsData, languageIDs) {
     let data = [];
     try {
-        // Đọc file Excel
         const file = reader.readFile(filePath);
+
+        // Log file structure for debugging
+        console.log("Processing Excel file:", filePath);
+
         const sheets = file.SheetNames;
-        // Lặp qua từng sheet
-        const sheetName = sheets[0];
-        const sheet = file.Sheets[sheetName];
-        // Chuyển sheet thành JSON với cấu hình cụ thể
-        const temp = reader.utils.sheet_to_json(sheet, {
-            range: 2,
-            header: [
-                null,
-                "idStudent",
-                "nameStudents",
-                "idTeacher",
-                "A1",             // E: C++
-                "A2",             // F: Python
-                "A3",             // G: Scratch
-                "skill",          // H: Kĩ năng lập trình
-                "thinking",       // I: Tư duy môn học
-                "content",        // j: Nhận xét
-                null,             // k: cột trống
-            ],
-            defval: null,       // Giá trị mặc định nếu ô trống
-            blankrows: false,   // Bỏ qua hàng trống
-            skipHidden: true    // Bỏ qua hàng ẩn
-        });
+        const sheet = file.Sheets[sheets[0]];
 
-        // Xử lý từng hàng trong sheet
-        temp.forEach((res) => {
-            let feedback = {};
-            feedback.idStudent = res.idStudent;
-            feedback.idTeacher = res.idTeacher;
+        // Log all cell references for debugging
+        console.log("Sheet cells:", Object.keys(sheet).filter(k => k !== '!ref' && k !== '!margins'));
 
-            // Parse các môn học
-            let a1 = parseSubject(res.A1, SubjectUID.C);       // C++
-            let a2 = parseSubject(res.A2, SubjectUID.PYTHON);  // Python
-            let a3 = parseSubject(res.A3, SubjectUID.SCRATCH); // Scratch
-            console.log({
-                a1, a2, a3
-            })
-            // Thêm các subjectScores
-            feedback.subjectScores = [];
-            if (a1) feedback.subjectScores.push(...a1);
-            if (a2) feedback.subjectScores.push(...a2);
-            if (a3) feedback.subjectScores.push(...a3);
+        const range = reader.utils.decode_range(sheet['!ref']);
+        console.log("Sheet range:", range);
 
-            // Các thuộc tính khác
-            feedback.skill = res.skill;
-            feedback.thinking = res.thinking;
-            feedback.content = res.content;
-            console.log(feedback)
+        // We need to manually parse the Excel to handle specific structure
+        // First, identify header rows
+        const headers = [];
+        for (let C = range.s.c; C <= range.e.c; C++) {
+            // Get header from row 1 (index 1)
+            const cell = sheet[reader.utils.encode_cell({ r: 1, c: C })];
+            headers.push(cell ? (cell.v || '').trim() : null);
+        }
+
+        console.log("Headers:", headers);
+
+        // Create normalized topic map for matching
+        const topicMap = {};
+        const partialMatches = {}; // For matching partial topic names
+
+        if (topicsData && topicsData.length) {
+            topicsData.forEach(topic => {
+                const normalizedName = normalizeName(topic.name);
+                if (topicMap[normalizedName]) {
+                    console.log(`Duplicate topic name after normalization: ${topic.name} (normalized: ${normalizedName})`);
+                }
+                topicMap[normalizedName] = {
+                    id: topic._id.toString(),
+                    language: topic.language,
+                    level: topic.level
+                };
+
+                // Also store parts of compound topic names for partial matching
+                if (topic.name.includes('&') || topic.name.includes('+') || topic.name.includes(',')) {
+                    const parts = topic.name.split(/[&+,]/);
+                    parts.forEach(part => {
+                        const normalizedPart = normalizeName(part);
+                        if (normalizedPart && normalizedPart.length > 3) { // Avoid too short names
+                            partialMatches[normalizedPart] = normalizedName;
+                        }
+                    });
+                }
+            });
+        }
+
+        console.log("Normalized topic names:", Object.keys(topicMap));
+        console.log("Partial matches:", partialMatches);
+
+        // Process each row by looping through all rows in the range
+        for (let R = 2; R <= range.e.r; R++) {  // Start from row 3 (index 2)
+            const row = {};
+            let hasData = false;
+
+            // Read all columns for this row
+            for (let C = 0; C < headers.length; C++) {
+                const cellRef = reader.utils.encode_cell({ r: R, c: C });
+                const cell = sheet[cellRef];
+
+                if (cell && cell.v !== undefined && cell.v !== null) {
+                    row[headers[C]] = cell.v;
+                    hasData = true;
+                }
+            }
+
+            if (!hasData) continue; // Skip empty rows
+
+            console.log(`Processing row ${R + 1}:`, JSON.stringify(row));
+
+            const feedback = {
+                teacherAccount: row['ID Giáo viên'],
+                studentsAccount: row['ID Học viên'],
+                subjectScores: [],
+                skill: row['Kĩ năng lập trình'] || '',
+                thinking: row['Tư duy môn học'] || '',
+                contentFeedBack: row['Nhận xét'] || '',
+                learningStatus: []
+            };
+
+            // Xử lý điểm
+            ['C++', 'Python', 'Scratch'].forEach(lang => {
+                if (row[lang]) {
+                    const parts = row[lang].toString().split(',').map(x => x.trim());
+                    if (parts.length === 2) {
+                        const languageKey = lang === 'C++' ? 'CPP' : lang.toUpperCase();
+                        feedback.subjectScores.push({
+                            languageIt: LanguageIDs[languageKey],
+                            level: parts[0],
+                            score: parseFloat(parts[1])
+                        });
+                    }
+                }
+            });
+
+            // Xử lý từng topic
+            for (let i = 0; i < headers.length; i++) {
+                const topicName = headers[i];
+                if (!topicName) continue;
+
+                // Skip non-topic columns
+                if (['STT', 'ID Học viên', 'Tên học viên', 'ID Giáo viên', 'C++', 'Python',
+                    'Scratch', 'Kĩ năng lập trình', 'Tư duy môn học', 'Nhận xét'].includes(topicName)) {
+                    continue;
+                }
+
+                const normalizedTopic = normalizeName(topicName);
+                let matchedTopicId = null;
+
+                // First try direct match
+                if (normalizedTopic && topicMap[normalizedTopic]) {
+                    matchedTopicId = topicMap[normalizedTopic].id;
+                }
+                // Then try partial match
+                else if (normalizedTopic && partialMatches[normalizedTopic]) {
+                    const fullNormalizedName = partialMatches[normalizedTopic];
+                    matchedTopicId = topicMap[fullNormalizedName].id;
+                    console.log(`Partial match found: ${topicName} -> ${fullNormalizedName}`);
+                }
+                else {
+                    console.log(`Topic not found in map: ${topicName} (normalized: ${normalizedTopic})`);
+                    continue;
+                }
+
+                const status = parseInt(row[topicName]) || 0;
+                if (status >= 0 && status <= 2) {
+                    feedback.learningStatus.push({
+                        topic: new Types.ObjectId(matchedTopicId),
+                        status: status
+                    });
+                }
+            }
+
             data.push(feedback);
-        });
-        console.log(data)
+        }
+
         return data;
+
     } catch (error) {
-        console.error("Đã xảy ra lỗi khi chuyển đổi file Excel:", error);
+        console.error("Error converting Excel file:", error);
         return [];
     }
 }
+
+function exportFeedbackToExcel(feedbackData, topicsData, outputPath = './feedback_export.xlsx') {
+    console.log("🚀 ~ exportFeedbackToExcel ~ feedbackData:", feedbackData)
+    try {
+        const headers = [
+            'STT',
+            'ID Học viên',
+            'Tên học viên',
+            'ID Giáo viên',
+            'C++',
+            'Python',
+            'Scratch',
+            'Kĩ năng lập trình',
+            'Tư duy môn học',
+            'Nhận xét',
+            ...topicsData.map(t => t.name) // Thêm các topic vào cuối
+        ];
+
+        const excelData = feedbackData.map((feedback, index) => {
+            const row = {};
+
+            row['STT'] = index + 1;
+            row['ID Học viên'] = String(feedback.studentsAccount?._id || '');
+            row['Tên học viên'] = feedback.studentsAccount?.fullname || '';
+            row['ID Giáo viên'] = String(feedback.teacherAccount?._id || '');
+
+            // Môn học
+            const subjectMap = {};
+            feedback.subjectScores.forEach(score => {
+                const nameCode = score.languageIt?.nameCode;
+                if (!nameCode) return;
+                const key = nameCode === 'CPP' ? 'C++' : nameCode;
+                if (!subjectMap[key]) subjectMap[key] = [];
+                subjectMap[key].push(`${score.level},${score.score}`);
+            });
+
+            row['C++'] = subjectMap['C++']?.join(';') || '';
+            row['Python'] = subjectMap['Python']?.join(';') || '';
+            row['Scratch'] = subjectMap['Scratch']?.join(';') || '';
+
+            row['Kĩ năng lập trình'] = feedback.skill || '';
+            row['Tư duy môn học'] = feedback.thinking || '';
+            row['Nhận xét'] = feedback.contentFeedBack || '';
+
+            // Topic status
+            topicsData.forEach(topic => {
+                const found = feedback.learningStatus.find(t => t.topic?.toString() === topic._id.toString());
+                row[topic.name] = found?.status ?? '';
+            });
+
+            return row;
+        });
+
+        const ws = reader.utils.json_to_sheet(excelData, {
+            header: headers,
+            origin: 'A2'
+        });
+
+        // Thêm tiêu đề chính
+        reader.utils.sheet_add_aoa(ws, [['BẢNG ĐÁNH GIÁ HỌC VIÊN'], []], { origin: 'A1' });
+
+        // Đặt chiều rộng cột (optional)
+        ws['!cols'] = headers.map(h => ({ wch: h.length + 5 }));
+
+        const wb = reader.utils.book_new();
+        reader.utils.book_append_sheet(wb, ws, 'Feedback');
+        reader.writeFile(wb, outputPath);
+
+        return true;
+    } catch (error) {
+        console.error('Error exporting feedback to Excel:', error);
+        return false;
+    }
+}
+
 
 function convertExcelToStudentsJson(filePath) {
     console.log(filePath)
@@ -116,7 +325,6 @@ function convertExcelToStudentsJson(filePath) {
         return [];
     }
 }
-
 function convertRawToExcel(data, worksheetColumnNames, outputFilePath, sheetName = 'Sheet1') {
     try {
         const worksheet = reader.utils.json_to_sheet(data, { header: worksheetColumnNames });
@@ -129,106 +337,7 @@ function convertRawToExcel(data, worksheetColumnNames, outputFilePath, sheetName
     }
 }
 
-function exportFeedbackToExcel(feedbackData, outputPath = './feedback_export.xlsx') {
 
-    try {
-        const excelData = feedbackData.map((feedback, index) => {
-            let cpp = { levels: new Map() };
-            let python = { levels: new Map() };
-            let scratch = { levels: new Map() };
-
-            // Xử lý điểm môn học
-            feedback.subjectScores.forEach(score => {
-                const subject = score.languageIt;
-                const level = score.level;
-                const scoreValue = score.score;
-
-                // Xác định đối tượng môn học cần cập nhật
-                let targetSubject;
-                if (subject.nameCode === 'C++') targetSubject = cpp;
-                else if (subject.nameCode === 'Python') targetSubject = python;
-                else if (subject.nameCode === 'Scratch') targetSubject = scratch;
-
-                if (targetSubject) {
-                    targetSubject.levels.set(level, scoreValue);
-                }
-            });
-
-            // Chuyển đổi dữ liệu môn học sang định dạng Excel
-            const formatSubjectString = (subject) => {
-                if (subject.levels.size === 0) return null;
-                return Array.from(subject.levels.entries())
-                    .map(([level, score]) => `${level},${score}`)
-                    .join(';');
-            };
-            console.log(feedback.studentsAccount?._id);
-            return {
-                'STT': index + 1,
-                'ID Học viên': String(feedback.studentsAccount?._id || ''),
-                'Tên học viên': feedback.studentsAccount?.fullname || '',
-                'ID Giáo viên': String(feedback.teacherAccount?._id || ''),
-                'C++': formatSubjectString(cpp) || '',
-                'Python': formatSubjectString(python) || '',
-                'Scratch': formatSubjectString(scratch) || '',
-                'Kĩ năng lập trình': feedback.skill || '',
-                'Tư duy môn học': feedback.thinking || '',
-                'Nhận xét': feedback.contentFeedBack || '',
-                ' ': ''
-            };
-        });
-
-        // Tạo worksheet
-        const ws = reader.utils.json_to_sheet(excelData, {
-            header: [
-                'STT',
-                'ID Học viên',
-                'Tên học viên',
-                'ID Giáo viên',
-                'C++',
-                'Python',
-                'Scratch',
-                'Kĩ năng lập trình',
-                'Tư duy môn học',
-                'Nhận xét',
-                ' '
-            ],
-            origin: 'A2'
-        });
-
-        // Thêm hàng tiêu đề
-        reader.utils.sheet_add_aoa(ws, [
-            ['BẢNG ĐÁNH GIÁ HỌC VIÊN'],
-            []
-        ], { origin: 'A1' });
-
-        // Tạo workbook và thêm worksheet
-        const wb = reader.utils.book_new();
-        reader.utils.book_append_sheet(wb, ws, 'Feedback');
-
-        // Đặt chiều rộng cột
-        const colWidths = [
-            { wch: 5 },  // STT
-            { wch: 25 }, // ID Học viên
-            { wch: 20 }, // Tên học viên
-            { wch: 25 }, // ID Giáo viên
-            { wch: 15 }, // C++
-            { wch: 15 }, // Python
-            { wch: 15 }, // Scratch
-            { wch: 15 }, // Kĩ năng lập trình
-            { wch: 15 }, // Tư duy môn học
-            { wch: 30 }, // Nhận xét
-            { wch: 5 }   // Cột trống
-        ];
-        ws['!cols'] = colWidths;
-
-        // Ghi ra file
-        reader.writeFile(wb, outputPath);
-        return true;
-    } catch (error) {
-        console.error('Error exporting feedback to Excel:', error);
-        return false;
-    }
-}
 function exportStudentToExcel(studentData, outputPath = './students_export.xlsx') {
     try {
         // Chuyển đổi dữ liệu sang định dạng phù hợp
@@ -274,10 +383,6 @@ function exportStudentToExcel(studentData, outputPath = './students_export.xlsx'
         return null;
     }
 }
-
-
-
-
 
 module.exports = {
     convertExcelToFeedbackJson,

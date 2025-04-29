@@ -1,5 +1,6 @@
 'use strict'
 
+const mongoose = require("mongoose")
 const { Types } = require("mongoose")
 const moment = require('moment');
 const studentAttendance = require("../../models/shechedule/studentAttendance");
@@ -52,52 +53,59 @@ class feedBackStudentService {
     }
 
     static async createBulkFeedback(payloads) {
+        console.log("🚀 ~ feedBackStudentService ~ createBulkFeedback ~ payloads:", payloads)
+        const session = await mongoose.startSession();
+        session.startTransaction();
+
         if (!Array.isArray(payloads) || payloads.length === 0) {
             throw new Error('Payloads phải là một mảng không rỗng.');
         }
-        const currentYear = moment().year();
-        const currentMonth = moment().month() + 1;
-        const startDate = moment(`${currentYear}-${currentMonth}`, 'YYYY-M').startOf('month').toDate();
-        const endDate = moment(`${currentYear}-${currentMonth}`, 'YYYY-M').endOf('month').toDate();
 
-        // Chuẩn bị các thao tác bulk
-        const bulkOps = payloads.map(payload => {
-            const { idTeacher, idStudent, content, ...otherFields } = payload;
-
-            // Kiểm tra các trường bắt buộc
-            if (!idTeacher || !idStudent) {
-                throw new Error('Mỗi payload phải bao gồm idTeacher, idStudent, và content.');
-            }
-            return {
-                updateOne: {
-                    filter: {
-                        teacherAccount: new Types.ObjectId(idTeacher),
-                        studentsAccount: new Types.ObjectId(idStudent),
-                        createdAt: {
-                            $gte: startDate,
-                            $lte: endDate
-                        }
-                    },
-                    update: {
-                        $set: {
-                            ...otherFields,
-                            contentFeedBack: content,
-                            teacherAccount: new Types.ObjectId(idTeacher),
-                            studentsAccount: new Types.ObjectId(idStudent),
-                            createdAt: new Date()
-                        }
-                    },
-                    upsert: true
-                }
-            };
-        });
+        const startDate = moment().startOf('month').toDate();
+        const endDate = moment().endOf('month').toDate();
 
         try {
-            const bulkWriteResult = await feedBackStudent.bulkWrite(bulkOps, { ordered: false });
+            const bulkOps = payloads.map(payload => {
+                const { teacherAccount, studentsAccount, contentFeedBack, subjectScores, learningStatus, skill, thinking, ...otherFields } = payload;
+                if (!teacherAccount || !studentsAccount || !subjectScores || !learningStatus) {
+                    throw new Error('Mỗi payload phải có teacherAccount, studentsAccount, subjectScores, và learningStatus.');
+                }
+                return {
+                    updateOne: {
+                        filter: {
+                            teacherAccount: new Types.ObjectId(teacherAccount),
+                            studentsAccount: new Types.ObjectId(studentsAccount),
+                            createdAt: { $gte: startDate, $lte: endDate }
+                        },
+                        update: {
+                            $setOnInsert: { createdAt: new Date() },
+                            $set: {
+                                ...otherFields,
+                                contentFeedBack,
+                                skill,
+                                thinking,
+                                teacherAccount: new Types.ObjectId(teacherAccount),
+                                studentsAccount: new Types.ObjectId(studentsAccount),
+                                subjectScores,
+                                learningStatus
+                            }
+                        },
+                        upsert: true
+                    }
+                };
+            });
+
+            console.log("🚀 ~ feedBackStudentService ~ createBulkFeedback ~ bulkOps:", bulkOps);
+            const bulkWriteResult = await feedBackStudent.bulkWrite(bulkOps, { ordered: false, session });
+            await session.commitTransaction();
             return bulkWriteResult;
+
         } catch (error) {
+            await session.abortTransaction();
             console.error('Lỗi khi thực hiện bulkWrite:', error);
             throw error;
+        } finally {
+            await session.endSession();
         }
     }
 
@@ -136,7 +144,6 @@ class feedBackStudentService {
         return listFeedBack;
     }
 
-    //
     static async getAlwaysFeedbackByStudents(idStudent) {
         const currentYear = moment().year();
         const startDate = moment(`${currentYear}`, 'YYYY').startOf('year').toDate();
@@ -161,7 +168,6 @@ class feedBackStudentService {
         }
     }
 
-
     // Select for date
     static async getFeedBackByStudentsForMonth({ idStudent, month }) {
         const currentYear = moment().year();
@@ -179,7 +185,15 @@ class feedBackStudentService {
         }).populate({
             path: "studentsAccount",
             select: "fullname"
-        }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores   ").sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
+        }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores")
+            .populate({
+                path: "learningStatus",
+                populate: {
+                    path: "topic",
+                    select: "name level order"
+                }
+            })
+            .sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }
@@ -315,8 +329,6 @@ class feedBackStudentService {
         }
     }
 
-
-
     static async getFeedBackForMonth({ month }) {
         const currentYear = moment().year();
         const startDate = moment(`${currentYear}-${month}`, 'YYYY-M').startOf('month').toDate();
@@ -331,11 +343,11 @@ class feedBackStudentService {
             }
         }).populate({
             path: "studentsAccount",
-            select: "fullname"
+            select: "fullname _id"
         }).populate({
             path: "teacherAccount",
-            select: "username"
-        }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores ").sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
+            select: "username _id"
+        }).select("studentsAccount contentFeedBack createdAt skill thinking subjectScores learningStatus").sort({ createdAt: -1 }).populate('subjectScores.languageIt').lean();
         if (!listFeedBack) throw new BadRequestError("listFeedBack not found !!!");
         return listFeedBack;
     }

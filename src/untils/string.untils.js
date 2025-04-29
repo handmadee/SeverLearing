@@ -30,6 +30,26 @@ function parseSubject(str, subjectUID) {
 }
 
 
+// learningStatus: {
+//     type: [{
+//         topic: { type: Types.ObjectId, ref: 'topic' },
+//         status: { type: Number, required: true, enum: [0, 1, 2] }, // 0: chưa học, 1: đã học, 2: đang học 
+//     }],
+//         required: true
+// },
+function parseLearningStatus(value, topicId) {
+    if (value === null || value === undefined) return null;
+    const status = parseInt(value);
+    // Check if status is valid (0: not learned, 1: learned, 2: studying)
+    if (isNaN(status) || status < 0 || status > 2) return null;
+    return {
+        topic: topicId,
+        status: status
+    };
+}
+
+
+
 const generateCustomId = () => {
     const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
     const timePart = Date.now().toString(36).substring(5, 7).toUpperCase();
@@ -37,5 +57,5 @@ const generateCustomId = () => {
 };
 
 
-module.exports = { parseSubject, generateCustomId };
+module.exports = { parseSubject, generateCustomId, parseLearningStatus };
 

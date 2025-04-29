@@ -1,7 +1,6 @@
 import { createToastV, eToast } from "./Aleart.js";
 import { LOCALHOST_API_URL } from "./config.js";
 
-
 // Constants
 const API_ENDPOINTS = {
     BASE_URL: LOCALHOST_API_URL,
@@ -12,13 +11,19 @@ const API_ENDPOINTS = {
         BY_MONTH: (month) => `feedbackByMonth?month=${month}`,
         BY_TEACHER_AND_MONTH: (id, month) => `feedback/teacher/${id}?month=${month}`,
         EXPORT_EXCEL: (month) => `feedback/export-feedback/?month=${month}`,
-        DELETE_BULK: () => `delete-bulk/feedback`
+        DELETE_BULK: 'delete-bulk/feedback'
     }
+};
+const BADGE_CLASSES = {
+    good: 'badge-good',
+    rather: 'badge-rather',
+    medium: 'badge-medium'
 };
 
 let domManager;
 let apiService;
 let feedbackManager;
+let cachedFeedbackData = null;
 
 class DOMManager {
     constructor() {
@@ -37,20 +42,43 @@ class DOMManager {
             radioThinking: document.querySelectorAll('input[name="thinking-skill"]'),
             selectFile: document.getElementById("fileInput"),
             importFile: document.getElementById("importButton"),
-            exportFile: document.getElementById("exportButton")
+            exportFile: document.getElementById("exportButton"),
+            selectAll: document.getElementById('selectAll'),
+            bulkActions: document.querySelector('.bulk-actions') || this.createBulkActionsContainer()
         };
 
         this.initializeEventListeners();
     }
 
+    createBulkActionsContainer() {
+        const bulkActions = document.createElement('div');
+        bulkActions.className = 'bulk-actions';
+        bulkActions.innerHTML = `
+            <span class="selected-count">0 selected</span>
+            <button class="btn" id="bulkExport">Export Selected</button>
+            <button class="btn" style="background-color: #dc3545" id="bulkDelete">Delete Selected</button>
+        `;
+        document.body.appendChild(bulkActions);
+        return bulkActions;
+    }
+
     initializeEventListeners() {
-        this.elements.btnCloseDialog.addEventListener('click', this.closeDialog.bind(this));
-        this.elements.btnSubmitFeedback.addEventListener('click', () => feedbackManager.handleSubmit());
-        this.elements.searchStudent.addEventListener('input', (e) => this.handleSearch(e));
-        this.elements.selectTeacher.addEventListener("change", () => feedbackManager.renderFeedback());
-        this.elements.selectTime.addEventListener("change", () => feedbackManager.renderFeedback());
-        this.elements.importFile.addEventListener("click", () => feedbackManager.createFileFeedBack());
-        this.elements.exportFile.addEventListener("click", () => feedbackManager.handleExport());
+        const {
+            btnCloseDialog, btnSubmitFeedback, searchStudent,
+            selectTeacher, selectTime, importFile, exportFile, selectAll
+        } = this.elements;
+
+        btnCloseDialog.addEventListener('click', () => this.closeDialog());
+        btnSubmitFeedback.addEventListener('click', () => feedbackManager.handleSubmit());
+        searchStudent.addEventListener('input', this.handleSearch.bind(this));
+        selectTeacher.addEventListener("change", () => feedbackManager.renderFeedback());
+        selectTime.addEventListener("change", () => feedbackManager.renderFeedback());
+        importFile.addEventListener("click", () => feedbackManager.createFileFeedBack());
+        exportFile.addEventListener("click", () => feedbackManager.handleExport());
+        selectAll.addEventListener('change', (e) => feedbackManager.handleSelectAll(e));
+
+        document.getElementById('bulkDelete')?.addEventListener('click',
+            () => feedbackManager.handleBulkDelete());
     }
 
     closeDialog() {
@@ -61,19 +89,42 @@ class DOMManager {
     handleSearch(e) {
         const searchTerm = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('#contentTable tr');
-        rows.forEach(row => {
-            const studentName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase();
-            row.style.display = studentName?.includes(searchTerm) ? '' : 'none';
+
+        // Using requestAnimationFrame for smoother UI during search
+        requestAnimationFrame(() => {
+            rows.forEach(row => {
+                const studentNameCell = row.querySelector('td:nth-child(2)');
+                if (studentNameCell) {
+                    const studentName = studentNameCell.textContent.toLowerCase();
+                    row.style.display = studentName.includes(searchTerm) ? '' : 'none';
+                }
+            });
         });
     }
 }
 
 class APIService {
-    async fetchData(endpoint) {
+    #cache = new Map();
+
+    async fetchData(endpoint, forceRefresh = false) {
+        const cacheKey = endpoint;
+        if (!forceRefresh && this.#cache.has(cacheKey)) {
+            return this.#cache.get(cacheKey);
+        }
+
         try {
             const response = await fetch(`${API_ENDPOINTS.BASE_URL}${endpoint}`);
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
             const data = await response.json();
-            return data.data.data;
+            const result = data.data.data;
+
+            // Cache the result
+            this.#cache.set(cacheKey, result);
+            return result;
         } catch (error) {
             console.error('API Error:', error);
             throw new Error("Failed to fetch data");
@@ -81,12 +132,21 @@ class APIService {
     }
 
     async deleteBulkFeedBack(ids) {
+        if (!ids.length) return;
+
         try {
-            const response = await fetch(`${API_ENDPOINTS.BASE_URL}delete-bulk/feedback`, {
+            const response = await fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.FEEDBACK.DELETE_BULK}`, {
                 method: "DELETE",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ data: ids })
             });
+
+            if (!response.ok) {
+                throw new Error(`Delete failed: ${response.status}`);
+            }
+
+            // Clear cache after successful deletion
+            this.#cache.clear();
             const result = await response.json();
             return result.data;
         } catch (error) {
@@ -95,22 +155,26 @@ class APIService {
         }
     }
 
-    async createFileFeedBack(body) {
+    async createFileFeedBack(formData) {
         try {
-            const response = await fetch(`${LOCALHOST_API_URL}create-file/feedback`, {
+            const response = await fetch(`${API_ENDPOINTS.BASE_URL}create-file/feedback`, {
                 method: "POST",
-                body: body,
+                body: formData,
             });
-            const data = await response.json();
-            if (data) {
-                createToastV('success', "Tạo  đánh giá thành công");
-                location.reload();
+
+            if (!response.ok) {
+                throw new Error(`Create failed: ${response.status}`);
             }
+
+            // Clear cache after adding new data
+            this.#cache.clear();
+            const data = await response.json();
+            return data;
         } catch (error) {
-            console.log(error);
-            createToastV(eToast.error, "Tạo  đánh giá thất bại");
+            console.error('Create File Error:', error);
+            throw new Error("Failed to create feedback from file");
         }
-    };
+    }
 
     async updateFeedback(id, data) {
         try {
@@ -119,7 +183,13 @@ class APIService {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-            if (!response.ok) throw new Error("Update failed");
+
+            if (!response.ok) {
+                throw new Error(`Update failed: ${response.status}`);
+            }
+
+            // Clear cache after update
+            this.#cache.clear();
             return await response.json();
         } catch (error) {
             console.error('Update Error:', error);
@@ -132,7 +202,13 @@ class APIService {
             const response = await fetch(`${API_ENDPOINTS.BASE_URL}feedback/${id}`, {
                 method: "DELETE"
             });
-            if (!response.ok) throw new Error("Delete failed");
+
+            if (!response.ok) {
+                throw new Error(`Delete failed: ${response.status}`);
+            }
+
+            // Clear cache after deletion
+            this.#cache.clear();
             return true;
         } catch (error) {
             console.error('Delete Error:', error);
@@ -143,17 +219,24 @@ class APIService {
     async exportExcelFeedback(month) {
         try {
             const response = await fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.FEEDBACK.EXPORT_EXCEL(month)}`);
+
+            if (!response.ok) {
+                throw new Error(`Export failed: ${response.status}`);
+            }
+
             const data = await response.blob();
             const url = window.URL.createObjectURL(data);
             const a = document.createElement('a');
             a.href = url;
             a.download = `feedback-${month}.xlsx`;
             a.click();
-            window.URL.revokeObjectURL(url);
-            return response;
+
+            // Clean up
+            setTimeout(() => window.URL.revokeObjectURL(url), 100);
+            return true;
         } catch (error) {
             console.error('Export Error:', error);
-            createToastV(eToast.error, "Failed to export feedback data");
+            throw new Error("Failed to export feedback data");
         }
     }
 }
@@ -165,91 +248,9 @@ class FeedbackManager {
         this.feedbackIdEditing = null;
         this.currentFeedbackData = null;
         this.selectedItems = [];
-        document.getElementById('selectAll').addEventListener('change', this.handleSelectAll.bind(this));
-        this.createBulkActionsContainer();
 
-    }
-
-    createBulkActionsContainer() {
-        const bulkActions = document.createElement('div');
-        bulkActions.className = 'bulk-actions';
-        bulkActions.innerHTML = `
-            <span class="selected-count">0 selected</span>
-            <button class="btn" id="bulkExport">Export Selected</button>
-            <button class="btn" style="background-color: #dc3545" id="bulkDelete">Delete Selected</button>
-        `;
-        document.body.appendChild(bulkActions);
-
-        // Add event listeners for bulk action buttons
-        // document.getElementById('bulkExport').addEventListener('click', this.handleBulkExport.bind(this));
-        document.getElementById('bulkDelete').addEventListener('click', this.handleBulkDelete.bind(this));
-    }
-
-    handleSelectAll(e) {
-        const isChecked = e.target.checked;
-        const checkboxes = document.querySelectorAll('.item-checkbox');
-
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = isChecked;
-            this.handleItemSelection({ target: checkbox });
-        });
-    }
-    handleItemSelection(e) {
-        const checkbox = e.target;
-        const feedbackId = checkbox.value;
-
-        if (checkbox.checked) {
-            if (!this.selectedItems.includes(feedbackId)) {
-                this.selectedItems.push(feedbackId);
-            }
-        } else {
-            this.selectedItems = this.selectedItems.filter(id => id !== feedbackId);
-            document.getElementById('selectAll').checked = false;
-        }
-
-        this.updateBulkActionsVisibility();
-    }
-
-    updateBulkActionsVisibility() {
-        const bulkActions = document.querySelector('.bulk-actions');
-        const countElem = document.querySelector('.selected-count');
-        const bulkDeleteBtn = document.getElementById('bulkDelete');
-
-        if (this.selectedItems.length > 0) {
-            bulkActions.classList.add('visible');
-            countElem.textContent = `${this.selectedItems.length} selected`;
-            bulkDeleteBtn.disabled = false;
-        } else {
-            bulkActions.classList.remove('visible');
-            bulkDeleteBtn.disabled = true;
-        }
-    }
-
-    async handleBulkDelete() {
-        if (this.selectedItems.length === 0) {
-            createToastV(eToast.warning, "No items selected");
-            return;
-        }
-
-        if (!confirm(`Are you sure you want to delete ${this.selectedItems.length} selected items?`)) {
-            return;
-        }
-
-        const bulkDeleteBtn = document.getElementById('bulkDelete');
-        try {
-            bulkDeleteBtn.disabled = true;
-            bulkDeleteBtn.innerHTML = 'Deleting...';
-
-            await this.api.deleteBulkFeedBack(this.selectedItems);
-            createToastV(eToast.success, `Deleted ${this.selectedItems.length} items`);
-            this.resetSelection();
-            await this.renderFeedback();
-        } catch (error) {
-            createToastV(eToast.error, "Failed to delete selected items");
-        } finally {
-            bulkDeleteBtn.disabled = false;
-            bulkDeleteBtn.innerHTML = 'Delete Selected';
-        }
+        this.formatDate = this.formatDate.bind(this);
+        this.handleItemSelection = this.handleItemSelection.bind(this);
     }
 
     resetEditingState() {
@@ -258,15 +259,12 @@ class FeedbackManager {
     }
 
     getBadgeClass(value) {
-        const badges = {
-            good: 'badge-good',
-            rather: 'badge-rather',
-            medium: 'badge-medium'
-        };
-        return badges[value] || '';
+        return BADGE_CLASSES[value] || '';
     }
 
     formatDate(dateString) {
+        if (!dateString) return '-';
+
         const date = new Date(dateString);
         return date.toLocaleDateString('en-GB', {
             day: '2-digit',
@@ -277,34 +275,37 @@ class FeedbackManager {
 
     async handleSubmit() {
         if (!this.feedbackIdEditing) {
-            alert("No feedback selected for editing!");
+            createToastV(eToast.warning, "No feedback selected for editing!");
             return;
         }
 
-        const formData = this.collectFormData();
         try {
+            const formData = this.collectFormData();
             await this.api.updateFeedback(this.feedbackIdEditing, formData);
-            createToastV('success', "Feedback updated successfully");
+            createToastV(eToast.success, "Feedback updated successfully");
             this.dom.closeDialog();
             await this.renderFeedback();
         } catch (error) {
-            createToastV("Failed to update feedback");
+            createToastV(eToast.error, "Failed to update feedback");
         }
     }
 
     collectFormData() {
         const content = tinymce.get('EvaluateContent').getContent();
+
         const skill = Array.from(this.dom.elements.radioProgramming)
             .find(radio => radio.checked)?.value || '';
+
         const thinking = Array.from(this.dom.elements.radioThinking)
             .find(radio => radio.checked)?.value || '';
 
-        const subjectScores = Array.from(this.dom.elements.tableLanguages.querySelectorAll("tr.language"))
-            .map(tr => ({
-                languageIt: tr.dataset.id,
-                level: tr.querySelector("select").value,
-                score: tr.querySelector("input[type='number']").value
-            }));
+        const subjectScores = Array.from(
+            this.dom.elements.tableLanguages.querySelectorAll("tr.language")
+        ).map(tr => ({
+            languageIt: tr.dataset.id,
+            level: tr.querySelector("select").value,
+            score: tr.querySelector("input[type='number']").value
+        }));
 
         return {
             contentFeedBack: content,
@@ -315,24 +316,32 @@ class FeedbackManager {
     }
 
     async createFileFeedBack() {
-        const formData = new FormData();
-        if (!this.dom.elements.selectFile.files[0]) {
-            return createToastV(eToast.warning, "Vui lòng chọn file 1");
+        const file = this.dom.elements.selectFile.files[0];
+
+        if (!file) {
+            createToastV(eToast.warning, "Please select a file first");
+            return;
         }
-        formData.append("excel", this.dom.elements.selectFile.files[0]);
-        await this.api.createFileFeedBack(formData);
+
+        try {
+            const formData = new FormData();
+            formData.append("excel", file);
+            await this.api.createFileFeedBack(formData);
+            createToastV(eToast.success, "Feedback created successfully");
+            await this.renderFeedback();
+        } catch (error) {
+            createToastV(eToast.error, "Failed to create feedback from file");
+        }
     }
-
-
-
 
     async renderFeedback() {
         this.renderLoading();
+
         try {
             const data = await this.fetchFilteredData();
-            console.log(data.slice(0, 10));
             this.renderItems(data);
         } catch (error) {
+            console.error("Render feedback error:", error);
             createToastV(eToast.error, "Failed to load feedback");
             this.renderItems([]);
         }
@@ -341,15 +350,19 @@ class FeedbackManager {
     async fetchFilteredData() {
         const teacherId = this.dom.elements.selectTeacher.value;
         const month = this.dom.elements.selectTime.value;
+        let endpoint;
 
         if (teacherId === 'all' && month === 'all') {
-            return await this.api.fetchData(API_ENDPOINTS.FEEDBACK.ALL);
+            endpoint = API_ENDPOINTS.FEEDBACK.ALL;
         } else if (teacherId === 'all') {
-            return await this.api.fetchData(API_ENDPOINTS.FEEDBACK.BY_MONTH(month));
+            endpoint = API_ENDPOINTS.FEEDBACK.BY_MONTH(month);
         } else if (month === 'all') {
-            return await this.api.fetchData(API_ENDPOINTS.FEEDBACK.BY_TEACHER(teacherId));
+            endpoint = API_ENDPOINTS.FEEDBACK.BY_TEACHER(teacherId);
+        } else {
+            endpoint = API_ENDPOINTS.FEEDBACK.BY_TEACHER_AND_MONTH(teacherId, month);
         }
-        return await this.api.fetchData(API_ENDPOINTS.FEEDBACK.BY_TEACHER_AND_MONTH(teacherId, month));
+
+        return await this.api.fetchData(endpoint, true); // Force refresh
     }
 
     renderLoading() {
@@ -374,20 +387,37 @@ class FeedbackManager {
             return;
         }
 
-        this.dom.elements.contentTable.innerHTML = feedbackList.map(this.createFeedbackRow.bind(this)).join("");
-        this.attachRowEventListeners();
-        if (this.selectedItems.length > 0) {
-            document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-                if (this.selectedItems.includes(checkbox.value)) {
-                    checkbox.checked = true;
-                }
-            });
-            const allChecked = this.selectedItems.length === feedbackList.length;
-            document.getElementById('selectAll').checked = allChecked;
-            this.updateBulkActionsVisibility();
+        // Create document fragment for better performance
+        const fragment = document.createDocumentFragment();
+        const tempContainer = document.createElement('tbody');
+        tempContainer.innerHTML = feedbackList.map(this.createFeedbackRow.bind(this)).join("");
+
+        // Append all nodes from the temporary container to the fragment
+        while (tempContainer.firstChild) {
+            fragment.appendChild(tempContainer.firstChild);
         }
+
+        // Clear and update the table
+        this.dom.elements.contentTable.innerHTML = '';
+        this.dom.elements.contentTable.appendChild(fragment);
+
+        this.attachRowEventListeners();
+        this.restoreSelectionState(feedbackList);
     }
 
+    restoreSelectionState(feedbackList) {
+        if (this.selectedItems.length === 0) return;
+
+        document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+            if (this.selectedItems.includes(checkbox.value)) {
+                checkbox.checked = true;
+            }
+        });
+
+        const allChecked = this.selectedItems.length === feedbackList.length;
+        this.dom.elements.selectAll.checked = allChecked;
+        this.updateBulkActionsVisibility();
+    }
 
     resetSelection() {
         this.selectedItems = [];
@@ -395,27 +425,31 @@ class FeedbackManager {
     }
 
     createFeedbackRow(item) {
+        const studentName = item?.studentsAccount?.fullname || '-';
+        const teacherName = item?.teacherAccount?.username || '-';
+        const studentId = item?.studentsAccount?._id || '';
+        const skillBadge = this.getBadgeClass(item?.skill);
+        const thinkingBadge = this.getBadgeClass(item?.thinking);
+
         return `
             <tr>
-              <td class="checkbox-container">
+                <td class="checkbox-container">
                     <input type="checkbox" class="item-checkbox" value="${item._id}">
                 </td>
                 <td>
                     <div class="student-cell">
-                        ${item?.studentsAccount?.fullname || '-'}
-                        <i class="fas fa-copy copy-icon" 
-                           data-student-id="${item?.studentsAccount?._id}"
-                           title="Copy link"></i>
+                        ${studentName}
+                        ${studentId ? `<i class="fas fa-copy copy-icon" data-student-id="${studentId}" title="Copy link"></i>` : ''}
                     </div>
                 </td>
-                <td>${item?.teacherAccount?.username || '-'}</td>
+                <td>${teacherName}</td>
                 <td>
-                    <span class="badge ${this.getBadgeClass(item?.skill)}">
+                    <span class="badge ${skillBadge}">
                         ${item?.skill || '-'}
                     </span>
                 </td>
                 <td>
-                    <span class="badge ${this.getBadgeClass(item?.thinking)}">
+                    <span class="badge ${thinkingBadge}">
                         ${item?.thinking || '-'}
                     </span>
                 </td>
@@ -433,33 +467,126 @@ class FeedbackManager {
                 </td>
             </tr>
         `;
-
     }
 
-
     attachRowEventListeners() {
-        document.querySelectorAll(".editBtn").forEach(btn => {
-            btn.addEventListener("click", () => this.handleEdit(btn.dataset.id));
-        });
+        // Use event delegation for better performance
+        const table = this.dom.elements.contentTable;
 
-        document.querySelectorAll(".deleteBtn").forEach(btn => {
-            btn.addEventListener("click", () => this.handleDelete(btn.dataset.id));
-        });
+        table.addEventListener('click', (e) => {
+            const target = e.target;
 
-        document.querySelectorAll(".copy-icon").forEach(icon => {
-            icon.addEventListener("click", (e) => {
-                const studentId = e.target.dataset.studentId;
+            // Edit button
+            if (target.classList.contains('editBtn') || target.closest('.editBtn')) {
+                const button = target.classList.contains('editBtn') ? target : target.closest('.editBtn');
+                this.handleEdit(button.dataset.id);
+            }
+
+            // Delete button
+            if (target.classList.contains('deleteBtn') || target.closest('.deleteBtn')) {
+                const button = target.classList.contains('deleteBtn') ? target : target.closest('.deleteBtn');
+                this.handleDelete(button.dataset.id);
+            }
+
+            // Copy icon
+            if (target.classList.contains('copy-icon')) {
+                const studentId = target.dataset.studentId;
                 if (studentId) {
                     const link = `${window.location.origin}/admin/parents/students/${studentId}`;
                     navigator.clipboard.writeText(link)
                         .then(() => createToastV(eToast.success, "Copied link to clipboard"))
                         .catch(() => createToastV(eToast.error, "Failed to copy link"));
                 }
-            });
+            }
         });
+
+        // Attach checkbox event listeners
         document.querySelectorAll(".item-checkbox").forEach(checkbox => {
             checkbox.addEventListener("change", (e) => this.handleItemSelection(e));
         });
+    }
+
+    handleSelectAll(e) {
+        const isChecked = e.target.checked;
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+
+            // Update selection state without triggering events
+            const feedbackId = checkbox.value;
+            const isSelected = this.selectedItems.includes(feedbackId);
+
+            if (isChecked && !isSelected) {
+                this.selectedItems.push(feedbackId);
+            } else if (!isChecked && isSelected) {
+                this.selectedItems = this.selectedItems.filter(id => id !== feedbackId);
+            }
+        });
+
+        this.updateBulkActionsVisibility();
+    }
+
+    handleItemSelection(e) {
+        const checkbox = e.target;
+        const feedbackId = checkbox.value;
+
+        if (checkbox.checked) {
+            if (!this.selectedItems.includes(feedbackId)) {
+                this.selectedItems.push(feedbackId);
+            }
+        } else {
+            this.selectedItems = this.selectedItems.filter(id => id !== feedbackId);
+            this.dom.elements.selectAll.checked = false;
+        }
+
+        this.updateBulkActionsVisibility();
+    }
+
+    updateBulkActionsVisibility() {
+        const bulkActions = document.querySelector('.bulk-actions');
+        const countElem = document.querySelector('.selected-count');
+        const bulkDeleteBtn = document.getElementById('bulkDelete');
+
+        if (!bulkActions || !countElem || !bulkDeleteBtn) return;
+
+        if (this.selectedItems.length > 0) {
+            bulkActions.classList.add('visible');
+            countElem.textContent = `${this.selectedItems.length} selected`;
+            bulkDeleteBtn.disabled = false;
+        } else {
+            bulkActions.classList.remove('visible');
+            bulkDeleteBtn.disabled = true;
+        }
+    }
+
+    async handleBulkDelete() {
+        if (this.selectedItems.length === 0) {
+            createToastV(eToast.warning, "No items selected");
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to delete ${this.selectedItems.length} selected items?`)) {
+            return;
+        }
+
+        const bulkDeleteBtn = document.getElementById('bulkDelete');
+        if (!bulkDeleteBtn) return;
+
+        try {
+            bulkDeleteBtn.disabled = true;
+            bulkDeleteBtn.innerHTML = 'Deleting...';
+
+            await this.api.deleteBulkFeedBack(this.selectedItems);
+            createToastV(eToast.success, `Deleted ${this.selectedItems.length} items`);
+            this.resetSelection();
+            await this.renderFeedback();
+        } catch (error) {
+            createToastV(eToast.error, "Failed to delete selected items");
+        } finally {
+            bulkDeleteBtn.disabled = false;
+            bulkDeleteBtn.innerHTML = 'Delete Selected';
+        }
     }
 
     async handleEdit(id) {
@@ -472,13 +599,18 @@ class FeedbackManager {
             this.populateEditForm(data);
             this.dom.elements.dialogReview.style.display = "block";
         } catch (error) {
-            createToastV(eToast.error, "Failed to load feedback data")
+            createToastV(eToast.error, "Failed to load feedback data");
         }
     }
 
     async handleExport() {
         const month = this.dom.elements.selectTime.value;
-        await this.api.exportExcelFeedback(month);
+        try {
+            await this.api.exportExcelFeedback(month);
+            createToastV(eToast.success, "Feedback exported successfully");
+        } catch (error) {
+            createToastV(eToast.error, "Failed to export feedback data");
+        }
     }
 
     async handleDelete(id) {
@@ -486,10 +618,10 @@ class FeedbackManager {
 
         try {
             await this.api.deleteFeedback(id);
-            createToastV(eToast.delete, "Feedback deleted successfully")
+            createToastV(eToast.success, "Feedback deleted successfully");
             await this.renderFeedback();
         } catch (error) {
-            createToastV(eToast.error, "Failed to load feedback data")
+            createToastV(eToast.error, "Failed to delete feedback");
         }
     }
 
@@ -497,6 +629,7 @@ class FeedbackManager {
         this.dom.elements.nameStudents.textContent = data.studentsAccount?.fullname || 'N/A';
         this.dom.elements.phoneStudents.textContent = data.studentsAccount?.phone || 'No phone number';
 
+        // Set radio buttons
         this.dom.elements.radioProgramming.forEach(radio => {
             radio.checked = (radio.value === data.skill);
         });
@@ -505,7 +638,10 @@ class FeedbackManager {
             radio.checked = (radio.value === data.thinking);
         });
 
+        // Set TinyMCE content
         tinymce.get('EvaluateContent').setContent(data.contentFeedBack || '');
+
+        // Render subject scores
         this.renderSubjectScores(data.subjectScores);
     }
 
@@ -517,7 +653,7 @@ class FeedbackManager {
             return;
         }
 
-        this.dom.elements.tableLanguages.innerHTML = scores.map(score => `
+        const scoresHtml = scores.map(score => `
             <tr class="language" data-id="${score.languageIt._id}">
                 <td>${score.languageIt.nameCode}</td>
                 <td>
@@ -535,24 +671,34 @@ class FeedbackManager {
                 </td>
             </tr>
         `).join("");
+
+        this.dom.elements.tableLanguages.innerHTML = scoresHtml;
     }
 }
 
+// Initialize on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', async () => {
-    // Add styl
-    // Initialize TinyMCE
-    await tinymce.init({
-        selector: '#EvaluateContent'
-    });
+    try {
+        // Initialize TinyMCE
+        await tinymce.init({
+            selector: '#EvaluateContent',
+            menubar: false,
+            plugins: 'link lists',
+            toolbar: 'bold italic | bullist numlist | link'
+        });
 
-    // Initialize managers
-    domManager = new DOMManager();
-    apiService = new APIService();
-    feedbackManager = new FeedbackManager(domManager, apiService);
+        // Initialize managers
+        domManager = new DOMManager();
+        apiService = new APIService();
+        feedbackManager = new FeedbackManager(domManager, apiService);
 
-    // Set default month
-    domManager.elements.selectTime.value = new Date().getMonth() + 1;
+        // Set default month to current month
+        domManager.elements.selectTime.value = new Date().getMonth() + 1;
 
-    // Initial render
-    await feedbackManager.renderFeedback();
+        // Initial render
+        await feedbackManager.renderFeedback();
+    } catch (error) {
+        console.error("Initialization error:", error);
+        createToastV(eToast.error, "Failed to initialize feedback page");
+    }
 });

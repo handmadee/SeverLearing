@@ -5,6 +5,7 @@ const { delFile } = require('../../untils/file.untils');
 const { convertExcelToFeedbackJson, exportFeedbackToExcel } = require('../../untils/xlsx');
 const path = require('path');
 const fs = require('fs');
+const TopicService = require("../../services/topic/topic.service");
 
 
 
@@ -26,7 +27,8 @@ class feedBackController {
             if (!fs.existsSync(outputDir)) {
                 fs.mkdirSync(outputDir);
             }
-            const isExported = exportFeedbackToExcel(data, outputPath);
+            const topics = await TopicService.getTopics();
+            const isExported = exportFeedbackToExcel(data, topics, outputPath);
             if (isExported) {
                 if (fs.existsSync(outputPath)) {
                     res.download(outputPath, (err) => {
@@ -50,11 +52,9 @@ class feedBackController {
     }
     async createBulkFileFeedback(req, res) {
         const file = req.file;
-        const payload = await convertExcelToFeedbackJson(file.path);
+        const topics = await TopicService.getTopics();
+        const payload = convertExcelToFeedbackJson(file.path, topics);
         delFile(file.path);
-        console.log({
-            payload
-        })
         return new Created(
             "created feedBack Success",
             await feedBackStudentService.createBulkFeedback(payload)
