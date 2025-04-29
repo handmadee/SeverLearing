@@ -99,7 +99,7 @@ router.get('/feedback/students/:id', asyncHandler(feedBackControler.getFeedBackB
 // Get By ID AND MONTH
 router.get('/feedback/teacher/:id', asyncHandler(feedBackControler.getFeedBackByIdTeacherForMonth));
 // Lấy tất cả feed back bằng ID teacher 
-router.get('/feedbackByTeacher/:id', asyncHandler(feedBackControler.getFeedAllBackTeacher));
+router.get('/feedbackByTeacher/:id', asyncHandler(feedBackControler.getFeedAllBacưkTeacher));
 // Lấy tất cả feed back bằng tháng
 router.get('/feedbackByMonth', asyncHandler(feedBackControler.getFeedBackForMonth));
 

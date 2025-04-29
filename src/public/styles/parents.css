@@ -681,3 +681,96 @@
     color: var(--gray-700);
   }
 } */
+
+/* Topic Progress Section */
+.topic-progress-container {
+  margin: 30px 0;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.topic-progress-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.topic-level-container {
+  flex: 1;
+  min-width: 250px;
+}
+
+.topic-level-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #2a774c;
+  border-bottom: 2px solid #8fcca3;
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+.topic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.topic-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.topic-item.topic-completed {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.topic-item.topic-in-progress {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #856404;
+  font-weight: 500;
+}
+
+.topic-item.topic-not-started {
+  background-color: rgba(108, 117, 125, 0.1);
+  color: #6c757d;
+  opacity: 0.7;
+}
+
+.topic-checkbox {
+  margin-right: 10px;
+}
+
+.topic-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: not-allowed;
+}
+
+.topic-name {
+  font-size: 14px;
+}
+
+.no-data {
+  font-style: italic;
+  color: #6c757d;
+  text-align: center;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .topic-progress-wrapper {
+    flex-direction: column;
+  }
+
+  .topic-level-container {
+    width: 100%;
+  }
+}

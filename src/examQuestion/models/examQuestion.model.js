@@ -6,11 +6,6 @@ const DOCUMENT_NAME = 'examQuestion';
 const COLLECTION_NAME = 'examQuestions';
 
 const examQuestionSchema = new Schema({
-    _id: {
-        type: String,
-        index: { unique: true },
-        required: true
-    },
     title: {
         type: String,
         index: true,

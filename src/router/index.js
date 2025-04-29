@@ -21,6 +21,7 @@ const studentsShecheduleRoutes = require('./shechedule/index');
 const langugeRouter = require('./../feeback/routers/language.router');
 const examRouter = require('./../examQuestion/routers/exam.router');
 const errorLayout = require('./layouts/error');
+const topicRoutes = require('./topic/topic.router');
 
 
 // Initialize router
@@ -40,6 +41,6 @@ router.use(API_V1_PATH, studentsShecheduleRoutes);
 router.use(`${API_V1_PATH}/language`, langugeRouter);
 router.use(`${API_V1_PATH}/examQuestion`, examRouter);
 router.use(`${API_V1_PATH}/error`, errorLayout);
-
+router.use(API_V1_PATH, topicRoutes);
 
 module.exports = router;
