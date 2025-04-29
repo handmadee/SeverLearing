@@ -46,9 +46,9 @@ function normalizeName(name) {
 
 
 const LanguageIDs = {
-    PYTHON: '676509b9409ddf1f40f01e8e',
-    CPP: '6765a01fd60c98dbc0ad7eba',
-    SCRATCH: '6765a012d60c98dbc0ad7eb7'
+    PYTHON: '6767ff3d4ba9e6b3d58a8aec',
+    CPP: '6767ff474ba9e6b3d58a8af0',
+    SCRATCH: '6767ff304ba9e6b3d58a8ae8'
 };
 
 function convertExcelToFeedbackJson(filePath, topicsData, languageIDs) {
