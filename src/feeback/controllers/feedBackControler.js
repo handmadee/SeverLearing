@@ -51,14 +51,36 @@ class feedBackController {
         }
     }
     async createBulkFileFeedback(req, res) {
-        const file = req.file;
-        const topics = await TopicService.getTopics();
-        const payload = convertExcelToFeedbackJson(file.path, topics);
-        delFile(file.path);
-        return new Created(
-            "created feedBack Success",
-            await feedBackStudentService.createBulkFeedback(payload)
-        ).send(res);
+        try {
+            const file = req.file;
+
+            if (!file) {
+                return res.status(400).json({ message: "No file uploaded" });
+            }
+
+            // Get topics data
+            const topics = await TopicService.getTopics();
+
+            // Convert Excel file to JSON
+            const payload = convertExcelToFeedbackJson(file.path, {
+                data: {
+                    message: "Get topics successfully",
+                    data: topics
+                }
+            });
+            delFile(file.path);
+            const result = await feedBackStudentService.createBulkFeedback(payload);
+            return new Created(
+                "created feedBack Success",
+                result
+            ).send(res);
+        } catch (error) {
+            console.error("Error creating bulk feedback:", error);
+            return res.status(500).json({
+                message: "Failed to create feedback",
+                error: error.message
+            });
+        }
     }
     async createBulkFeedback(req, res) {
         return new Created(

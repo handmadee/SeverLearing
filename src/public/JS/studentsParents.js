@@ -79,6 +79,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const tableHTML = data
             .map((student) => {
+                // Determine active levels based on subjectScores
+                const activeLevels = {};
+                if (student?.subjectScores) {
+                    student.subjectScores.forEach(score => {
+                        if (score.score >= 0) { // If they're learning (0) or have learned (>0)
+                            activeLevels[score.level] = true;
+                        }
+                    });
+                }
+
                 return `
             <table class="progressTable">
                 <thead>
@@ -138,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div class="topic-progress-container">
                 <h4 class="section-title">CHỦ ĐỀ HỌC TẬP</h4>
                 <div class="topic-progress-wrapper">
-                    ${renderTopicProgress(student.studentTopics || [])}
+                    ${renderTopicProgress(student.studentTopics || [], activeLevels)}
                 </div>
             </div>
             <div class="feedback-section">
@@ -194,7 +204,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         tableWrapper.innerHTML = tableHTML;
     };
 
-    const renderTopicProgress = (studentTopics = []) => {
+    const renderTopicProgress = (studentTopics = [], studentActiveLevels = {}) => {
         if (!studentTopics.length) {
             return `<p class="no-data">Chưa có dữ liệu chủ đề học tập.</p>`;
         }
@@ -220,12 +230,42 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
 
-        // Sort levels in ascending order
-        const sortedLevels = Object.keys(groupedTopics).sort((a, b) => a - b);
+        // Determine which levels to show based on student's active levels
+        let levelsToShow = [];
+
+        // First priority: Use the student's active levels from subjects progress table
+        if (Object.keys(studentActiveLevels).length > 0) {
+            levelsToShow = Object.keys(studentActiveLevels).sort((a, b) => a - b);
+        } else {
+            // Second priority: Determine levels from topics with status 1 or 2
+            const topicActiveLevels = {};
+            Object.keys(groupedTopics).forEach(level => {
+                const topics = groupedTopics[level];
+                const hasActiveTopics = topics.some(topic => topic.status === 1 || topic.status === 2);
+                if (hasActiveTopics) {
+                    topicActiveLevels[level] = true;
+                }
+            });
+
+            if (Object.keys(topicActiveLevels).length > 0) {
+                levelsToShow = Object.keys(topicActiveLevels).sort((a, b) => a - b);
+            } else {
+                // Fallback: show all levels
+                levelsToShow = Object.keys(groupedTopics).sort((a, b) => a - b);
+            }
+        }
+
+        // Filter groupedTopics to only include levels we want to show
+        const filteredGroupedTopics = {};
+        levelsToShow.forEach(level => {
+            if (groupedTopics[level]) {
+                filteredGroupedTopics[level] = groupedTopics[level];
+            }
+        });
 
         // Sort topics within each level by order
-        sortedLevels.forEach(level => {
-            groupedTopics[level].sort((a, b) => a.order - b.order);
+        Object.keys(filteredGroupedTopics).forEach(level => {
+            filteredGroupedTopics[level].sort((a, b) => a.order - b.order);
         });
 
         // Helper function to calculate progress statistics
@@ -265,8 +305,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </div>
 
                 <div class="topics-container grid-layout">
-                    ${sortedLevels.map(level => {
-            const topics = groupedTopics[level];
+                    ${levelsToShow.map(level => {
+            const topics = filteredGroupedTopics[level] || [];
 
             return `
                             <div class="level-column" data-level="${level}">
