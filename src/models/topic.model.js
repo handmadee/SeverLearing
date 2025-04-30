@@ -6,6 +6,11 @@ const DOCUMENT_NAME = 'topic';
 const COLLECTION_NAME = 'topics';
 
 const topicSchema = new Schema({
+    key: {
+        type: String,
+        required: true,
+        unique: true
+    },
     name: {
         type: String,
         required: true,

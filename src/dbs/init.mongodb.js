@@ -29,7 +29,7 @@ class Database {
             //     }
             // };
             // seedTopics();
-            // console.log("Connected to MongoDB successfully!" + config.db.host);
+            console.log("Connected to MongoDB successfully!" + config.db.host);
         } catch (error) {
             console.error("Error connecting to MongoDB:", error);
             process.exit(1);

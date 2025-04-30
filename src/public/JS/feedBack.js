@@ -1250,22 +1250,22 @@ class FeedbackManager {
             if (!score.languageIt) return '';
 
             return `
-                <tr class="language" data-id="${score.languageIt._id}">
+            <tr class="language" data-id="${score.languageIt._id}">
                     <td>${score.languageIt.nameCode || 'Unknown'}</td>
-                    <td>
-                        <select class="form-select">
-                            <option value="">Select</option>
-                            ${[1, 2, 3].map(level => `
-                                <option value="${level}" ${score.level === level.toString() ? "selected" : ""}>
-                                    Level ${level}
-                                </option>
-                            `).join('')}
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number" class="form-control" min="0" value="${score.score || 0}"/>
-                    </td>
-                </tr>
+                <td>
+                    <select class="form-select">
+                        <option value="">Select</option>
+                        ${[1, 2, 3].map(level => `
+                            <option value="${level}" ${score.level === level.toString() ? "selected" : ""}>
+                                Level ${level}
+                            </option>
+                        `).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="form-control" min="0" value="${score.score || 0}"/>
+                </td>
+            </tr>
             `;
         }).join("");
 
